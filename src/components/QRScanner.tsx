@@ -7,6 +7,8 @@ import { useStore } from "../store/useStore";
 import { useCamera } from "../hooks/useCamera";
 import Spinner from "./Spinner";
 import { IconAlertTriangle, IconCamera, IconCheckCircle, IconStop, IconX } from "./Icons";
+import BrandMark from "./BrandMark";
+import { formatPackDate } from "../utils/date";
 
 type Props = {
   open: boolean;
@@ -227,7 +229,10 @@ export default function QRScanner({ open, onClose }: Props) {
 
   useEffect(() => {
     if (open) return;
-    void closeModal();
+    const t = requestAnimationFrame(() => {
+      void closeModal();
+    });
+    return () => cancelAnimationFrame(t);
   }, [closeModal, open]);
 
   if (!open) return null;
@@ -262,10 +267,10 @@ export default function QRScanner({ open, onClose }: Props) {
       {/* Header */}
       <div className="absolute top-0 z-30 w-full px-4 pt-4">
         <div className="mx-auto max-w-md rounded-2xl bg-black/35 px-4 py-3 text-white ring-1 ring-white/10 backdrop-blur">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm font-semibold">BioSmart Wrap</div>
-              <div className="text-xs text-white/70">Quét QR sinh học • AI màu → pH</div>
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <BrandMark titleClassName="text-sm text-white font-semibold" />
+              <div className="mt-1 text-xs text-white/70">Quét QR sinh học • AI màu → pH</div>
             </div>
             <button
               type="button"
@@ -353,9 +358,14 @@ export default function QRScanner({ open, onClose }: Props) {
           )}
 
           {product && (
-            <p className="text-sm opacity-80">
-              {product.name} - {product.supplier}
-            </p>
+            <>
+              <p className="text-sm opacity-90 font-medium">{product.name}</p>
+              <p className="mt-1 text-sm opacity-90">
+                Ngày đóng gói:{" "}
+                <span className="font-semibold tabular-nums">{formatPackDate(product.packDate)}</span>
+              </p>
+              <p className="mt-1 text-xs opacity-75">{product.supplier}</p>
+            </>
           )}
 
           <button

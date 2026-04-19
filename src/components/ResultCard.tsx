@@ -1,5 +1,6 @@
 import { useStore } from "../store/useStore";
 import StatusBadge from "./StatusBadge";
+import { formatPackDate } from "../utils/date";
 
 export default function ResultCard() {
   const { product, aiResult } = useStore();
@@ -13,10 +14,13 @@ export default function ResultCard() {
           <h2 className="text-lg font-semibold text-slate-900 truncate">
             {product.name}
           </h2>
-          <div className="mt-1 text-xs text-slate-600">
+          <div className="mt-2 rounded-2xl bg-slate-100/90 px-3 py-2 text-sm text-slate-800 ring-1 ring-slate-200">
+            <span className="text-slate-500">Ngày đóng gói</span>
+            <span className="mx-2 text-slate-300">·</span>
+            <span className="font-semibold tabular-nums">{formatPackDate(product.packDate)}</span>
+          </div>
+          <div className="mt-2 text-xs text-slate-600">
             <span className="font-medium">🏭</span> {product.supplier}
-            <span className="mx-2 text-slate-300">•</span>
-            <span className="font-medium">📅</span> {product.packDate}
           </div>
         </div>
         <StatusBadge status={aiResult.status} />

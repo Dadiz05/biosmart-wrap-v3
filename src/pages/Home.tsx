@@ -1,5 +1,7 @@
 import QRScanner from "../components/QRScanner";
 import ResultCard from "../components/ResultCard";
+import ScanHistory from "../components/ScanHistory";
+import BrandMark from "../components/BrandMark";
 import { useStore } from "../store/useStore";
 import { useMemo, useState } from "react";
 import Toast from "../components/Toast";
@@ -14,7 +16,7 @@ type DemoQr = {
 };
 
 export default function Home() {
-  const { status, lastError, aiResult, reset } = useStore();
+  const { status, lastError, aiResult, reset, history, clearHistory } = useStore();
   const [scannerOpen, setScannerOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
 
@@ -54,7 +56,7 @@ export default function Home() {
 
       <div className="mx-auto max-w-md px-4 pt-6 pb-10">
         <div className="rounded-3xl bg-gradient-to-br from-emerald-500/15 via-slate-900/60 to-slate-900 p-5 ring-1 ring-white/10">
-          <div className="text-sm font-semibold text-white/90">BioSmart Wrap</div>
+          <BrandMark titleClassName="text-sm text-white/90" />
           <div className="mt-1 text-2xl font-semibold leading-tight">
             Quét QR sinh học <br />
             đánh giá độ tươi thực phẩm
@@ -114,6 +116,11 @@ export default function Home() {
               Đang phân tích… {aiResult ? "(đang cập nhật)" : ""}
             </div>
           )}
+        </div>
+
+        <div className="mt-6">
+          <div className="text-xs font-semibold text-white/70 mb-2">Lịch sử quét thực phẩm</div>
+          <ScanHistory items={history} onClear={clearHistory} />
         </div>
 
         <div className="mt-6">

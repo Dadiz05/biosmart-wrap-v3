@@ -13,6 +13,7 @@ type State = {
   setStatus: (s: AppStatus) => void;
   setError: (message: string | null) => void;
   pushHistory: (r: ScanRecord) => void;
+  clearHistory: () => void;
   reset: () => void;
 };
 
@@ -29,5 +30,6 @@ export const useStore = create<State>((set) => ({
   setError: (message) => set({ lastError: message }),
   pushHistory: (r) =>
     set((state) => ({ history: [r, ...state.history].slice(0, 30) })),
+  clearHistory: () => set({ history: [] }),
   reset: () => set({ product: null, aiResult: null, status: "idle", lastError: null }),
 }));

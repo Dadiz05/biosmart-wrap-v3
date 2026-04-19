@@ -71,7 +71,7 @@ async function getProductFromNeo4j(qrId) {
   }
 }
 
-app.get("/product/:id", (req, res) => {
+function getProduct(req, res) {
   const { id } = req.params;
   Promise.resolve()
     .then(async () => {
@@ -87,12 +87,24 @@ app.get("/product/:id", (req, res) => {
       console.error(err);
       res.status(500).json({ error: "Internal error" });
     });
-});
+}
 
-app.get("/health", (_req, res) => {
+// Gốc (local, Vercel proxy gọi …/product/:id)
+app.get("/product/:id", getProduct);
+
+// Tiền tố /api (một số gateway hoặc khi test tay URL …/api/product/:id)
+const apiRouter = express.Router();
+apiRouter.get("/product/:id", getProduct);
+app.use("/api", apiRouter);
+
+function health(_req, res) {
   res.json({ ok: true, neo4j: !!driver });
-});
+}
+
+app.get("/health", health);
+app.get("/api/health", health);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log("GET /product/:id, GET /api/product/:id, GET /health, GET /api/health");
 });
