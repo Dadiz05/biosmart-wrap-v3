@@ -1,4 +1,5 @@
 import { Html5Qrcode } from "html5-qrcode";
+import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getProduct } from "../services/api";
 import { analyzeColor } from "../services/aiService";
@@ -13,12 +14,13 @@ type Props = {
 };
 
 export default function QRScanner({ open, onClose }: Props) {
-  const { setProduct, setAI, setStatus, setError, pushHistory, reset, product, aiResult } = useStore();
+  const { setProduct, setAI, setStatus, setError, pushHistory, reset, product, aiResult, lastError, status } =
+    useStore();
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isScanningRef = useRef(false);
   const [isScanning, setIsScanning] = useState(false);
-  const [result, setResult] = useState<"fresh" | "danger" | "blocked" | null>(null);
+  const [result, setResult] = useState<"fresh" | "warning" | "danger" | "blocked" | null>(null);
   const scanTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { captureFrame } = useCamera("reader");
@@ -160,6 +162,8 @@ export default function QRScanner({ open, onClose }: Props) {
             // 🎯 result
             if (ai.status === "fresh") {
               setResult("fresh");
+            } else if (ai.status === "warning") {
+              setResult("warning");
             } else {
               setResult("danger");
             }
@@ -176,8 +180,23 @@ export default function QRScanner({ open, onClose }: Props) {
             await stopScan();
           } catch (err) {
             console.error(err);
+            await stopScan();
             setStatus("error");
-            setError("⚠️ Có lỗi khi phân tích. Vui lòng thử lại.");
+            if (axios.isAxiosError(err)) {
+              if (err.response?.status === 404) {
+                setError("⚠️ Mã QR không có trong hệ thống (sai mã hoặc chưa đăng ký).");
+              } else if (err.code === "ECONNABORTED") {
+                setError("⚠️ Máy chủ phản hồi quá lâu. Hãy kiểm tra backend và thử lại.");
+              } else if (!err.response) {
+                setError(
+                  "⚠️ Không kết nối được API: chạy backend (port 5000), frontend `npm run dev` (proxy /api). Trên điện thoại mở URL máy tính trong LAN, không mở file tĩnh."
+                );
+              } else {
+                setError("⚠️ Lỗi khi tải thông tin sản phẩm. Vui lòng thử lại.");
+              }
+            } else {
+              setError("⚠️ Có lỗi khi phân tích. Vui lòng thử lại.");
+            }
           }
         },
         () => {}
@@ -268,6 +287,11 @@ export default function QRScanner({ open, onClose }: Props) {
       {!result && (
         <div className="absolute bottom-0 z-30 w-full px-4 pb-6">
           <div className="mx-auto max-w-md rounded-3xl bg-black/35 p-3 ring-1 ring-white/10 backdrop-blur">
+            {!isScanning && status === "error" && lastError && (
+              <div className="mb-3 rounded-2xl bg-rose-500/20 px-3 py-2 text-center text-xs font-medium text-rose-100 ring-1 ring-rose-400/30">
+                {lastError}
+              </div>
+            )}
             {!isScanning ? (
               <button
                 type="button"
@@ -298,15 +322,17 @@ export default function QRScanner({ open, onClose }: Props) {
       {result && (
         <div
           className={`fixed inset-0 z-[10050] flex flex-col items-center justify-center text-white text-center ${
-            result === "fresh" ? "bg-emerald-600" : result === "blocked" ? "bg-amber-600" : "bg-rose-600"
+            result === "fresh"
+              ? "bg-emerald-600"
+              : result === "blocked" || result === "warning"
+                ? "bg-amber-600"
+                : "bg-rose-600"
           } pointer-events-auto`}
         >
           <div className="px-6">
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/20">
               {result === "fresh" ? (
                 <IconCheckCircle className="h-8 w-8" />
-              ) : result === "blocked" ? (
-                <IconAlertTriangle className="h-8 w-8" />
               ) : (
                 <IconAlertTriangle className="h-8 w-8" />
               )}
@@ -316,8 +342,10 @@ export default function QRScanner({ open, onClose }: Props) {
               {result === "fresh"
                 ? "Thực phẩm còn tươi"
                 : result === "blocked"
-                ? "Không thể quét QR"
-                : "Không an toàn"}
+                  ? "Không thể quét QR"
+                  : result === "warning"
+                    ? "Cảnh báo chất lượng"
+                    : "Không an toàn"}
             </h1>
 
           {aiResult && (

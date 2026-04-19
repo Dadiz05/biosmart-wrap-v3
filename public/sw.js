@@ -38,8 +38,8 @@ self.addEventListener("fetch", (event) => {
       try {
         const res = await fetch(request);
         const url = new URL(request.url);
-        // cache same-origin navigation/assets; skip API calls to localhost backend
-        if (url.origin === self.location.origin) {
+        // cache same-origin navigation/assets; never cache API (avoids stale / wrong scan results)
+        if (url.origin === self.location.origin && !url.pathname.startsWith("/api/")) {
           const cache = await caches.open(CACHE_NAME);
           cache.put(request, res.clone()).catch(() => {});
         }
