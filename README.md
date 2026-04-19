@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# BioSmart Wrap (PWA)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**BioSmart Wrap** là Progressive Web App (PWA) quét **QR sinh học (mực Anthocyanin)** để đánh giá độ tươi thực phẩm:
 
-Currently, two official plugins are available:
+- **Quét được QR** → truy xuất thông tin sản phẩm + phân tích màu QR (AI) → suy ra **pH** → đánh giá **tươi/cảnh báo/nguy hiểm**
+- **Không quét được / lỗi** → **chốt chặn số**: “QR bị vô hiệu hóa → có thể thực phẩm đã hỏng”
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+- **Frontend**: React + TypeScript + Vite, TailwindCSS, html5-qrcode, TensorFlow.js, Zustand
+- **Backend**: Node.js (Express)
+- **Database**: Neo4j (tuỳ chọn). Nếu chưa cấu hình Neo4j thì backend dùng mock data để chạy ngay.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cấu trúc thư mục (Frontend)
 
-## Expanding the ESLint configuration
+`src/`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `components/` (`QRScanner.tsx`, `ResultCard.tsx`, `StatusBadge.tsx`, `Toast.tsx`)
+- `pages/` (`Home.tsx`)
+- `services/` (`api.ts`, `aiService.ts`)
+- `hooks/` (`useCamera.ts`)
+- `store/` (`useStore.ts`)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Chạy project (Dev)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1) Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd backend
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+API:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `GET /product/:qrId`
+- `GET /health`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2) Frontend
+
+```bash
+cd ..
+npm install
+npm run dev
 ```
+
+Mở app tại URL Vite in ra (thường là `http://localhost:5173`).
+
+## Neo4j (Tuỳ chọn)
+
+Nếu bạn có Neo4j, set env và backend sẽ ưu tiên query Neo4j trước, nếu không có sẽ fallback mock:
+
+```bash
+set NEO4J_URI=neo4j://localhost:7687
+set NEO4J_USER=neo4j
+set NEO4J_PASSWORD=your_password
+```
+
+Graph schema gợi ý:
+
+- `(p:Product { qrId, name, packDate })-[:SUPPLIED_BY]->(s:Supplier { name })`
+
+## AI model (Tuỳ chọn)
+
+`src/services/aiService.ts` có 2 mode:
+
+- **Có model TFJS**: đặt model tại `public/model/model.json` (GraphModel), output classes theo thứ tự: `[purple, blue, green, yellow]`
+- **Không có model**: fallback heuristic (HSV bucket) để chạy ngay
+
+## PWA
+
+- `public/manifest.json`
+- `public/sw.js` (cache cơ bản)
+- App tự register service worker trong `src/main.tsx`
+
+## Demo QR (2 case)
+
+Đã tạo sẵn 2 mã QR để bạn test nhanh:
+
+- `public/qr/demo-789.svg` → **Cảnh báo** (AI demo override: `blue`, pH ~7.2)
+- `public/qr/demo-999.svg` → **Nguy hiểm** (AI demo override: `yellow`, pH ~10.6)
+
+Chạy dev server rồi mở trực tiếp:
+
+- `/qr/demo-789.svg`
+- `/qr/demo-999.svg`

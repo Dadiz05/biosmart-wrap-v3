@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="BioSmart Wrap">
+  <defs>
+    <linearGradient id="g" x1="64" y1="64" x2="448" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="0.55" stop-color="#16a34a"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect x="48" y="48" width="416" height="416" rx="96" fill="url(#g)"/>
+
+  <!-- QR-like frame -->
+  <g filter="url(#s)">
+    <rect x="132" y="132" width="248" height="248" rx="36" fill="#0b1220" opacity="0.18"/>
+    <rect x="144" y="144" width="224" height="224" rx="28" fill="#0b1220" opacity="0.18"/>
+  </g>
+
+  <!-- Bio dot -->
+  <circle cx="256" cy="256" r="62" fill="#0b1220" opacity="0.22"/>
+  <circle cx="256" cy="256" r="46" fill="#fff" opacity="0.92"/>
+
+  <!-- Small "scan" ticks -->
+  <g stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.9">
+    <path d="M156 206v-34a24 24 0 0 1 24-24h34"/>
+    <path d="M356 206v-34a24 24 0 0 0-24-24h-34"/>
+    <path d="M156 306v34a24 24 0 0 0 24 24h34"/>
+    <path d="M356 306v34a24 24 0 0 1-24 24h-34"/>
+  </g>
+</svg>
+
