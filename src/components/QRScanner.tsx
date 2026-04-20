@@ -440,22 +440,28 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             color: statusBackground(aiResult.ph.status).text,
           }}
         >
-          <div className="w-full max-w-md rounded-[2rem] bg-white/92 p-4 text-slate-900 shadow-2xl ring-1 ring-black/10 backdrop-blur">
-            <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="w-full max-w-md">
+            <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl bg-white/18 px-4 py-3 shadow-lg ring-1 ring-white/30 backdrop-blur">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <div className="text-xs font-semibold uppercase tracking-wide text-current/80">
                   Kết quả quét
                 </div>
                 <div className="mt-1 text-lg font-semibold">QR ID {aiResult.qr.qrId}</div>
               </div>
               {aiResult.ph.status === "fresh" ? (
-                <IconCheckCircle className="h-8 w-8 text-emerald-500" />
+                <IconCheckCircle className="h-8 w-8" />
               ) : (
-                <IconAlertTriangle className="h-8 w-8 text-rose-500" />
+                <IconAlertTriangle className="h-8 w-8" />
               )}
             </div>
 
-            <ResultCard lightMode={lightMode} />
+            <div className="mb-3 rounded-3xl bg-white/18 px-5 py-4 text-center shadow-lg ring-1 ring-white/30 backdrop-blur">
+              <div className="text-sm font-medium uppercase tracking-wide text-current/80">Độ pH</div>
+              <div className="mt-1 text-5xl font-black leading-none">{aiResult.ph.ph.toFixed(2)}</div>
+              <div className="mt-2 text-sm font-semibold text-current/90">{aiResult.ph.label}</div>
+            </div>
+
+            <ResultCard />
 
             <div className="mt-4 grid gap-2">
               <button
@@ -464,7 +470,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
                   setAI(null);
                   void startScan();
                 }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white/85 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-black/15 ring-1 ring-white/40 active:scale-[0.99]"
               >
                 <IconCamera className="h-5 w-5" />
                 Quét lại
@@ -472,7 +478,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               <button
                 type="button"
                 onClick={handleCloseScanner}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-100 px-6 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 active:scale-[0.99]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white/20 px-6 py-3 text-sm font-semibold text-current ring-1 ring-white/35 active:scale-[0.99]"
               >
                 <IconX className="h-4 w-4" />
                 Về trang chính

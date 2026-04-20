@@ -37,16 +37,21 @@ export default function ResultCard({ lightMode = false }: { lightMode?: boolean 
 
   const confidence = aiResult.ph.confidence;
   const confidenceTone = confidenceClass(confidence, lightMode);
+  const panelClass = lightMode
+    ? "rounded-2xl p-3 ring-1 bg-slate-50 ring-slate-200"
+    : "rounded-2xl p-3 ring-1 bg-white/16 ring-white/30";
+  const labelClass = lightMode ? "text-xs font-medium text-slate-500" : "text-xs font-medium text-current/75";
+  const metaClass = lightMode ? "mt-1 text-[11px] text-slate-500" : "mt-1 text-[11px] text-current/75";
 
   return (
-    <div className={`rounded-3xl p-4 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-slate-950 text-white ring-white/10"}`}>
+    <div className={`rounded-3xl p-4 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-white/16 text-current ring-white/30"}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className={`text-xs font-semibold uppercase tracking-wide ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={`text-xs font-semibold uppercase tracking-wide ${lightMode ? "text-slate-500" : "text-current/80"}`}>
             Scan summary
           </div>
           <div className="mt-1 text-lg font-semibold">QR ID {aiResult.qr.qrId}</div>
-          <div className={`mt-1 text-xs ${lightMode ? "text-slate-500" : "text-white/60"}`}>
+          <div className={`mt-1 text-xs ${lightMode ? "text-slate-500" : "text-current/80"}`}>
             Decoder: {aiResult.qr.decoder} • Live mode
           </div>
         </div>
@@ -54,47 +59,47 @@ export default function ResultCard({ lightMode = false }: { lightMode?: boolean 
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>QR ID</div>
+        <div className={panelClass}>
+          <div className={labelClass}>QR ID</div>
           <div className="mt-1 text-sm font-semibold">{aiResult.qr.qrId}</div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             Confidence {Math.round(aiResult.qr.confidence * 100)}%
           </div>
         </div>
 
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>pH số</div>
+        <div className={panelClass}>
+          <div className={labelClass}>pH số</div>
           <div className="mt-1 text-sm font-semibold">{aiResult.ph.ph.toFixed(2)}</div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             {aiResult.ph.phLevel}/200 mức
           </div>
         </div>
 
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Trạng thái</div>
+        <div className={panelClass}>
+          <div className={labelClass}>Trạng thái</div>
           <div className="mt-1 text-sm font-semibold">{aiResult.ph.label}</div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             {aiResult.ph.message}
           </div>
         </div>
 
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Độ tin cậy</div>
+        <div className={panelClass}>
+          <div className={labelClass}>Độ tin cậy</div>
           <div className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-sm font-semibold ring-1 ${confidenceTone}`}>
             {Math.round(confidence * 100)}%
           </div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             Mau QR {Math.round(aiResult.patch.confidence * 100)}% • Calibration {Math.round(aiResult.patch.calibration.quality * 100)}%
           </div>
         </div>
       </div>
 
       {aiResult.warnings.length > 0 ? (
-        <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-amber-50 ring-amber-200 text-amber-900" : "bg-amber-500/10 ring-amber-500/20 text-amber-50"}`}>
+        <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-amber-50 ring-amber-200 text-amber-900" : "bg-white/20 ring-white/35 text-current"}`}>
           <div className="text-sm font-semibold">Cảnh báo kỹ thuật</div>
           <div className="mt-1 flex flex-wrap gap-2 text-xs">
             {aiResult.warnings.map((issue) => (
-              <span key={issue} className={`rounded-full px-2.5 py-1 ring-1 ${lightMode ? "bg-white ring-amber-200" : "bg-black/10 ring-white/10"}`}>
+              <span key={issue} className={`rounded-full px-2.5 py-1 ring-1 ${lightMode ? "bg-white ring-amber-200" : "bg-white/15 ring-white/30"}`}>
                 {warningLabel(issue)}
               </span>
             ))}
@@ -103,36 +108,24 @@ export default function ResultCard({ lightMode = false }: { lightMode?: boolean 
       ) : null}
 
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Mau QR sau hieu chinh</div>
+        <div className={panelClass}>
+          <div className={labelClass}>Mau QR sau hieu chinh</div>
           <div className="mt-1 text-sm font-semibold">
             RGB {Math.round(aiResult.patch.calibratedRgb.r)}, {Math.round(aiResult.patch.calibratedRgb.g)}, {Math.round(aiResult.patch.calibratedRgb.b)}
           </div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             Hue {Math.round(aiResult.patch.hsv.h)}° • Saturation {Math.round(aiResult.patch.hsv.s * 100)}%
           </div>
         </div>
 
-        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Calibration</div>
+        <div className={panelClass}>
+          <div className={labelClass}>Calibration</div>
           <div className="mt-1 text-sm font-semibold uppercase">{aiResult.patch.calibration.method}</div>
-          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+          <div className={metaClass}>
             Exposure {aiResult.patch.calibration.exposureScale.toFixed(2)} • Gamma {aiResult.patch.calibration.gamma.toFixed(2)}
           </div>
         </div>
       </div>
-
-      {aiResult.previewDataUrl ? (
-        <div className="mt-4">
-          <div className={`mb-2 text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Preview frame</div>
-          <img
-            src={aiResult.previewDataUrl}
-            alt="Captured frame preview"
-            className="w-full rounded-2xl ring-1 ring-black/5"
-            loading="lazy"
-          />
-        </div>
-      ) : null}
     </div>
   );
 }
