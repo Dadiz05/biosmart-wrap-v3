@@ -73,7 +73,7 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
           <div className={labelClass}>pH số</div>
           <div className="mt-1 text-sm font-semibold">{aiResult.ph.ph.toFixed(2)}</div>
           <div className={metaClass}>
-            {aiResult.ph.phLevel}/200 mức
+            {aiResult.ph.phLevel}/160 mẫu
           </div>
         </div>
 

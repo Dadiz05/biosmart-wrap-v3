@@ -5,7 +5,7 @@
     "group": "fresh",
     "expectedPh": 5,
     "expectedLabel": "Tuoi",
-    "darkHex": "#7612a1"
+    "darkHex": "#75129f"
   },
   {
     "id": "QR-002",
@@ -13,7 +13,7 @@
     "group": "fresh",
     "expectedPh": 5.03,
     "expectedLabel": "Tuoi",
-    "darkHex": "#7312a1"
+    "darkHex": "#7312a0"
   },
   {
     "id": "QR-003",
@@ -29,7 +29,7 @@
     "group": "fresh",
     "expectedPh": 5.08,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6e12a1"
+    "darkHex": "#6e12a2"
   },
   {
     "id": "QR-005",
@@ -37,7 +37,7 @@
     "group": "fresh",
     "expectedPh": 5.11,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6b12a1"
+    "darkHex": "#6c12a2"
   },
   {
     "id": "QR-006",
@@ -45,7 +45,7 @@
     "group": "fresh",
     "expectedPh": 5.14,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6812a1"
+    "darkHex": "#6912a3"
   },
   {
     "id": "QR-007",
@@ -53,7 +53,7 @@
     "group": "fresh",
     "expectedPh": 5.17,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6512a1"
+    "darkHex": "#64119f"
   },
   {
     "id": "QR-008",
@@ -61,7 +61,7 @@
     "group": "fresh",
     "expectedPh": 5.2,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6312a2"
+    "darkHex": "#6211a0"
   },
   {
     "id": "QR-009",
@@ -69,7 +69,7 @@
     "group": "fresh",
     "expectedPh": 5.23,
     "expectedLabel": "Tuoi",
-    "darkHex": "#6012a2"
+    "darkHex": "#5f11a1"
   },
   {
     "id": "QR-010",
@@ -85,7 +85,7 @@
     "group": "fresh",
     "expectedPh": 5.28,
     "expectedLabel": "Tuoi",
-    "darkHex": "#5a12a2"
+    "darkHex": "#5b12a2"
   },
   {
     "id": "QR-012",
@@ -93,7 +93,7 @@
     "group": "fresh",
     "expectedPh": 5.31,
     "expectedLabel": "Tuoi",
-    "darkHex": "#5712a2"
+    "darkHex": "#5812a3"
   },
   {
     "id": "QR-013",
@@ -101,7 +101,7 @@
     "group": "fresh",
     "expectedPh": 5.34,
     "expectedLabel": "Tuoi",
-    "darkHex": "#5512a2"
+    "darkHex": "#5612a4"
   },
   {
     "id": "QR-014",
@@ -109,7 +109,7 @@
     "group": "fresh",
     "expectedPh": 5.37,
     "expectedLabel": "Tuoi",
-    "darkHex": "#5212a2"
+    "darkHex": "#5111a0"
   },
   {
     "id": "QR-015",
@@ -117,7 +117,7 @@
     "group": "fresh",
     "expectedPh": 5.4,
     "expectedLabel": "Tuoi",
-    "darkHex": "#4f12a2"
+    "darkHex": "#4e12a1"
   },
   {
     "id": "QR-016",
@@ -125,7 +125,7 @@
     "group": "fresh",
     "expectedPh": 5.42,
     "expectedLabel": "Tuoi",
-    "darkHex": "#4c11a2"
+    "darkHex": "#4c12a2"
   },
   {
     "id": "QR-017",
@@ -141,7 +141,7 @@
     "group": "fresh",
     "expectedPh": 5.48,
     "expectedLabel": "Tuoi",
-    "darkHex": "#4611a3"
+    "darkHex": "#4711a4"
   },
   {
     "id": "QR-019",
@@ -149,7 +149,7 @@
     "group": "fresh",
     "expectedPh": 5.51,
     "expectedLabel": "Tuoi",
-    "darkHex": "#4411a3"
+    "darkHex": "#4411a5"
   },
   {
     "id": "QR-020",
@@ -157,7 +157,7 @@
     "group": "fresh",
     "expectedPh": 5.54,
     "expectedLabel": "Tuoi",
-    "darkHex": "#4111a3"
+    "darkHex": "#4212a5"
   },
   {
     "id": "QR-021",
@@ -165,7 +165,7 @@
     "group": "fresh",
     "expectedPh": 5.57,
     "expectedLabel": "Tuoi",
-    "darkHex": "#3e11a3"
+    "darkHex": "#3d11a1"
   },
   {
     "id": "QR-022",
@@ -173,7 +173,7 @@
     "group": "fresh",
     "expectedPh": 5.59,
     "expectedLabel": "Tuoi",
-    "darkHex": "#3b11a3"
+    "darkHex": "#3b11a2"
   },
   {
     "id": "QR-023",
@@ -189,7 +189,7 @@
     "group": "fresh",
     "expectedPh": 5.65,
     "expectedLabel": "Tuoi",
-    "darkHex": "#3511a3"
+    "darkHex": "#3511a4"
   },
   {
     "id": "QR-025",
@@ -197,7 +197,7 @@
     "group": "fresh",
     "expectedPh": 5.68,
     "expectedLabel": "Tuoi",
-    "darkHex": "#3311a4"
+    "darkHex": "#3312a4"
   },
   {
     "id": "QR-026",
@@ -205,7 +205,7 @@
     "group": "fresh",
     "expectedPh": 5.71,
     "expectedLabel": "Tuoi",
-    "darkHex": "#3011a4"
+    "darkHex": "#3011a5"
   },
   {
     "id": "QR-027",
@@ -213,7 +213,7 @@
     "group": "fresh",
     "expectedPh": 5.74,
     "expectedLabel": "Tuoi",
-    "darkHex": "#2d11a4"
+    "darkHex": "#2d11a6"
   },
   {
     "id": "QR-028",
@@ -221,7 +221,7 @@
     "group": "fresh",
     "expectedPh": 5.76,
     "expectedLabel": "Tuoi",
-    "darkHex": "#2a11a4"
+    "darkHex": "#2911a2"
   },
   {
     "id": "QR-029",
@@ -229,7 +229,7 @@
     "group": "fresh",
     "expectedPh": 5.79,
     "expectedLabel": "Tuoi",
-    "darkHex": "#2711a4"
+    "darkHex": "#2611a3"
   },
   {
     "id": "QR-030",
@@ -237,7 +237,7 @@
     "group": "fresh",
     "expectedPh": 5.82,
     "expectedLabel": "Tuoi",
-    "darkHex": "#2411a4"
+    "darkHex": "#2411a3"
   },
   {
     "id": "QR-031",
@@ -253,7 +253,7 @@
     "group": "fresh",
     "expectedPh": 5.88,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1e11a4"
+    "darkHex": "#1e11a5"
   },
   {
     "id": "QR-033",
@@ -261,7 +261,7 @@
     "group": "fresh",
     "expectedPh": 5.91,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1b11a5"
+    "darkHex": "#1c11a6"
   },
   {
     "id": "QR-034",
@@ -269,7 +269,7 @@
     "group": "fresh",
     "expectedPh": 5.93,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1811a5"
+    "darkHex": "#1911a7"
   },
   {
     "id": "QR-035",
@@ -277,7 +277,7 @@
     "group": "fresh",
     "expectedPh": 5.96,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1511a5"
+    "darkHex": "#1511a2"
   },
   {
     "id": "QR-036",
@@ -285,7 +285,7 @@
     "group": "fresh",
     "expectedPh": 5.99,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1311a5"
+    "darkHex": "#1311a3"
   },
   {
     "id": "QR-037",
@@ -293,7 +293,7 @@
     "group": "fresh",
     "expectedPh": 6.02,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1112a5"
+    "darkHex": "#1112a4"
   },
   {
     "id": "QR-038",
@@ -309,7 +309,7 @@
     "group": "fresh",
     "expectedPh": 6.08,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1118a5"
+    "darkHex": "#1118a6"
   },
   {
     "id": "QR-040",
@@ -317,7 +317,7 @@
     "group": "fresh",
     "expectedPh": 6.1,
     "expectedLabel": "Tuoi",
-    "darkHex": "#111ba5"
+    "darkHex": "#111ba7"
   },
   {
     "id": "QR-041",
@@ -325,7 +325,7 @@
     "group": "fresh",
     "expectedPh": 6.13,
     "expectedLabel": "Tuoi",
-    "darkHex": "#111ea6"
+    "darkHex": "#111ea8"
   },
   {
     "id": "QR-042",
@@ -333,7 +333,7 @@
     "group": "fresh",
     "expectedPh": 6.16,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1121a6"
+    "darkHex": "#1120a3"
   },
   {
     "id": "QR-043",
@@ -341,7 +341,7 @@
     "group": "fresh",
     "expectedPh": 6.19,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1124a6"
+    "darkHex": "#1123a4"
   },
   {
     "id": "QR-044",
@@ -349,7 +349,7 @@
     "group": "fresh",
     "expectedPh": 6.22,
     "expectedLabel": "Tuoi",
-    "darkHex": "#1127a6"
+    "darkHex": "#1026a5"
   },
   {
     "id": "QR-045",
@@ -365,7 +365,7 @@
     "group": "fresh",
     "expectedPh": 6.27,
     "expectedLabel": "Tuoi",
-    "darkHex": "#112da6"
+    "darkHex": "#112da7"
   },
   {
     "id": "QR-047",
@@ -373,7 +373,7 @@
     "group": "degraded",
     "expectedPh": 6.3,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#112fa6"
+    "darkHex": "#1130a8"
   },
   {
     "id": "QR-048",
@@ -381,7 +381,7 @@
     "group": "degraded",
     "expectedPh": 6.33,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1132a6"
+    "darkHex": "#1133a9"
   },
   {
     "id": "QR-049",
@@ -389,7 +389,7 @@
     "group": "degraded",
     "expectedPh": 6.36,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1135a7"
+    "darkHex": "#1035a5"
   },
   {
     "id": "QR-050",
@@ -397,7 +397,7 @@
     "group": "degraded",
     "expectedPh": 6.39,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1138a7"
+    "darkHex": "#1138a5"
   },
   {
     "id": "QR-051",
@@ -405,7 +405,7 @@
     "group": "degraded",
     "expectedPh": 6.42,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#113ba7"
+    "darkHex": "#113ba6"
   },
   {
     "id": "QR-052",
@@ -421,7 +421,7 @@
     "group": "degraded",
     "expectedPh": 6.47,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1141a7"
+    "darkHex": "#1042a8"
   },
   {
     "id": "QR-054",
@@ -429,7 +429,7 @@
     "group": "degraded",
     "expectedPh": 6.5,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1145a7"
+    "darkHex": "#1045a9"
   },
   {
     "id": "QR-055",
@@ -437,7 +437,7 @@
     "group": "degraded",
     "expectedPh": 6.53,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1148a7"
+    "darkHex": "#1149a9"
   },
   {
     "id": "QR-056",
@@ -445,7 +445,7 @@
     "group": "degraded",
     "expectedPh": 6.56,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#114ca6"
+    "darkHex": "#114ba4"
   },
   {
     "id": "QR-057",
@@ -453,7 +453,7 @@
     "group": "degraded",
     "expectedPh": 6.58,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1150a6"
+    "darkHex": "#114fa5"
   },
   {
     "id": "QR-058",
@@ -461,7 +461,7 @@
     "group": "degraded",
     "expectedPh": 6.61,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1154a6"
+    "darkHex": "#1153a5"
   },
   {
     "id": "QR-059",
@@ -477,7 +477,7 @@
     "group": "degraded",
     "expectedPh": 6.67,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#115ba5"
+    "darkHex": "#115ba6"
   },
   {
     "id": "QR-061",
@@ -485,7 +485,7 @@
     "group": "degraded",
     "expectedPh": 6.7,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#115fa5"
+    "darkHex": "#1160a7"
   },
   {
     "id": "QR-062",
@@ -493,7 +493,7 @@
     "group": "degraded",
     "expectedPh": 6.73,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1162a5"
+    "darkHex": "#1164a7"
   },
   {
     "id": "QR-063",
@@ -501,7 +501,7 @@
     "group": "degraded",
     "expectedPh": 6.75,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1166a5"
+    "darkHex": "#1165a3"
   },
   {
     "id": "QR-064",
@@ -509,7 +509,7 @@
     "group": "degraded",
     "expectedPh": 6.78,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#116aa4"
+    "darkHex": "#1169a3"
   },
   {
     "id": "QR-065",
@@ -517,7 +517,7 @@
     "group": "degraded",
     "expectedPh": 6.81,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#116da4"
+    "darkHex": "#116da3"
   },
   {
     "id": "QR-066",
@@ -533,7 +533,7 @@
     "group": "degraded",
     "expectedPh": 6.87,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1174a4"
+    "darkHex": "#1175a4"
   },
   {
     "id": "QR-068",
@@ -541,7 +541,7 @@
     "group": "degraded",
     "expectedPh": 6.9,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1178a4"
+    "darkHex": "#1179a5"
   },
   {
     "id": "QR-069",
@@ -549,7 +549,7 @@
     "group": "degraded",
     "expectedPh": 6.92,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#117ca3"
+    "darkHex": "#117da6"
   },
   {
     "id": "QR-070",
@@ -557,7 +557,7 @@
     "group": "degraded",
     "expectedPh": 6.95,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#117fa3"
+    "darkHex": "#117da1"
   },
   {
     "id": "QR-071",
@@ -565,7 +565,7 @@
     "group": "degraded",
     "expectedPh": 6.98,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1183a3"
+    "darkHex": "#1181a1"
   },
   {
     "id": "QR-072",
@@ -573,7 +573,7 @@
     "group": "degraded",
     "expectedPh": 7.01,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1186a3"
+    "darkHex": "#1186a2"
   },
   {
     "id": "QR-073",
@@ -581,7 +581,7 @@
     "group": "degraded",
     "expectedPh": 7.04,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#128aa2"
+    "darkHex": "#118aa2"
   },
   {
     "id": "QR-074",
@@ -589,7 +589,7 @@
     "group": "degraded",
     "expectedPh": 7.07,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#128da2"
+    "darkHex": "#118ea3"
   },
   {
     "id": "QR-075",
@@ -597,7 +597,7 @@
     "group": "degraded",
     "expectedPh": 7.09,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1291a2"
+    "darkHex": "#1292a3"
   },
   {
     "id": "QR-076",
@@ -605,7 +605,7 @@
     "group": "degraded",
     "expectedPh": 7.12,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1294a2"
+    "darkHex": "#1296a4"
   },
   {
     "id": "QR-077",
@@ -613,7 +613,7 @@
     "group": "degraded",
     "expectedPh": 7.15,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#1297a1"
+    "darkHex": "#11959f"
   },
   {
     "id": "QR-078",
@@ -621,7 +621,7 @@
     "group": "degraded",
     "expectedPh": 7.18,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#129ba1"
+    "darkHex": "#119aa0"
   },
   {
     "id": "QR-079",
@@ -629,7 +629,7 @@
     "group": "degraded",
     "expectedPh": 7.21,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#129ea1"
+    "darkHex": "#129ea0"
   },
   {
     "id": "QR-080",
@@ -637,7 +637,7 @@
     "group": "degraded",
     "expectedPh": 7.24,
     "expectedLabel": "Giam chat luong",
-    "darkHex": "#12a1a0"
+    "darkHex": "#12a09f"
   },
   {
     "id": "QR-081",
@@ -645,7 +645,7 @@
     "group": "spoiled",
     "expectedPh": 7.26,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#12a09c"
+    "darkHex": "#12a19c"
   },
   {
     "id": "QR-082",
@@ -653,7 +653,7 @@
     "group": "spoiled",
     "expectedPh": 7.29,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#12a098"
+    "darkHex": "#12a299"
   },
   {
     "id": "QR-083",
@@ -661,7 +661,7 @@
     "group": "spoiled",
     "expectedPh": 7.32,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#12a094"
+    "darkHex": "#12a296"
   },
   {
     "id": "QR-084",
@@ -669,7 +669,7 @@
     "group": "spoiled",
     "expectedPh": 7.35,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#12a090"
+    "darkHex": "#129e8e"
   },
   {
     "id": "QR-085",
@@ -677,7 +677,7 @@
     "group": "spoiled",
     "expectedPh": 7.38,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129f8c"
+    "darkHex": "#129e8b"
   },
   {
     "id": "QR-086",
@@ -685,7 +685,7 @@
     "group": "spoiled",
     "expectedPh": 7.41,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129f89"
+    "darkHex": "#129e88"
   },
   {
     "id": "QR-087",
@@ -701,7 +701,7 @@
     "group": "spoiled",
     "expectedPh": 7.46,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129f81"
+    "darkHex": "#129f82"
   },
   {
     "id": "QR-089",
@@ -709,7 +709,7 @@
     "group": "spoiled",
     "expectedPh": 7.49,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e7d"
+    "darkHex": "#12a07f"
   },
   {
     "id": "QR-090",
@@ -717,7 +717,7 @@
     "group": "spoiled",
     "expectedPh": 7.52,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e7a"
+    "darkHex": "#13a07b"
   },
   {
     "id": "QR-091",
@@ -725,7 +725,7 @@
     "group": "spoiled",
     "expectedPh": 7.55,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e76"
+    "darkHex": "#129c74"
   },
   {
     "id": "QR-092",
@@ -733,7 +733,7 @@
     "group": "spoiled",
     "expectedPh": 7.58,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e72"
+    "darkHex": "#129c71"
   },
   {
     "id": "QR-093",
@@ -749,7 +749,7 @@
     "group": "spoiled",
     "expectedPh": 7.63,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139d6b"
+    "darkHex": "#129d6b"
   },
   {
     "id": "QR-095",
@@ -757,7 +757,7 @@
     "group": "spoiled",
     "expectedPh": 7.66,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139d67"
+    "darkHex": "#139d68"
   },
   {
     "id": "QR-096",
@@ -765,7 +765,7 @@
     "group": "spoiled",
     "expectedPh": 7.69,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139d64"
+    "darkHex": "#139e64"
   },
   {
     "id": "QR-097",
@@ -773,7 +773,7 @@
     "group": "spoiled",
     "expectedPh": 7.72,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c60"
+    "darkHex": "#139f61"
   },
   {
     "id": "QR-098",
@@ -781,7 +781,7 @@
     "group": "spoiled",
     "expectedPh": 7.75,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c5c"
+    "darkHex": "#129a5b"
   },
   {
     "id": "QR-099",
@@ -789,7 +789,7 @@
     "group": "spoiled",
     "expectedPh": 7.77,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c59"
+    "darkHex": "#129b58"
   },
   {
     "id": "QR-100",
@@ -797,7 +797,7 @@
     "group": "spoiled",
     "expectedPh": 7.8,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c55"
+    "darkHex": "#139b55"
   },
   {
     "id": "QR-101",
@@ -805,7 +805,7 @@
     "group": "spoiled",
     "expectedPh": 7.83,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c52"
+    "darkHex": "#139b52"
   },
   {
     "id": "QR-102",
@@ -813,7 +813,7 @@
     "group": "spoiled",
     "expectedPh": 7.86,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b4e"
+    "darkHex": "#139c4e"
   },
   {
     "id": "QR-103",
@@ -821,7 +821,7 @@
     "group": "spoiled",
     "expectedPh": 7.89,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b4a"
+    "darkHex": "#139d4b"
   },
   {
     "id": "QR-104",
@@ -829,7 +829,7 @@
     "group": "spoiled",
     "expectedPh": 7.92,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b47"
+    "darkHex": "#139d48"
   },
   {
     "id": "QR-105",
@@ -837,7 +837,7 @@
     "group": "spoiled",
     "expectedPh": 7.94,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b43"
+    "darkHex": "#139843"
   },
   {
     "id": "QR-106",
@@ -845,7 +845,7 @@
     "group": "spoiled",
     "expectedPh": 7.97,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139a40"
+    "darkHex": "#13993f"
   },
   {
     "id": "QR-107",
@@ -853,7 +853,7 @@
     "group": "spoiled",
     "expectedPh": 8,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b3e"
+    "darkHex": "#139a3d"
   },
   {
     "id": "QR-108",
@@ -869,7 +869,7 @@
     "group": "spoiled",
     "expectedPh": 8.06,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b39"
+    "darkHex": "#139c39"
   },
   {
     "id": "QR-110",
@@ -877,7 +877,7 @@
     "group": "spoiled",
     "expectedPh": 8.08,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139b36"
+    "darkHex": "#139d37"
   },
   {
     "id": "QR-111",
@@ -885,7 +885,7 @@
     "group": "spoiled",
     "expectedPh": 8.11,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c34"
+    "darkHex": "#139e35"
   },
   {
     "id": "QR-112",
@@ -893,7 +893,7 @@
     "group": "spoiled",
     "expectedPh": 8.14,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c32"
+    "darkHex": "#129a31"
   },
   {
     "id": "QR-113",
@@ -901,7 +901,7 @@
     "group": "spoiled",
     "expectedPh": 8.17,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#139c2f"
+    "darkHex": "#129b2f"
   },
   {
     "id": "QR-114",
@@ -909,7 +909,7 @@
     "group": "spoiled",
     "expectedPh": 8.2,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129c2d"
+    "darkHex": "#129c2c"
   },
   {
     "id": "QR-115",
@@ -917,7 +917,7 @@
     "group": "spoiled",
     "expectedPh": 8.23,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129d2a"
+    "darkHex": "#139d2a"
   },
   {
     "id": "QR-116",
@@ -925,7 +925,7 @@
     "group": "spoiled",
     "expectedPh": 8.25,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129d28"
+    "darkHex": "#129e28"
   },
   {
     "id": "QR-117",
@@ -933,7 +933,7 @@
     "group": "spoiled",
     "expectedPh": 8.28,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129d25"
+    "darkHex": "#129f25"
   },
   {
     "id": "QR-118",
@@ -941,7 +941,7 @@
     "group": "spoiled",
     "expectedPh": 8.31,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e23"
+    "darkHex": "#12a023"
   },
   {
     "id": "QR-119",
@@ -949,7 +949,7 @@
     "group": "spoiled",
     "expectedPh": 8.34,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e20"
+    "darkHex": "#129c1f"
   },
   {
     "id": "QR-120",
@@ -957,7 +957,7 @@
     "group": "spoiled",
     "expectedPh": 8.37,
     "expectedLabel": "Oi thiu",
-    "darkHex": "#129e1d"
+    "darkHex": "#129c1d"
   },
   {
     "id": "QR-121",
@@ -965,7 +965,7 @@
     "group": "critical",
     "expectedPh": 8.4,
     "expectedLabel": "Hong nang",
-    "darkHex": "#129e1b"
+    "darkHex": "#129d1b"
   },
   {
     "id": "QR-122",
@@ -981,7 +981,7 @@
     "group": "critical",
     "expectedPh": 8.45,
     "expectedLabel": "Hong nang",
-    "darkHex": "#129f16"
+    "darkHex": "#12a016"
   },
   {
     "id": "QR-124",
@@ -989,7 +989,7 @@
     "group": "critical",
     "expectedPh": 8.48,
     "expectedLabel": "Hong nang",
-    "darkHex": "#129f13"
+    "darkHex": "#12a113"
   },
   {
     "id": "QR-125",
@@ -997,7 +997,7 @@
     "group": "critical",
     "expectedPh": 8.51,
     "expectedLabel": "Hong nang",
-    "darkHex": "#139f12"
+    "darkHex": "#13a112"
   },
   {
     "id": "QR-126",
@@ -1005,7 +1005,7 @@
     "group": "critical",
     "expectedPh": 8.54,
     "expectedLabel": "Hong nang",
-    "darkHex": "#15a012"
+    "darkHex": "#159d11"
   },
   {
     "id": "QR-127",
@@ -1013,7 +1013,7 @@
     "group": "critical",
     "expectedPh": 8.57,
     "expectedLabel": "Hong nang",
-    "darkHex": "#18a011"
+    "darkHex": "#179e11"
   },
   {
     "id": "QR-128",
@@ -1029,7 +1029,7 @@
     "group": "critical",
     "expectedPh": 8.62,
     "expectedLabel": "Hong nang",
-    "darkHex": "#1da011"
+    "darkHex": "#1ca111"
   },
   {
     "id": "QR-130",
@@ -1045,7 +1045,7 @@
     "group": "critical",
     "expectedPh": 8.68,
     "expectedLabel": "Hong nang",
-    "darkHex": "#22a111"
+    "darkHex": "#22a211"
   },
   {
     "id": "QR-132",
@@ -1053,7 +1053,7 @@
     "group": "critical",
     "expectedPh": 8.71,
     "expectedLabel": "Hong nang",
-    "darkHex": "#24a111"
+    "darkHex": "#25a311"
   },
   {
     "id": "QR-133",
@@ -1061,7 +1061,7 @@
     "group": "critical",
     "expectedPh": 8.74,
     "expectedLabel": "Hong nang",
-    "darkHex": "#27a211"
+    "darkHex": "#269f11"
   },
   {
     "id": "QR-134",
@@ -1069,7 +1069,7 @@
     "group": "critical",
     "expectedPh": 8.76,
     "expectedLabel": "Hong nang",
-    "darkHex": "#29a211"
+    "darkHex": "#29a111"
   },
   {
     "id": "QR-135",
@@ -1077,7 +1077,7 @@
     "group": "critical",
     "expectedPh": 8.79,
     "expectedLabel": "Hong nang",
-    "darkHex": "#2ca211"
+    "darkHex": "#2ca111"
   },
   {
     "id": "QR-136",
@@ -1085,7 +1085,7 @@
     "group": "critical",
     "expectedPh": 8.82,
     "expectedLabel": "Hong nang",
-    "darkHex": "#2ea211"
+    "darkHex": "#2fa211"
   },
   {
     "id": "QR-137",
@@ -1101,7 +1101,7 @@
     "group": "critical",
     "expectedPh": 8.88,
     "expectedLabel": "Hong nang",
-    "darkHex": "#34a311"
+    "darkHex": "#34a411"
   },
   {
     "id": "QR-139",
@@ -1109,7 +1109,7 @@
     "group": "critical",
     "expectedPh": 8.91,
     "expectedLabel": "Hong nang",
-    "darkHex": "#36a310"
+    "darkHex": "#37a610"
   },
   {
     "id": "QR-140",
@@ -1117,7 +1117,7 @@
     "group": "critical",
     "expectedPh": 8.93,
     "expectedLabel": "Hong nang",
-    "darkHex": "#39a310"
+    "darkHex": "#38a110"
   },
   {
     "id": "QR-141",
@@ -1125,7 +1125,7 @@
     "group": "critical",
     "expectedPh": 8.96,
     "expectedLabel": "Hong nang",
-    "darkHex": "#3ca410"
+    "darkHex": "#3ba210"
   },
   {
     "id": "QR-142",
@@ -1133,7 +1133,7 @@
     "group": "critical",
     "expectedPh": 8.99,
     "expectedLabel": "Hong nang",
-    "darkHex": "#3ea410"
+    "darkHex": "#3ea310"
   },
   {
     "id": "QR-143",
@@ -1157,7 +1157,7 @@
     "group": "critical",
     "expectedPh": 9.08,
     "expectedLabel": "Hong nang",
-    "darkHex": "#46a510"
+    "darkHex": "#47a610"
   },
   {
     "id": "QR-146",
@@ -1165,7 +1165,7 @@
     "group": "critical",
     "expectedPh": 9.1,
     "expectedLabel": "Hong nang",
-    "darkHex": "#49a510"
+    "darkHex": "#4aa710"
   },
   {
     "id": "QR-147",
@@ -1173,7 +1173,7 @@
     "group": "critical",
     "expectedPh": 9.13,
     "expectedLabel": "Hong nang",
-    "darkHex": "#4ca510"
+    "darkHex": "#4ba310"
   },
   {
     "id": "QR-148",
@@ -1181,7 +1181,7 @@
     "group": "critical",
     "expectedPh": 9.16,
     "expectedLabel": "Hong nang",
-    "darkHex": "#4ea610"
+    "darkHex": "#4ea40f"
   },
   {
     "id": "QR-149",
@@ -1189,7 +1189,7 @@
     "group": "critical",
     "expectedPh": 9.19,
     "expectedLabel": "Hong nang",
-    "darkHex": "#51a610"
+    "darkHex": "#51a50f"
   },
   {
     "id": "QR-150",
@@ -1205,7 +1205,7 @@
     "group": "critical",
     "expectedPh": 9.25,
     "expectedLabel": "Hong nang",
-    "darkHex": "#57a60f"
+    "darkHex": "#57a710"
   },
   {
     "id": "QR-152",
@@ -1213,7 +1213,7 @@
     "group": "critical",
     "expectedPh": 9.27,
     "expectedLabel": "Hong nang",
-    "darkHex": "#5aa70f"
+    "darkHex": "#5aa810"
   },
   {
     "id": "QR-153",
@@ -1221,7 +1221,7 @@
     "group": "critical",
     "expectedPh": 9.3,
     "expectedLabel": "Hong nang",
-    "darkHex": "#5ca70f"
+    "darkHex": "#5ea90f"
   },
   {
     "id": "QR-154",
@@ -1229,7 +1229,7 @@
     "group": "critical",
     "expectedPh": 9.33,
     "expectedLabel": "Hong nang",
-    "darkHex": "#5fa70f"
+    "darkHex": "#5ea50f"
   },
   {
     "id": "QR-155",
@@ -1237,7 +1237,7 @@
     "group": "critical",
     "expectedPh": 9.36,
     "expectedLabel": "Hong nang",
-    "darkHex": "#62a80f"
+    "darkHex": "#61a60f"
   },
   {
     "id": "QR-156",
@@ -1245,7 +1245,7 @@
     "group": "critical",
     "expectedPh": 9.39,
     "expectedLabel": "Hong nang",
-    "darkHex": "#65a80f"
+    "darkHex": "#64a70f"
   },
   {
     "id": "QR-157",
@@ -1261,7 +1261,7 @@
     "group": "critical",
     "expectedPh": 9.44,
     "expectedLabel": "Hong nang",
-    "darkHex": "#6ba80f"
+    "darkHex": "#6ba90f"
   },
   {
     "id": "QR-159",
@@ -1269,7 +1269,7 @@
     "group": "critical",
     "expectedPh": 9.47,
     "expectedLabel": "Hong nang",
-    "darkHex": "#6da90f"
+    "darkHex": "#6eaa0f"
   },
   {
     "id": "QR-160",
@@ -1277,6 +1277,6 @@
     "group": "critical",
     "expectedPh": 9.5,
     "expectedLabel": "Hong nang",
-    "darkHex": "#70a90f"
+    "darkHex": "#72ab0f"
   }
 ]

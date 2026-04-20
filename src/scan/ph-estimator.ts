@@ -89,7 +89,7 @@ export function estimatePhFromPatch(patch: PatchAnalysis, qrId?: string): PhEsti
   const hue = patch.hsv.h;
   const qrIndex = parseGeneratedQrIndex(qrId);
   const ph = qrIndex ? phFromGeneratedQrIndex(qrIndex) : interpolateHueToPh(hue);
-  const phLevel = Math.round(clamp01(ph / 14) * 200);
+  const phLevel = qrIndex ?? Math.round(clamp01(ph / 14) * QR_BATCH_TOTAL);
   const status = statusFromPh(ph);
   const saturationBoost = clamp01((patch.hsv.s - 0.1) / 0.55);
   const valueBoost = clamp01((patch.hsv.v - 0.12) / 0.68);

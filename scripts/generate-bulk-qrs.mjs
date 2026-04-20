@@ -100,25 +100,13 @@ function labelFromPh(ph) {
   return { key: "critical", label: "Hong nang" };
 }
 
-function colorForIndex(index, count, usedHex) {
+function colorForIndex(index, count) {
   const base = gradientByIndex(index, count);
-  let hue = base.h;
-  let saturation = base.s;
-  let lightness = base.l;
-  let darkHex = hslToHex(hue, saturation, lightness);
-
-  // Keep colors unique after HSL->RGB quantization while staying visually close to the gradient.
-  let attempt = 0;
-  while (usedHex.has(darkHex) && attempt < 24) {
-    const jitter = ((attempt % 2 === 0 ? 1 : -1) * (Math.floor(attempt / 2) + 1)) * 0.35;
-    hue = base.h + jitter;
-    saturation = base.s + ((attempt % 3) - 1) * 0.4;
-    lightness = base.l + ((attempt % 4) - 1.5) * 0.45;
-    darkHex = hslToHex(hue, saturation, lightness);
-    attempt += 1;
-  }
-
-  usedHex.add(darkHex);
+  const hue = base.h;
+  // Keep 160 colors visually smooth while avoiding accidental duplicate hex values.
+  const saturation = base.s + ((index % 5) - 2) * 0.12;
+  const lightness = base.l + ((index % 7) - 3) * 0.16;
+  const darkHex = hslToHex(hue, saturation, lightness);
   return {
     hue,
     darkHex,
@@ -128,10 +116,9 @@ function colorForIndex(index, count, usedHex) {
 let generated = 0;
 
 const manifest = [];
-const usedHex = new Set();
 
 for (let i = 1; i <= total; i += 1) {
-  const { hue, darkHex } = colorForIndex(i, total, usedHex);
+  const { hue, darkHex } = colorForIndex(i, total);
   const expectedPh = phFromIndex(i, total);
   const info = labelFromPh(expectedPh);
   const id = `QR-${String(i).padStart(3, "0")}`;
@@ -143,6 +130,8 @@ for (let i = 1; i <= total; i += 1) {
     margin: 2,
     width: 512,
     errorCorrectionLevel: "M",
+    version: 1,
+    maskPattern: 0,
     color: {
       dark: darkHex,
       light: "#ffffff",
