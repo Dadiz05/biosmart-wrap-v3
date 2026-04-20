@@ -1,4 +1,4 @@
-const CACHE_NAME = "biosmart-wrap-v3";
+const CACHE_NAME = "biosmart-wrap-v4";
 const PRECACHE_URLS = ["/", "/index.html", "/manifest.json", "/pwa-logo.png"];
 
 self.addEventListener("install", (event) => {
@@ -32,19 +32,19 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      const cached = await caches.match(request);
-      if (cached) return cached;
-
       try {
         const res = await fetch(request);
         const url = new URL(request.url);
-        // cache same-origin navigation/assets; never cache API (avoids stale / wrong scan results)
+        // Network-first for same-origin assets/pages avoids stale UI after new deploys.
         if (url.origin === self.location.origin && !url.pathname.startsWith("/api/")) {
           const cache = await caches.open(CACHE_NAME);
           cache.put(request, res.clone()).catch(() => {});
         }
         return res;
       } catch (err) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+
         // offline fallback for navigations
         if (request.mode === "navigate") {
           return (await caches.match("/")) || Response.error();
