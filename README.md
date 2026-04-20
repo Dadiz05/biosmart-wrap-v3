@@ -73,10 +73,12 @@ Graph schema gợi ý:
 - `public/sw.js` (cache cơ bản)
 - App tự register service worker trong `src/main.tsx`
 
-## Demo QR (2 case)
+## Demo QR (4 case)
 
-Đã tạo sẵn 2 mã QR để bạn test nhanh:
+Đã tạo sẵn 4 mã QR để bạn test nhanh:
 
+- `public/qr/demo-123.svg` → **Rất tươi** (AI demo override: `purple`, pH ~5.6)
+- `public/qr/demo-456.svg` → **Ôi thiu** (AI demo override: `green`, pH ~8.7)
 - `public/qr/demo-789.svg` → **Cảnh báo** (AI demo override: `blue`, pH ~7.2)
 - `public/qr/demo-999.svg` → **Nguy hiểm** (AI demo override: `yellow`, pH ~10.6)
 
@@ -84,3 +86,5 @@ Chạy dev server rồi mở trực tiếp:
 
 - `/qr/demo-789.svg`
 - `/qr/demo-999.svg`
+- `/qr/demo-123.svg`
+- `/qr/demo-456.svg`

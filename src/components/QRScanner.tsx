@@ -1,28 +1,27 @@
 import { Html5Qrcode } from "html5-qrcode";
-import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getProduct } from "../services/api";
 import { analyzeColor } from "../services/aiService";
 import { useStore } from "../store/useStore";
 import { useCamera } from "../hooks/useCamera";
 import Spinner from "./Spinner";
 import { IconAlertTriangle, IconCamera, IconCheckCircle, IconStop, IconX } from "./Icons";
 import BrandMark from "./BrandMark";
-import { formatPackDate } from "../utils/date";
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  lightMode?: boolean;
 };
 
-export default function QRScanner({ open, onClose }: Props) {
-  const { setProduct, setAI, setStatus, setError, pushHistory, reset, product, aiResult, lastError, status } =
+export default function QRScanner({ open, onClose, lightMode = false }: Props) {
+  const { setAI, setLastQrId, setStatus, setError, pushHistory, reset, aiResult, lastError, status } =
     useStore();
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isScanningRef = useRef(false);
+  const handledDecodeRef = useRef(false);
   const [isScanning, setIsScanning] = useState(false);
-  const [result, setResult] = useState<"fresh" | "warning" | "danger" | "blocked" | null>(null);
+  const [result, setResult] = useState<"fresh" | "degraded" | "spoiled" | "critical" | "blocked" | null>(null);
   const scanTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { captureFrame } = useCamera("reader");
@@ -69,6 +68,7 @@ export default function QRScanner({ open, onClose }: Props) {
     stopTimer();
     await safeStopScanner();
     scannerRef.current = null;
+    handledDecodeRef.current = false;
     setScanning(false);
     setResult(null);
     clearReaderDom();
@@ -106,6 +106,7 @@ export default function QRScanner({ open, onClose }: Props) {
     scannerRef.current = scanner;
 
     setScanning(true);
+    handledDecodeRef.current = false;
     setResult(null);
     setStatus("loading");
     setError(null);
@@ -124,7 +125,6 @@ export default function QRScanner({ open, onClose }: Props) {
         scannedAt: new Date().toISOString(),
         status: "blocked",
         reason: "QR scan timeout / blocked",
-        product: null,
         aiResult: null,
       });
     }, 5200);
@@ -137,15 +137,16 @@ export default function QRScanner({ open, onClose }: Props) {
           qrbox: scanBox,
         },
         async (decodedText: string) => {
+          if (handledDecodeRef.current) return;
+          handledDecodeRef.current = true;
+
           try {
             stopTimer();
 
             localStorage.setItem("lastQR", decodedText);
+            setLastQrId(decodedText);
 
             const frame = captureFrame({ maxSize: 512, quality: 0.82 });
-            const product = await getProduct(decodedText);
-            setProduct(product);
-
             const ai = await analyzeColor(
               frame
                 ? { imageData: frame.imageData, previewDataUrl: frame.previewDataUrl }
@@ -162,20 +163,13 @@ export default function QRScanner({ open, onClose }: Props) {
             flashScreen();
 
             // 🎯 result
-            if (ai.status === "fresh") {
-              setResult("fresh");
-            } else if (ai.status === "warning") {
-              setResult("warning");
-            } else {
-              setResult("danger");
-            }
+            setResult(ai.status);
 
             pushHistory({
               id: crypto.randomUUID(),
               qrId: decodedText,
               scannedAt: new Date().toISOString(),
               status: ai.status,
-              product,
               aiResult: ai,
             });
 
@@ -183,22 +177,9 @@ export default function QRScanner({ open, onClose }: Props) {
           } catch (err) {
             console.error(err);
             await stopScan();
+            handledDecodeRef.current = false;
             setStatus("error");
-            if (axios.isAxiosError(err)) {
-              if (err.response?.status === 404) {
-                setError("⚠️ Mã QR không có trong hệ thống (sai mã hoặc chưa đăng ký).");
-              } else if (err.code === "ECONNABORTED") {
-                setError("⚠️ Máy chủ phản hồi quá lâu. Hãy kiểm tra backend và thử lại.");
-              } else if (!err.response) {
-                setError(
-                  "⚠️ Không kết nối được API: chạy backend (port 5000), frontend `npm run dev` (proxy /api). Trên điện thoại mở URL máy tính trong LAN, không mở file tĩnh."
-                );
-              } else {
-                setError("⚠️ Lỗi khi tải thông tin sản phẩm. Vui lòng thử lại.");
-              }
-            } else {
-              setError("⚠️ Có lỗi khi phân tích. Vui lòng thử lại.");
-            }
+            setError("⚠️ Có lỗi khi phân tích pH/màu. Vui lòng thử lại.");
           }
         },
         () => {}
@@ -238,7 +219,7 @@ export default function QRScanner({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black overflow-hidden">
+    <div className={`fixed inset-0 z-[9999] overflow-hidden ${lightMode ? "bg-white" : "bg-black"}`}>
       {/* Camera */}
       <div
         id="reader"
@@ -246,18 +227,25 @@ export default function QRScanner({ open, onClose }: Props) {
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 z-10 bg-black/45 pointer-events-none" />
+      <div
+        className={`absolute inset-0 z-10 pointer-events-none ${
+          lightMode ? "bg-white/35" : "bg-black/45"
+        }`}
+      />
 
       {/* Khung scan */}
       {isScanning && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-          <div className="w-[72vw] max-w-[320px] aspect-square rounded-3xl ring-4 ring-emerald-400/90 relative">
-            <div className="absolute inset-x-2 top-2 h-1 rounded-full bg-emerald-300/90 animate-pulse" />
-            <div className="absolute inset-6 rounded-2xl border border-white/10" />
+          <div className="relative w-[260px] max-w-[72vw] aspect-square rounded-[28px] border-[4px] border-emerald-500 shadow-[0_0_0_1px_rgba(16,185,129,0.25)]">
+            <div className="absolute inset-5 rounded-2xl border border-emerald-300/45" />
           </div>
 
           {/* TEXT ĐANG QUÉT */}
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 text-white ring-1 ring-white/10">
+          <div
+            className={`mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 ring-1 ${
+              lightMode ? "bg-white/90 text-slate-700 ring-slate-300" : "bg-black/40 text-white ring-white/10"
+            }`}
+          >
             <Spinner />
             <p className="text-sm font-medium">Đang quét QR…</p>
           </div>
@@ -266,11 +254,17 @@ export default function QRScanner({ open, onClose }: Props) {
 
       {/* Header */}
       <div className="absolute top-0 z-30 w-full px-4 pt-4">
-        <div className="mx-auto max-w-md rounded-2xl bg-black/35 px-4 py-3 text-white ring-1 ring-white/10 backdrop-blur">
+        <div
+          className={`mx-auto max-w-md rounded-2xl px-4 py-3 ring-1 backdrop-blur ${
+            lightMode ? "bg-white/90 text-slate-900 ring-slate-200" : "bg-black/35 text-white ring-white/10"
+          }`}
+        >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <BrandMark titleClassName="text-sm text-white font-semibold" />
-              <div className="mt-1 text-xs text-white/70">Quét QR sinh học • AI màu → pH</div>
+              <BrandMark />
+              <div className={`mt-1 text-xs ${lightMode ? "text-slate-600" : "text-white/70"}`}>
+                Quét QR sinh học • AI màu → pH
+              </div>
             </div>
             <button
               type="button"
@@ -279,7 +273,11 @@ export default function QRScanner({ open, onClose }: Props) {
                 reset();
                 onClose();
               }}
-              className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs font-semibold ring-1 ring-white/15 active:scale-[0.98]"
+              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold ring-1 active:scale-[0.98] ${
+                lightMode
+                  ? "bg-slate-100 text-slate-700 ring-slate-200"
+                  : "bg-white/10 ring-white/15"
+              }`}
             >
               <IconX className="h-4 w-4" />
               Đóng
@@ -291,9 +289,19 @@ export default function QRScanner({ open, onClose }: Props) {
       {/* Button */}
       {!result && (
         <div className="absolute bottom-0 z-30 w-full px-4 pb-6">
-          <div className="mx-auto max-w-md rounded-3xl bg-black/35 p-3 ring-1 ring-white/10 backdrop-blur">
+          <div
+            className={`mx-auto max-w-md rounded-3xl p-3 ring-1 backdrop-blur ${
+              lightMode ? "bg-white/90 ring-slate-200" : "bg-black/35 ring-white/10"
+            }`}
+          >
             {!isScanning && status === "error" && lastError && (
-              <div className="mb-3 rounded-2xl bg-rose-500/20 px-3 py-2 text-center text-xs font-medium text-rose-100 ring-1 ring-rose-400/30">
+              <div
+                className={`mb-3 rounded-2xl px-3 py-2 text-center text-xs font-medium ring-1 ${
+                  lightMode
+                    ? "bg-rose-50 text-rose-700 ring-rose-200"
+                    : "bg-rose-500/20 text-rose-100 ring-rose-400/30"
+                }`}
+              >
                 {lastError}
               </div>
             )}
@@ -316,7 +324,7 @@ export default function QRScanner({ open, onClose }: Props) {
                 Dừng quét
               </button>
             )}
-            <div className="mt-2 text-center text-[11px] text-white/70">
+            <div className={`mt-2 text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
               Đưa QR vào trong khung, giữ ổn định 1–2 giây.
             </div>
           </div>
@@ -329,8 +337,10 @@ export default function QRScanner({ open, onClose }: Props) {
           className={`fixed inset-0 z-[10050] flex flex-col items-center justify-center text-white text-center ${
             result === "fresh"
               ? "bg-emerald-600"
-              : result === "blocked" || result === "warning"
+              : result === "degraded"
                 ? "bg-amber-600"
+                : result === "spoiled"
+                  ? "bg-lime-600"
                 : "bg-rose-600"
           } pointer-events-auto`}
         >
@@ -345,26 +355,39 @@ export default function QRScanner({ open, onClose }: Props) {
 
             <h1 className="text-3xl font-bold mb-3">
               {result === "fresh"
-                ? "Thực phẩm còn tươi"
+                ? "Tươi"
                 : result === "blocked"
                   ? "Không thể quét QR"
-                  : result === "warning"
-                    ? "Cảnh báo chất lượng"
-                    : "Không an toàn"}
+                  : result === "degraded"
+                    ? "Giảm chất lượng"
+                    : result === "spoiled"
+                      ? "Ôi thiu"
+                      : "Hỏng nặng"}
             </h1>
 
           {aiResult && (
-            <p className="mb-2">pH: {aiResult.ph}</p>
-          )}
-
-          {product && (
             <>
-              <p className="text-sm opacity-90 font-medium">{product.name}</p>
-              <p className="mt-1 text-sm opacity-90">
-                Ngày đóng gói:{" "}
-                <span className="font-semibold tabular-nums">{formatPackDate(product.packDate)}</span>
+              <p className="mb-1">Trạng thái: <span className="font-semibold">
+                {aiResult.status === "fresh"
+                  ? "Tươi"
+                  : aiResult.status === "degraded"
+                    ? "Giảm chất lượng"
+                    : aiResult.status === "spoiled"
+                      ? "Ôi thiu"
+                      : "Hỏng nặng"}
+              </span></p>
+              <p className="mb-1">pH: <span className="font-semibold">{aiResult.ph}</span></p>
+              <p className="text-sm opacity-95">
+                Màu nền: <span className="font-semibold">
+                  {aiResult.color === "purple"
+                    ? "Tím"
+                    : aiResult.color === "blue"
+                      ? "Xanh lam"
+                      : aiResult.color === "green"
+                        ? "Xanh"
+                        : "Xanh vàng"}
+                </span>
               </p>
-              <p className="mt-1 text-xs opacity-75">{product.supplier}</p>
             </>
           )}
 

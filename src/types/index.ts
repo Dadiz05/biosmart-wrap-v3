@@ -7,7 +7,7 @@ export type Product = {
 export type AIResult = {
   ph: number;
   color: "purple" | "blue" | "green" | "yellow";
-  status: "fresh" | "warning" | "spoiled";
+  status: "fresh" | "degraded" | "spoiled" | "critical";
   previewDataUrl?: string;
 };
 
@@ -15,6 +15,7 @@ export type AppStatus = "idle" | "loading" | "done" | "error";
 
 export type ScanRecord = {
   id: string;
+  scanNo: number;
   qrId: string | null;
   scannedAt: string; // ISO
   status: AIResult["status"] | "blocked";

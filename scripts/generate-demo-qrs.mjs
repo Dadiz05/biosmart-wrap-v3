@@ -6,8 +6,10 @@ const outDir = path.resolve("public", "qr");
 await fs.mkdir(outDir, { recursive: true });
 
 const items = [
-  { id: "789", label: "Cảnh báo (warning)" },
-  { id: "999", label: "Nguy hiểm (spoiled)" },
+  { id: "123", label: "Tươi (pH 5-6, tím)" },
+  { id: "456", label: "Giảm chất lượng (pH 6.5-7.5, xanh lam)" },
+  { id: "789", label: "Ôi thiu (pH 7.5-8.5, xanh)" },
+  { id: "999", label: "Hỏng nặng (pH 8.5-9.5, xanh vàng)" },
 ];
 
 for (const it of items) {

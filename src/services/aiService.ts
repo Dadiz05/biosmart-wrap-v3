@@ -81,19 +81,19 @@ function detectColorHeuristic(imageData: ImageData): DetectedColor {
 
 function colorToPhAndStatus(color: DetectedColor): Pick<AIResult, "ph" | "status"> {
   // Map theo bảng nghiệp vụ:
-  // - purple (tím đậm/đỏ tía): pH 5–6 → rất tươi
-  // - blue (tím nhạt/xanh lam): pH 6.5–7.5 → bắt đầu giảm chất lượng
-  // - green: pH 8–9 → ôi thiu
-  // - yellow: >10 → hỏng nặng
+  // - purple: pH 5–6 → tươi
+  // - blue: pH 6.5–7.5 → giảm chất lượng
+  // - green: pH 7.5–8.5 → ôi thiu
+  // - yellow (xanh vàng): pH 8.5–9.5 → hỏng nặng
   switch (color) {
     case "purple":
-      return { ph: 5.6, status: "fresh" };
+      return { ph: 5.5, status: "fresh" };
     case "blue":
-      return { ph: 7.1, status: "warning" };
+      return { ph: 7.0, status: "degraded" };
     case "green":
-      return { ph: 8.7, status: "spoiled" };
+      return { ph: 8.0, status: "spoiled" };
     case "yellow":
-      return { ph: 10.5, status: "spoiled" };
+      return { ph: 9.0, status: "critical" };
   }
 }
 
@@ -148,11 +148,17 @@ export async function analyzeColor(input: AnalyzeInput): Promise<AIResult> {
   if ("imageData" in input) {
     // Demo override (giúp test nhanh theo QR id)
     const lastQR = localStorage.getItem("lastQR");
+    if (lastQR === "123") {
+      return { ph: 5.5, color: "purple", status: "fresh", previewDataUrl: input.previewDataUrl };
+    }
+    if (lastQR === "456") {
+      return { ph: 7.0, color: "blue", status: "degraded", previewDataUrl: input.previewDataUrl };
+    }
     if (lastQR === "789") {
-      return { ph: 7.2, color: "blue", status: "warning", previewDataUrl: input.previewDataUrl };
+      return { ph: 8.0, color: "green", status: "spoiled", previewDataUrl: input.previewDataUrl };
     }
     if (lastQR === "999") {
-      return { ph: 10.6, color: "yellow", status: "spoiled", previewDataUrl: input.previewDataUrl };
+      return { ph: 9.0, color: "yellow", status: "critical", previewDataUrl: input.previewDataUrl };
     }
 
     const modelColor = await detectColorWithModel(input.imageData);
@@ -162,8 +168,8 @@ export async function analyzeColor(input: AnalyzeInput): Promise<AIResult> {
   }
 
   // If only previewDataUrl available, we cannot reliably infer color without pixels.
-  // Return a neutral "warning" to encourage model wiring; UI still shows preview.
-  return { ph: 7.0, color: "blue", status: "warning", previewDataUrl: input.previewDataUrl };
+  // Return a neutral degraded status to keep output shape stable.
+  return { ph: 7.0, color: "blue", status: "degraded", previewDataUrl: input.previewDataUrl };
 }
 
 export function statusToUiTone(status: AIResult["status"]) {
@@ -171,10 +177,12 @@ export function statusToUiTone(status: AIResult["status"]) {
   switch (status) {
     case "fresh":
       return { accent: "emerald", label: "Tươi" };
-    case "warning":
-      return { accent: "amber", label: "Cảnh báo" };
+    case "degraded":
+      return { accent: "amber", label: "Giảm chất lượng" };
     case "spoiled":
-      return { accent: "rose", label: "Nguy hiểm" };
+      return { accent: "lime", label: "Ôi thiu" };
+    case "critical":
+      return { accent: "rose", label: "Hỏng nặng" };
   }
 }
 

@@ -31,3 +31,14 @@ body {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Hide default html5-qrcode shaded box/corners; we draw our own centered frame. */
+#reader #qr-shaded-region {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#reader #qr-shaded-region > div {
+  display: none !important;
+}
