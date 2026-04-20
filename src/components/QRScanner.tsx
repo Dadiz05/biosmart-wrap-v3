@@ -434,19 +434,19 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
       {aiResult ? (
         <div
-          className="absolute inset-0 z-[10050] flex items-center justify-center px-4 py-6"
+          className="absolute inset-0 z-[10050] overflow-y-auto px-4 py-3 sm:py-6"
           style={{
             backgroundColor: statusBackground(aiResult.ph.status).bg,
             color: statusBackground(aiResult.ph.status).text,
           }}
         >
-          <div className="w-full max-w-md">
-            <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl bg-white/18 px-4 py-3 shadow-lg ring-1 ring-white/30 backdrop-blur">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-2 flex items-center justify-between gap-3 rounded-3xl bg-white/18 px-4 py-3 shadow-lg ring-1 ring-white/30 backdrop-blur">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-wide text-current/80">
                   Kết quả quét
                 </div>
-                <div className="mt-1 text-lg font-semibold">QR ID {aiResult.qr.qrId}</div>
+                <div className="mt-1 text-base font-semibold sm:text-lg">QR ID {aiResult.qr.qrId}</div>
               </div>
               {aiResult.ph.status === "fresh" ? (
                 <IconCheckCircle className="h-8 w-8" />
@@ -455,15 +455,15 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               )}
             </div>
 
-            <div className="mb-3 rounded-3xl bg-white/18 px-5 py-4 text-center shadow-lg ring-1 ring-white/30 backdrop-blur">
-              <div className="text-sm font-medium uppercase tracking-wide text-current/80">Độ pH</div>
-              <div className="mt-1 text-5xl font-black leading-none">{aiResult.ph.ph.toFixed(2)}</div>
-              <div className="mt-2 text-sm font-semibold text-current/90">{aiResult.ph.label}</div>
+            <div className="mb-2 rounded-3xl bg-white/18 px-4 py-3 text-center shadow-lg ring-1 ring-white/30 backdrop-blur sm:px-5 sm:py-4">
+              <div className="text-xs font-medium uppercase tracking-wide text-current/80 sm:text-sm">Độ pH</div>
+              <div className="mt-1 text-4xl font-black leading-none sm:text-5xl">{aiResult.ph.ph.toFixed(2)}</div>
+              <div className="mt-1 text-sm font-semibold text-current/90 sm:mt-2">{aiResult.ph.label}</div>
             </div>
 
-            <ResultCard />
+            <ResultCard compact />
 
-            <div className="mt-4 grid gap-2">
+            <div className="mt-3 grid gap-2">
               <button
                 type="button"
                 onClick={() => {
