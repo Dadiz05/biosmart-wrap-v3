@@ -56,9 +56,6 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
             Scan summary
           </div>
           <div className="mt-1 text-lg font-semibold">QR ID {aiResult.qr.qrId}</div>
-          <div className={`mt-1 text-xs ${lightMode ? "text-slate-500" : "text-current/80"}`}>
-            Decoder: {aiResult.qr.decoder} • Live mode
-          </div>
         </div>
         <StatusBadge status={aiResult.ph.status} />
       </div>

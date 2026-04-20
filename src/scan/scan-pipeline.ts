@@ -19,7 +19,7 @@ export type ScanOutcome = {
 
 export function analyzeScanFrame(input: ScanFrameInput): ScanOutcome {
   const patch = detectPatch(input.imageData);
-  const ph = estimatePhFromPatch(patch);
+  const ph = estimatePhFromPatch(patch, input.qrId);
   const warnings = Array.from(new Set([...patch.warnings]));
 
   const result: ScanResult = {

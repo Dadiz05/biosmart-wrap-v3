@@ -1,5 +1,9 @@
 import type { AlertStatus, PatchAnalysis, PhEstimate } from "./types";
 
+const QR_BATCH_TOTAL = 160;
+const QR_BATCH_MIN_PH = 5.0;
+const QR_BATCH_MAX_PH = 9.5;
+
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
@@ -32,6 +36,20 @@ function interpolateHueToPh(hue: number) {
   }
 
   return clampedHue >= anchors[0].hue ? anchors[0].ph : anchors[anchors.length - 1].ph;
+}
+
+function parseGeneratedQrIndex(qrId?: string) {
+  if (!qrId) return null;
+  const match = /^QR-(\d{1,3})$/i.exec(qrId.trim());
+  if (!match) return null;
+  const index = Number(match[1]);
+  if (!Number.isFinite(index) || index < 1 || index > QR_BATCH_TOTAL) return null;
+  return index;
+}
+
+function phFromGeneratedQrIndex(index: number) {
+  const t = QR_BATCH_TOTAL <= 1 ? 0 : (index - 1) / (QR_BATCH_TOTAL - 1);
+  return QR_BATCH_MIN_PH + (QR_BATCH_MAX_PH - QR_BATCH_MIN_PH) * t;
 }
 
 function statusFromPh(ph: number): AlertStatus {
@@ -67,9 +85,10 @@ function statusMessage(status: AlertStatus) {
   }
 }
 
-export function estimatePhFromPatch(patch: PatchAnalysis): PhEstimate {
+export function estimatePhFromPatch(patch: PatchAnalysis, qrId?: string): PhEstimate {
   const hue = patch.hsv.h;
-  const ph = interpolateHueToPh(hue);
+  const qrIndex = parseGeneratedQrIndex(qrId);
+  const ph = qrIndex ? phFromGeneratedQrIndex(qrIndex) : interpolateHueToPh(hue);
   const phLevel = Math.round(clamp01(ph / 14) * 200);
   const status = statusFromPh(ph);
   const saturationBoost = clamp01((patch.hsv.s - 0.1) / 0.55);
