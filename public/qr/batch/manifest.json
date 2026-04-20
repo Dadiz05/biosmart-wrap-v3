@@ -1,0 +1,1282 @@
+[
+  {
+    "id": "QR-001",
+    "file": "/qr/batch/qr-QR-001.svg",
+    "group": "fresh",
+    "expectedPh": 5,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#7612a1"
+  },
+  {
+    "id": "QR-002",
+    "file": "/qr/batch/qr-QR-002.svg",
+    "group": "fresh",
+    "expectedPh": 5.03,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#7312a1"
+  },
+  {
+    "id": "QR-003",
+    "file": "/qr/batch/qr-QR-003.svg",
+    "group": "fresh",
+    "expectedPh": 5.06,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#7012a1"
+  },
+  {
+    "id": "QR-004",
+    "file": "/qr/batch/qr-QR-004.svg",
+    "group": "fresh",
+    "expectedPh": 5.08,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6e12a1"
+  },
+  {
+    "id": "QR-005",
+    "file": "/qr/batch/qr-QR-005.svg",
+    "group": "fresh",
+    "expectedPh": 5.11,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6b12a1"
+  },
+  {
+    "id": "QR-006",
+    "file": "/qr/batch/qr-QR-006.svg",
+    "group": "fresh",
+    "expectedPh": 5.14,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6812a1"
+  },
+  {
+    "id": "QR-007",
+    "file": "/qr/batch/qr-QR-007.svg",
+    "group": "fresh",
+    "expectedPh": 5.17,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6512a1"
+  },
+  {
+    "id": "QR-008",
+    "file": "/qr/batch/qr-QR-008.svg",
+    "group": "fresh",
+    "expectedPh": 5.2,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6312a2"
+  },
+  {
+    "id": "QR-009",
+    "file": "/qr/batch/qr-QR-009.svg",
+    "group": "fresh",
+    "expectedPh": 5.23,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#6012a2"
+  },
+  {
+    "id": "QR-010",
+    "file": "/qr/batch/qr-QR-010.svg",
+    "group": "fresh",
+    "expectedPh": 5.25,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#5d12a2"
+  },
+  {
+    "id": "QR-011",
+    "file": "/qr/batch/qr-QR-011.svg",
+    "group": "fresh",
+    "expectedPh": 5.28,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#5a12a2"
+  },
+  {
+    "id": "QR-012",
+    "file": "/qr/batch/qr-QR-012.svg",
+    "group": "fresh",
+    "expectedPh": 5.31,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#5712a2"
+  },
+  {
+    "id": "QR-013",
+    "file": "/qr/batch/qr-QR-013.svg",
+    "group": "fresh",
+    "expectedPh": 5.34,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#5512a2"
+  },
+  {
+    "id": "QR-014",
+    "file": "/qr/batch/qr-QR-014.svg",
+    "group": "fresh",
+    "expectedPh": 5.37,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#5212a2"
+  },
+  {
+    "id": "QR-015",
+    "file": "/qr/batch/qr-QR-015.svg",
+    "group": "fresh",
+    "expectedPh": 5.4,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4f12a2"
+  },
+  {
+    "id": "QR-016",
+    "file": "/qr/batch/qr-QR-016.svg",
+    "group": "fresh",
+    "expectedPh": 5.42,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4c11a2"
+  },
+  {
+    "id": "QR-017",
+    "file": "/qr/batch/qr-QR-017.svg",
+    "group": "fresh",
+    "expectedPh": 5.45,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4911a3"
+  },
+  {
+    "id": "QR-018",
+    "file": "/qr/batch/qr-QR-018.svg",
+    "group": "fresh",
+    "expectedPh": 5.48,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4611a3"
+  },
+  {
+    "id": "QR-019",
+    "file": "/qr/batch/qr-QR-019.svg",
+    "group": "fresh",
+    "expectedPh": 5.51,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4411a3"
+  },
+  {
+    "id": "QR-020",
+    "file": "/qr/batch/qr-QR-020.svg",
+    "group": "fresh",
+    "expectedPh": 5.54,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#4111a3"
+  },
+  {
+    "id": "QR-021",
+    "file": "/qr/batch/qr-QR-021.svg",
+    "group": "fresh",
+    "expectedPh": 5.57,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3e11a3"
+  },
+  {
+    "id": "QR-022",
+    "file": "/qr/batch/qr-QR-022.svg",
+    "group": "fresh",
+    "expectedPh": 5.59,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3b11a3"
+  },
+  {
+    "id": "QR-023",
+    "file": "/qr/batch/qr-QR-023.svg",
+    "group": "fresh",
+    "expectedPh": 5.62,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3811a3"
+  },
+  {
+    "id": "QR-024",
+    "file": "/qr/batch/qr-QR-024.svg",
+    "group": "fresh",
+    "expectedPh": 5.65,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3511a3"
+  },
+  {
+    "id": "QR-025",
+    "file": "/qr/batch/qr-QR-025.svg",
+    "group": "fresh",
+    "expectedPh": 5.68,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3311a4"
+  },
+  {
+    "id": "QR-026",
+    "file": "/qr/batch/qr-QR-026.svg",
+    "group": "fresh",
+    "expectedPh": 5.71,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#3011a4"
+  },
+  {
+    "id": "QR-027",
+    "file": "/qr/batch/qr-QR-027.svg",
+    "group": "fresh",
+    "expectedPh": 5.74,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#2d11a4"
+  },
+  {
+    "id": "QR-028",
+    "file": "/qr/batch/qr-QR-028.svg",
+    "group": "fresh",
+    "expectedPh": 5.76,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#2a11a4"
+  },
+  {
+    "id": "QR-029",
+    "file": "/qr/batch/qr-QR-029.svg",
+    "group": "fresh",
+    "expectedPh": 5.79,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#2711a4"
+  },
+  {
+    "id": "QR-030",
+    "file": "/qr/batch/qr-QR-030.svg",
+    "group": "fresh",
+    "expectedPh": 5.82,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#2411a4"
+  },
+  {
+    "id": "QR-031",
+    "file": "/qr/batch/qr-QR-031.svg",
+    "group": "fresh",
+    "expectedPh": 5.85,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#2111a4"
+  },
+  {
+    "id": "QR-032",
+    "file": "/qr/batch/qr-QR-032.svg",
+    "group": "fresh",
+    "expectedPh": 5.88,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1e11a4"
+  },
+  {
+    "id": "QR-033",
+    "file": "/qr/batch/qr-QR-033.svg",
+    "group": "fresh",
+    "expectedPh": 5.91,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1b11a5"
+  },
+  {
+    "id": "QR-034",
+    "file": "/qr/batch/qr-QR-034.svg",
+    "group": "fresh",
+    "expectedPh": 5.93,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1811a5"
+  },
+  {
+    "id": "QR-035",
+    "file": "/qr/batch/qr-QR-035.svg",
+    "group": "fresh",
+    "expectedPh": 5.96,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1511a5"
+  },
+  {
+    "id": "QR-036",
+    "file": "/qr/batch/qr-QR-036.svg",
+    "group": "fresh",
+    "expectedPh": 5.99,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1311a5"
+  },
+  {
+    "id": "QR-037",
+    "file": "/qr/batch/qr-QR-037.svg",
+    "group": "fresh",
+    "expectedPh": 6.02,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1112a5"
+  },
+  {
+    "id": "QR-038",
+    "file": "/qr/batch/qr-QR-038.svg",
+    "group": "fresh",
+    "expectedPh": 6.05,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1115a5"
+  },
+  {
+    "id": "QR-039",
+    "file": "/qr/batch/qr-QR-039.svg",
+    "group": "fresh",
+    "expectedPh": 6.08,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1118a5"
+  },
+  {
+    "id": "QR-040",
+    "file": "/qr/batch/qr-QR-040.svg",
+    "group": "fresh",
+    "expectedPh": 6.1,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#111ba5"
+  },
+  {
+    "id": "QR-041",
+    "file": "/qr/batch/qr-QR-041.svg",
+    "group": "fresh",
+    "expectedPh": 6.13,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#111ea6"
+  },
+  {
+    "id": "QR-042",
+    "file": "/qr/batch/qr-QR-042.svg",
+    "group": "fresh",
+    "expectedPh": 6.16,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1121a6"
+  },
+  {
+    "id": "QR-043",
+    "file": "/qr/batch/qr-QR-043.svg",
+    "group": "fresh",
+    "expectedPh": 6.19,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1124a6"
+  },
+  {
+    "id": "QR-044",
+    "file": "/qr/batch/qr-QR-044.svg",
+    "group": "fresh",
+    "expectedPh": 6.22,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#1127a6"
+  },
+  {
+    "id": "QR-045",
+    "file": "/qr/batch/qr-QR-045.svg",
+    "group": "fresh",
+    "expectedPh": 6.25,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#112aa6"
+  },
+  {
+    "id": "QR-046",
+    "file": "/qr/batch/qr-QR-046.svg",
+    "group": "fresh",
+    "expectedPh": 6.27,
+    "expectedLabel": "Tuoi",
+    "darkHex": "#112da6"
+  },
+  {
+    "id": "QR-047",
+    "file": "/qr/batch/qr-QR-047.svg",
+    "group": "degraded",
+    "expectedPh": 6.3,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#112fa6"
+  },
+  {
+    "id": "QR-048",
+    "file": "/qr/batch/qr-QR-048.svg",
+    "group": "degraded",
+    "expectedPh": 6.33,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1132a6"
+  },
+  {
+    "id": "QR-049",
+    "file": "/qr/batch/qr-QR-049.svg",
+    "group": "degraded",
+    "expectedPh": 6.36,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1135a7"
+  },
+  {
+    "id": "QR-050",
+    "file": "/qr/batch/qr-QR-050.svg",
+    "group": "degraded",
+    "expectedPh": 6.39,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1138a7"
+  },
+  {
+    "id": "QR-051",
+    "file": "/qr/batch/qr-QR-051.svg",
+    "group": "degraded",
+    "expectedPh": 6.42,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#113ba7"
+  },
+  {
+    "id": "QR-052",
+    "file": "/qr/batch/qr-QR-052.svg",
+    "group": "degraded",
+    "expectedPh": 6.44,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#113ea7"
+  },
+  {
+    "id": "QR-053",
+    "file": "/qr/batch/qr-QR-053.svg",
+    "group": "degraded",
+    "expectedPh": 6.47,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1141a7"
+  },
+  {
+    "id": "QR-054",
+    "file": "/qr/batch/qr-QR-054.svg",
+    "group": "degraded",
+    "expectedPh": 6.5,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1145a7"
+  },
+  {
+    "id": "QR-055",
+    "file": "/qr/batch/qr-QR-055.svg",
+    "group": "degraded",
+    "expectedPh": 6.53,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1148a7"
+  },
+  {
+    "id": "QR-056",
+    "file": "/qr/batch/qr-QR-056.svg",
+    "group": "degraded",
+    "expectedPh": 6.56,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#114ca6"
+  },
+  {
+    "id": "QR-057",
+    "file": "/qr/batch/qr-QR-057.svg",
+    "group": "degraded",
+    "expectedPh": 6.58,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1150a6"
+  },
+  {
+    "id": "QR-058",
+    "file": "/qr/batch/qr-QR-058.svg",
+    "group": "degraded",
+    "expectedPh": 6.61,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1154a6"
+  },
+  {
+    "id": "QR-059",
+    "file": "/qr/batch/qr-QR-059.svg",
+    "group": "degraded",
+    "expectedPh": 6.64,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1157a6"
+  },
+  {
+    "id": "QR-060",
+    "file": "/qr/batch/qr-QR-060.svg",
+    "group": "degraded",
+    "expectedPh": 6.67,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#115ba5"
+  },
+  {
+    "id": "QR-061",
+    "file": "/qr/batch/qr-QR-061.svg",
+    "group": "degraded",
+    "expectedPh": 6.7,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#115fa5"
+  },
+  {
+    "id": "QR-062",
+    "file": "/qr/batch/qr-QR-062.svg",
+    "group": "degraded",
+    "expectedPh": 6.73,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1162a5"
+  },
+  {
+    "id": "QR-063",
+    "file": "/qr/batch/qr-QR-063.svg",
+    "group": "degraded",
+    "expectedPh": 6.75,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1166a5"
+  },
+  {
+    "id": "QR-064",
+    "file": "/qr/batch/qr-QR-064.svg",
+    "group": "degraded",
+    "expectedPh": 6.78,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#116aa4"
+  },
+  {
+    "id": "QR-065",
+    "file": "/qr/batch/qr-QR-065.svg",
+    "group": "degraded",
+    "expectedPh": 6.81,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#116da4"
+  },
+  {
+    "id": "QR-066",
+    "file": "/qr/batch/qr-QR-066.svg",
+    "group": "degraded",
+    "expectedPh": 6.84,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1171a4"
+  },
+  {
+    "id": "QR-067",
+    "file": "/qr/batch/qr-QR-067.svg",
+    "group": "degraded",
+    "expectedPh": 6.87,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1174a4"
+  },
+  {
+    "id": "QR-068",
+    "file": "/qr/batch/qr-QR-068.svg",
+    "group": "degraded",
+    "expectedPh": 6.9,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1178a4"
+  },
+  {
+    "id": "QR-069",
+    "file": "/qr/batch/qr-QR-069.svg",
+    "group": "degraded",
+    "expectedPh": 6.92,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#117ca3"
+  },
+  {
+    "id": "QR-070",
+    "file": "/qr/batch/qr-QR-070.svg",
+    "group": "degraded",
+    "expectedPh": 6.95,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#117fa3"
+  },
+  {
+    "id": "QR-071",
+    "file": "/qr/batch/qr-QR-071.svg",
+    "group": "degraded",
+    "expectedPh": 6.98,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1183a3"
+  },
+  {
+    "id": "QR-072",
+    "file": "/qr/batch/qr-QR-072.svg",
+    "group": "degraded",
+    "expectedPh": 7.01,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1186a3"
+  },
+  {
+    "id": "QR-073",
+    "file": "/qr/batch/qr-QR-073.svg",
+    "group": "degraded",
+    "expectedPh": 7.04,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#128aa2"
+  },
+  {
+    "id": "QR-074",
+    "file": "/qr/batch/qr-QR-074.svg",
+    "group": "degraded",
+    "expectedPh": 7.07,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#128da2"
+  },
+  {
+    "id": "QR-075",
+    "file": "/qr/batch/qr-QR-075.svg",
+    "group": "degraded",
+    "expectedPh": 7.09,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1291a2"
+  },
+  {
+    "id": "QR-076",
+    "file": "/qr/batch/qr-QR-076.svg",
+    "group": "degraded",
+    "expectedPh": 7.12,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1294a2"
+  },
+  {
+    "id": "QR-077",
+    "file": "/qr/batch/qr-QR-077.svg",
+    "group": "degraded",
+    "expectedPh": 7.15,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#1297a1"
+  },
+  {
+    "id": "QR-078",
+    "file": "/qr/batch/qr-QR-078.svg",
+    "group": "degraded",
+    "expectedPh": 7.18,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#129ba1"
+  },
+  {
+    "id": "QR-079",
+    "file": "/qr/batch/qr-QR-079.svg",
+    "group": "degraded",
+    "expectedPh": 7.21,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#129ea1"
+  },
+  {
+    "id": "QR-080",
+    "file": "/qr/batch/qr-QR-080.svg",
+    "group": "degraded",
+    "expectedPh": 7.24,
+    "expectedLabel": "Giam chat luong",
+    "darkHex": "#12a1a0"
+  },
+  {
+    "id": "QR-081",
+    "file": "/qr/batch/qr-QR-081.svg",
+    "group": "spoiled",
+    "expectedPh": 7.26,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#12a09c"
+  },
+  {
+    "id": "QR-082",
+    "file": "/qr/batch/qr-QR-082.svg",
+    "group": "spoiled",
+    "expectedPh": 7.29,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#12a098"
+  },
+  {
+    "id": "QR-083",
+    "file": "/qr/batch/qr-QR-083.svg",
+    "group": "spoiled",
+    "expectedPh": 7.32,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#12a094"
+  },
+  {
+    "id": "QR-084",
+    "file": "/qr/batch/qr-QR-084.svg",
+    "group": "spoiled",
+    "expectedPh": 7.35,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#12a090"
+  },
+  {
+    "id": "QR-085",
+    "file": "/qr/batch/qr-QR-085.svg",
+    "group": "spoiled",
+    "expectedPh": 7.38,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129f8c"
+  },
+  {
+    "id": "QR-086",
+    "file": "/qr/batch/qr-QR-086.svg",
+    "group": "spoiled",
+    "expectedPh": 7.41,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129f89"
+  },
+  {
+    "id": "QR-087",
+    "file": "/qr/batch/qr-QR-087.svg",
+    "group": "spoiled",
+    "expectedPh": 7.43,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129f85"
+  },
+  {
+    "id": "QR-088",
+    "file": "/qr/batch/qr-QR-088.svg",
+    "group": "spoiled",
+    "expectedPh": 7.46,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129f81"
+  },
+  {
+    "id": "QR-089",
+    "file": "/qr/batch/qr-QR-089.svg",
+    "group": "spoiled",
+    "expectedPh": 7.49,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e7d"
+  },
+  {
+    "id": "QR-090",
+    "file": "/qr/batch/qr-QR-090.svg",
+    "group": "spoiled",
+    "expectedPh": 7.52,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e7a"
+  },
+  {
+    "id": "QR-091",
+    "file": "/qr/batch/qr-QR-091.svg",
+    "group": "spoiled",
+    "expectedPh": 7.55,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e76"
+  },
+  {
+    "id": "QR-092",
+    "file": "/qr/batch/qr-QR-092.svg",
+    "group": "spoiled",
+    "expectedPh": 7.58,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e72"
+  },
+  {
+    "id": "QR-093",
+    "file": "/qr/batch/qr-QR-093.svg",
+    "group": "spoiled",
+    "expectedPh": 7.6,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129d6e"
+  },
+  {
+    "id": "QR-094",
+    "file": "/qr/batch/qr-QR-094.svg",
+    "group": "spoiled",
+    "expectedPh": 7.63,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139d6b"
+  },
+  {
+    "id": "QR-095",
+    "file": "/qr/batch/qr-QR-095.svg",
+    "group": "spoiled",
+    "expectedPh": 7.66,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139d67"
+  },
+  {
+    "id": "QR-096",
+    "file": "/qr/batch/qr-QR-096.svg",
+    "group": "spoiled",
+    "expectedPh": 7.69,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139d64"
+  },
+  {
+    "id": "QR-097",
+    "file": "/qr/batch/qr-QR-097.svg",
+    "group": "spoiled",
+    "expectedPh": 7.72,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c60"
+  },
+  {
+    "id": "QR-098",
+    "file": "/qr/batch/qr-QR-098.svg",
+    "group": "spoiled",
+    "expectedPh": 7.75,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c5c"
+  },
+  {
+    "id": "QR-099",
+    "file": "/qr/batch/qr-QR-099.svg",
+    "group": "spoiled",
+    "expectedPh": 7.77,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c59"
+  },
+  {
+    "id": "QR-100",
+    "file": "/qr/batch/qr-QR-100.svg",
+    "group": "spoiled",
+    "expectedPh": 7.8,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c55"
+  },
+  {
+    "id": "QR-101",
+    "file": "/qr/batch/qr-QR-101.svg",
+    "group": "spoiled",
+    "expectedPh": 7.83,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c52"
+  },
+  {
+    "id": "QR-102",
+    "file": "/qr/batch/qr-QR-102.svg",
+    "group": "spoiled",
+    "expectedPh": 7.86,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b4e"
+  },
+  {
+    "id": "QR-103",
+    "file": "/qr/batch/qr-QR-103.svg",
+    "group": "spoiled",
+    "expectedPh": 7.89,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b4a"
+  },
+  {
+    "id": "QR-104",
+    "file": "/qr/batch/qr-QR-104.svg",
+    "group": "spoiled",
+    "expectedPh": 7.92,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b47"
+  },
+  {
+    "id": "QR-105",
+    "file": "/qr/batch/qr-QR-105.svg",
+    "group": "spoiled",
+    "expectedPh": 7.94,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b43"
+  },
+  {
+    "id": "QR-106",
+    "file": "/qr/batch/qr-QR-106.svg",
+    "group": "spoiled",
+    "expectedPh": 7.97,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139a40"
+  },
+  {
+    "id": "QR-107",
+    "file": "/qr/batch/qr-QR-107.svg",
+    "group": "spoiled",
+    "expectedPh": 8,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b3e"
+  },
+  {
+    "id": "QR-108",
+    "file": "/qr/batch/qr-QR-108.svg",
+    "group": "spoiled",
+    "expectedPh": 8.03,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b3b"
+  },
+  {
+    "id": "QR-109",
+    "file": "/qr/batch/qr-QR-109.svg",
+    "group": "spoiled",
+    "expectedPh": 8.06,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b39"
+  },
+  {
+    "id": "QR-110",
+    "file": "/qr/batch/qr-QR-110.svg",
+    "group": "spoiled",
+    "expectedPh": 8.08,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139b36"
+  },
+  {
+    "id": "QR-111",
+    "file": "/qr/batch/qr-QR-111.svg",
+    "group": "spoiled",
+    "expectedPh": 8.11,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c34"
+  },
+  {
+    "id": "QR-112",
+    "file": "/qr/batch/qr-QR-112.svg",
+    "group": "spoiled",
+    "expectedPh": 8.14,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c32"
+  },
+  {
+    "id": "QR-113",
+    "file": "/qr/batch/qr-QR-113.svg",
+    "group": "spoiled",
+    "expectedPh": 8.17,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#139c2f"
+  },
+  {
+    "id": "QR-114",
+    "file": "/qr/batch/qr-QR-114.svg",
+    "group": "spoiled",
+    "expectedPh": 8.2,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129c2d"
+  },
+  {
+    "id": "QR-115",
+    "file": "/qr/batch/qr-QR-115.svg",
+    "group": "spoiled",
+    "expectedPh": 8.23,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129d2a"
+  },
+  {
+    "id": "QR-116",
+    "file": "/qr/batch/qr-QR-116.svg",
+    "group": "spoiled",
+    "expectedPh": 8.25,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129d28"
+  },
+  {
+    "id": "QR-117",
+    "file": "/qr/batch/qr-QR-117.svg",
+    "group": "spoiled",
+    "expectedPh": 8.28,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129d25"
+  },
+  {
+    "id": "QR-118",
+    "file": "/qr/batch/qr-QR-118.svg",
+    "group": "spoiled",
+    "expectedPh": 8.31,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e23"
+  },
+  {
+    "id": "QR-119",
+    "file": "/qr/batch/qr-QR-119.svg",
+    "group": "spoiled",
+    "expectedPh": 8.34,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e20"
+  },
+  {
+    "id": "QR-120",
+    "file": "/qr/batch/qr-QR-120.svg",
+    "group": "spoiled",
+    "expectedPh": 8.37,
+    "expectedLabel": "Oi thiu",
+    "darkHex": "#129e1d"
+  },
+  {
+    "id": "QR-121",
+    "file": "/qr/batch/qr-QR-121.svg",
+    "group": "critical",
+    "expectedPh": 8.4,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#129e1b"
+  },
+  {
+    "id": "QR-122",
+    "file": "/qr/batch/qr-QR-122.svg",
+    "group": "critical",
+    "expectedPh": 8.42,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#129f18"
+  },
+  {
+    "id": "QR-123",
+    "file": "/qr/batch/qr-QR-123.svg",
+    "group": "critical",
+    "expectedPh": 8.45,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#129f16"
+  },
+  {
+    "id": "QR-124",
+    "file": "/qr/batch/qr-QR-124.svg",
+    "group": "critical",
+    "expectedPh": 8.48,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#129f13"
+  },
+  {
+    "id": "QR-125",
+    "file": "/qr/batch/qr-QR-125.svg",
+    "group": "critical",
+    "expectedPh": 8.51,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#139f12"
+  },
+  {
+    "id": "QR-126",
+    "file": "/qr/batch/qr-QR-126.svg",
+    "group": "critical",
+    "expectedPh": 8.54,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#15a012"
+  },
+  {
+    "id": "QR-127",
+    "file": "/qr/batch/qr-QR-127.svg",
+    "group": "critical",
+    "expectedPh": 8.57,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#18a011"
+  },
+  {
+    "id": "QR-128",
+    "file": "/qr/batch/qr-QR-128.svg",
+    "group": "critical",
+    "expectedPh": 8.59,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#1aa011"
+  },
+  {
+    "id": "QR-129",
+    "file": "/qr/batch/qr-QR-129.svg",
+    "group": "critical",
+    "expectedPh": 8.62,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#1da011"
+  },
+  {
+    "id": "QR-130",
+    "file": "/qr/batch/qr-QR-130.svg",
+    "group": "critical",
+    "expectedPh": 8.65,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#1fa111"
+  },
+  {
+    "id": "QR-131",
+    "file": "/qr/batch/qr-QR-131.svg",
+    "group": "critical",
+    "expectedPh": 8.68,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#22a111"
+  },
+  {
+    "id": "QR-132",
+    "file": "/qr/batch/qr-QR-132.svg",
+    "group": "critical",
+    "expectedPh": 8.71,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#24a111"
+  },
+  {
+    "id": "QR-133",
+    "file": "/qr/batch/qr-QR-133.svg",
+    "group": "critical",
+    "expectedPh": 8.74,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#27a211"
+  },
+  {
+    "id": "QR-134",
+    "file": "/qr/batch/qr-QR-134.svg",
+    "group": "critical",
+    "expectedPh": 8.76,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#29a211"
+  },
+  {
+    "id": "QR-135",
+    "file": "/qr/batch/qr-QR-135.svg",
+    "group": "critical",
+    "expectedPh": 8.79,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#2ca211"
+  },
+  {
+    "id": "QR-136",
+    "file": "/qr/batch/qr-QR-136.svg",
+    "group": "critical",
+    "expectedPh": 8.82,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#2ea211"
+  },
+  {
+    "id": "QR-137",
+    "file": "/qr/batch/qr-QR-137.svg",
+    "group": "critical",
+    "expectedPh": 8.85,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#31a311"
+  },
+  {
+    "id": "QR-138",
+    "file": "/qr/batch/qr-QR-138.svg",
+    "group": "critical",
+    "expectedPh": 8.88,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#34a311"
+  },
+  {
+    "id": "QR-139",
+    "file": "/qr/batch/qr-QR-139.svg",
+    "group": "critical",
+    "expectedPh": 8.91,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#36a310"
+  },
+  {
+    "id": "QR-140",
+    "file": "/qr/batch/qr-QR-140.svg",
+    "group": "critical",
+    "expectedPh": 8.93,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#39a310"
+  },
+  {
+    "id": "QR-141",
+    "file": "/qr/batch/qr-QR-141.svg",
+    "group": "critical",
+    "expectedPh": 8.96,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#3ca410"
+  },
+  {
+    "id": "QR-142",
+    "file": "/qr/batch/qr-QR-142.svg",
+    "group": "critical",
+    "expectedPh": 8.99,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#3ea410"
+  },
+  {
+    "id": "QR-143",
+    "file": "/qr/batch/qr-QR-143.svg",
+    "group": "critical",
+    "expectedPh": 9.02,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#41a410"
+  },
+  {
+    "id": "QR-144",
+    "file": "/qr/batch/qr-QR-144.svg",
+    "group": "critical",
+    "expectedPh": 9.05,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#44a510"
+  },
+  {
+    "id": "QR-145",
+    "file": "/qr/batch/qr-QR-145.svg",
+    "group": "critical",
+    "expectedPh": 9.08,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#46a510"
+  },
+  {
+    "id": "QR-146",
+    "file": "/qr/batch/qr-QR-146.svg",
+    "group": "critical",
+    "expectedPh": 9.1,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#49a510"
+  },
+  {
+    "id": "QR-147",
+    "file": "/qr/batch/qr-QR-147.svg",
+    "group": "critical",
+    "expectedPh": 9.13,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#4ca510"
+  },
+  {
+    "id": "QR-148",
+    "file": "/qr/batch/qr-QR-148.svg",
+    "group": "critical",
+    "expectedPh": 9.16,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#4ea610"
+  },
+  {
+    "id": "QR-149",
+    "file": "/qr/batch/qr-QR-149.svg",
+    "group": "critical",
+    "expectedPh": 9.19,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#51a610"
+  },
+  {
+    "id": "QR-150",
+    "file": "/qr/batch/qr-QR-150.svg",
+    "group": "critical",
+    "expectedPh": 9.22,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#54a610"
+  },
+  {
+    "id": "QR-151",
+    "file": "/qr/batch/qr-QR-151.svg",
+    "group": "critical",
+    "expectedPh": 9.25,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#57a60f"
+  },
+  {
+    "id": "QR-152",
+    "file": "/qr/batch/qr-QR-152.svg",
+    "group": "critical",
+    "expectedPh": 9.27,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#5aa70f"
+  },
+  {
+    "id": "QR-153",
+    "file": "/qr/batch/qr-QR-153.svg",
+    "group": "critical",
+    "expectedPh": 9.3,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#5ca70f"
+  },
+  {
+    "id": "QR-154",
+    "file": "/qr/batch/qr-QR-154.svg",
+    "group": "critical",
+    "expectedPh": 9.33,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#5fa70f"
+  },
+  {
+    "id": "QR-155",
+    "file": "/qr/batch/qr-QR-155.svg",
+    "group": "critical",
+    "expectedPh": 9.36,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#62a80f"
+  },
+  {
+    "id": "QR-156",
+    "file": "/qr/batch/qr-QR-156.svg",
+    "group": "critical",
+    "expectedPh": 9.39,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#65a80f"
+  },
+  {
+    "id": "QR-157",
+    "file": "/qr/batch/qr-QR-157.svg",
+    "group": "critical",
+    "expectedPh": 9.42,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#68a80f"
+  },
+  {
+    "id": "QR-158",
+    "file": "/qr/batch/qr-QR-158.svg",
+    "group": "critical",
+    "expectedPh": 9.44,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#6ba80f"
+  },
+  {
+    "id": "QR-159",
+    "file": "/qr/batch/qr-QR-159.svg",
+    "group": "critical",
+    "expectedPh": 9.47,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#6da90f"
+  },
+  {
+    "id": "QR-160",
+    "file": "/qr/batch/qr-QR-160.svg",
+    "group": "critical",
+    "expectedPh": 9.5,
+    "expectedLabel": "Hong nang",
+    "darkHex": "#70a90f"
+  }
+]

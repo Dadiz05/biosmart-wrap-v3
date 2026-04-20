@@ -1,19 +1,21 @@
 import { create } from "zustand";
-import type { Product, AIResult, AppStatus, ScanRecord } from "../types";
+import type { AIResult, AppStatus, ScanPhase, Product, ScanRecord } from "../types";
 
 type State = {
   product: Product | null;
   aiResult: AIResult | null;
   lastQrId: string | null;
   status: AppStatus;
+  scanPhase: ScanPhase;
   lastError: string | null;
   scanCounter: number;
   history: ScanRecord[];
 
   setProduct: (p: Product) => void;
-  setAI: (a: AIResult) => void;
+  setAI: (a: AIResult | null) => void;
   setLastQrId: (id: string | null) => void;
   setStatus: (s: AppStatus) => void;
+  setScanPhase: (phase: ScanPhase) => void;
   setError: (message: string | null) => void;
   pushHistory: (r: Omit<ScanRecord, "scanNo">) => void;
   clearHistory: () => void;
@@ -25,6 +27,7 @@ export const useStore = create<State>((set) => ({
   aiResult: null,
   lastQrId: null,
   status: "idle",
+  scanPhase: "idle",
   lastError: null,
   scanCounter: 0,
   history: [],
@@ -33,6 +36,7 @@ export const useStore = create<State>((set) => ({
   setAI: (a) => set({ aiResult: a }),
   setLastQrId: (id) => set({ lastQrId: id }),
   setStatus: (s) => set({ status: s }),
+  setScanPhase: (phase) => set({ scanPhase: phase }),
   setError: (message) => set({ lastError: message }),
   pushHistory: (r) =>
     set((state) => {
@@ -43,5 +47,13 @@ export const useStore = create<State>((set) => ({
       };
     }),
   clearHistory: () => set({ history: [], scanCounter: 0 }),
-  reset: () => set({ product: null, aiResult: null, lastQrId: null, status: "idle", lastError: null }),
+  reset: () =>
+    set({
+      product: null,
+      aiResult: null,
+      lastQrId: null,
+      status: "idle",
+      scanPhase: "idle",
+      lastError: null,
+    }),
 }));

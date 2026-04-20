@@ -1,29 +1,53 @@
-# BioSmart Wrap (PWA)
+# BioSmart Wrap V2
 
-**BioSmart Wrap** là Progressive Web App (PWA) quét **QR sinh học (mực Anthocyanin)** để đánh giá độ tươi thực phẩm:
+BioSmart Wrap V2 là bản frontend riêng cho luồng quét QR sinh học. Thiết kế mới tách rõ hai pipeline:
 
-- **Quét được QR** → truy xuất thông tin sản phẩm + phân tích màu QR (AI) → suy ra **pH** → đánh giá **tươi/cảnh báo/nguy hiểm**
-- **Không quét được / lỗi** → **chốt chặn số**: “QR bị vô hiệu hóa → có thể thực phẩm đã hỏng”
+1. Pipeline A: decode QR để lấy ID, không đoán mò nếu QR không đọc được.
+2. Pipeline B: phân tích màu ngay trên vùng QR, sau khi hiệu chỉnh ánh sáng và cân bằng màu.
 
-## Tech Stack
+Kết quả scan là giá trị pH liên tục, có confidence, có mapping sang trạng thái cảnh báo để UI hiển thị rõ trên mobile.
 
-- **Frontend**: React + TypeScript + Vite, TailwindCSS, html5-qrcode, TensorFlow.js, Zustand
-- **Backend**: Node.js (Express)
-- **Database**: Neo4j (tuỳ chọn). Nếu chưa cấu hình Neo4j thì backend dùng mock data để chạy ngay.
+## Kiến trúc mới
 
-## Cấu trúc thư mục (Frontend)
+Các module chính nằm trong `src/scan/`:
 
-`src/`
+- `camera.ts`: capture frame từ video, hỗ trợ crop vùng QR.
+- `qr-decoder.ts`: wrapper QR decoder và validate QR ID.
+- `patch-detector.ts`: tách vùng QR trung tâm, đo màu, phát hiện lóa/ánh sáng yếu.
+- `color-calibration.ts`: cân bằng trắng, hiệu chỉnh sáng, chuẩn hóa màu.
+- `ph-estimator.ts`: suy pH liên tục và map sang trạng thái.
+- `scan-pipeline.ts`: ghép output cuối cùng cho scan session.
+- `types.ts`: kiểu dữ liệu scan đầy đủ.
 
-- `components/` (`QRScanner.tsx`, `ResultCard.tsx`, `StatusBadge.tsx`, `Toast.tsx`)
-- `pages/` (`Home.tsx`)
-- `services/` (`api.ts`, `aiService.ts`)
-- `hooks/` (`useCamera.ts`)
-- `store/` (`useStore.ts`)
+UI và state cũng được tách lại:
 
-## Chạy project (Dev)
+- `src/components/QRScanner.tsx`: luồng quét 2 bước.
+- `src/components/ResultCard.tsx`: hiển thị QR ID, pH số, trạng thái, confidence.
+- `src/components/ScanHistory.tsx`: lịch sử scan có pH/confidence.
+- `src/pages/Home.tsx`: điều khiển live/mock mode và chọn demo preset.
+- `src/store/useStore.ts`: lưu scan state, phase, history.
 
-### 1) Backend
+## Tính năng chính
+
+- QR ban đầu cố định, dễ in/dặm thủ công.
+- Camera đọc QR và phân tích màu ngay trên QR trong cùng một lượt scan.
+- pH trả về dạng liên tục, kèm `phLevel` trên thang 0-200.
+- Có confidence cho QR, màu QR, và pH.
+- Có fallback khi ánh sáng kém, lóa, hoặc vùng QR không rõ.
+- Co bo QR batch 160 ma de test nhanh tren local.
+
+## Chạy local
+
+### Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+### Backend riêng
+
+Backend nằm trong thư mục `backend/` và có thể chạy độc lập:
 
 ```bash
 cd backend
@@ -31,60 +55,49 @@ npm install
 npm run dev
 ```
 
-API:
+## Lưu ý deploy Vercel
 
-- `GET /product/:qrId`
-- `GET /health`
+Frontend và backend deploy tách riêng.
 
-### 2) Frontend
+- Frontend Vercel không cần env bắt buộc nếu gọi API cùng domain qua `/api`.
+- Nếu frontend cần trỏ API public khác domain, set `VITE_API_BASE_URL`.
+- Nếu dùng `api/proxy.ts` trên Vercel, cần set `BIOSMART_BACKEND_URL` trỏ tới backend đã deploy, ví dụ `https://your-backend.example.com`.
+- Giá trị `BIOSMART_BACKEND_URL` không được có dấu `/` cuối.
 
-```bash
-cd ..
-npm install
-npm run dev
-```
+## Demo QR chuan
 
-Mở app tại URL Vite in ra (thường là `http://localhost:5173`).
+Home page dung 4 ma chuan trong bo 160 ma (`public/qr/batch`) de test nhanh:
 
-## Neo4j (Tuỳ chọn)
+- `QR-024` → fresh
+- `QR-064` → degraded
+- `QR-102` → spoiled
+- `QR-142` → critical
 
-Nếu bạn có Neo4j, set env và backend sẽ ưu tiên query Neo4j trước, nếu không có sẽ fallback mock:
+## Checklist test
 
-```bash
-set NEO4J_URI=neo4j://localhost:7687
-set NEO4J_USER=neo4j
-set NEO4J_PASSWORD=your_password
-```
+Checklist chi tiet de test thuc dia nam o `docs/scan-test-checklist.md`.
 
-Graph schema gợi ý:
+### Điều kiện môi trường
 
-- `(p:Product { qrId, name, packDate })-[:SUPPLIED_BY]->(s:Supplier { name })`
+- Trong nhà: pass nếu QR decode trong 12 giây và pH confidence >= 0.70.
+- Ngoài trời: pass nếu vẫn đọc QR ổn định và confidence vùng màu QR >= 0.65.
+- Có lóa nhẹ: pass nếu app cảnh báo lóa nhưng vẫn trả pH với confidence >= 0.55.
+- Góc nghiêng: pass nếu QR vẫn đọc được và pH không nhảy quá 0.5 đơn vị giữa 2 lần quét liên tiếp.
+- Khoảng cách gần/xa: pass nếu QR đọc được ở cả hai đầu khoảng cách sử dụng thực tế.
 
-## AI model (Tuỳ chọn)
+### Case nghiệp vụ
 
-`src/services/aiService.ts` có 2 mode:
+- QR đọc được, màu QR tốt: pass khi QR ID hiển thị đúng, pH có 2 chữ số thập phân, confidence >= 0.70.
+- QR đọc được, màu QR lỗi: pass khi app vẫn cho pH nhưng gắn warning rõ ràng, hoặc yêu cầu quét lại nếu confidence quá thấp.
+- QR không đọc được: pass khi app báo lỗi rõ ràng và không tạo ID giả.
 
-- **Có model TFJS**: đặt model tại `public/model/model.json` (GraphModel), output classes theo thứ tự: `[purple, blue, green, yellow]`
-- **Không có model**: fallback heuristic (HSV bucket) để chạy ngay
+### Tiêu chí định lượng cơ bản
 
-## PWA
+- QR decode timeout mặc định: 12 giây.
+- pH hiển thị trên thang liên tục, đồng thời có `phLevel` 0-200.
+- Confidence dưới 0.5 cần hiển thị cảnh báo rõ ràng cho người dùng.
 
-- `public/manifest.json`
-- `public/sw.js` (cache cơ bản)
-- App tự register service worker trong `src/main.tsx`
+## Ghi chú kỹ thuật
 
-## Demo QR (4 case)
-
-Đã tạo sẵn 4 mã QR để bạn test nhanh:
-
-- `public/qr/demo-123.svg` → **Rất tươi** (AI demo override: `purple`, pH ~5.6)
-- `public/qr/demo-456.svg` → **Ôi thiu** (AI demo override: `green`, pH ~8.7)
-- `public/qr/demo-789.svg` → **Cảnh báo** (AI demo override: `blue`, pH ~7.2)
-- `public/qr/demo-999.svg` → **Nguy hiểm** (AI demo override: `yellow`, pH ~10.6)
-
-Chạy dev server rồi mở trực tiếp:
-
-- `/qr/demo-789.svg`
-- `/qr/demo-999.svg`
-- `/qr/demo-123.svg`
-- `/qr/demo-456.svg`
+- TensorFlow.js đã được bỏ khỏi luồng runtime hiện tại để giữ build nhẹ hơn.
+- Khi sau này muốn thay heuristic bằng model ML, chỉ cần thay phần `scan/` mà không phải đổi UI.

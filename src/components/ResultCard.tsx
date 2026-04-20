@@ -1,42 +1,32 @@
 import { useStore } from "../store/useStore";
 import StatusBadge from "./StatusBadge";
 
-function colorLabel(color: "purple" | "blue" | "green" | "yellow") {
-  switch (color) {
-    case "purple":
-      return "Tím";
-    case "blue":
-      return "Xanh lam";
-    case "green":
-      return "Xanh lục";
-    case "yellow":
-      return "Vàng";
+function confidenceClass(value: number, lightMode: boolean) {
+  if (value >= 0.85) {
+    return lightMode ? "bg-emerald-100 text-emerald-800 ring-emerald-200" : "bg-emerald-500/15 text-emerald-100 ring-emerald-400/30";
   }
+  if (value >= 0.65) {
+    return lightMode ? "bg-amber-100 text-amber-800 ring-amber-200" : "bg-amber-500/15 text-amber-100 ring-amber-400/30";
+  }
+  return lightMode ? "bg-rose-100 text-rose-800 ring-rose-200" : "bg-rose-500/15 text-rose-100 ring-rose-400/30";
 }
 
-function phRange(status: "fresh" | "degraded" | "spoiled" | "critical") {
-  switch (status) {
-    case "fresh":
-      return "5-6";
-    case "degraded":
-      return "6.5-7";
-    case "spoiled":
-      return "7.5-8.5";
-    case "critical":
-      return "8.5-9.5";
-  }
-}
-
-function backgroundHex(status: "fresh" | "degraded" | "spoiled" | "critical") {
-  switch (status) {
-    case "fresh":
-      return "#1fce10";
-    case "degraded":
-      return "#f7f60e";
-    case "spoiled":
-      return "#faa008";
-    case "critical":
-      return "#b81414";
+function warningLabel(issue: string) {
+  switch (issue) {
+    case "patch-low-light":
+      return "Ánh sáng yếu";
+    case "patch-glare":
+      return "Lóa sáng";
+    case "patch-unclear":
+      return "Patch chưa rõ";
+    case "qr-unreadable":
+      return "QR không đọc được";
+    case "qr-invalid":
+      return "QR không hợp lệ";
+    case "analysis-failed":
+      return "Phân tích thất bại";
+    default:
+      return issue;
   }
 }
 
@@ -45,75 +35,96 @@ export default function ResultCard({ lightMode = false }: { lightMode?: boolean 
 
   if (!aiResult) return null;
 
-  const colorToneClass =
-    aiResult.status === "fresh"
-      ? "bg-green-50 text-green-950 ring-green-200"
-      : aiResult.status === "degraded"
-        ? "bg-yellow-50 text-yellow-900 ring-yellow-200"
-        : aiResult.status === "spoiled"
-          ? "bg-orange-50 text-orange-900 ring-orange-200"
-          : "bg-red-50 text-red-900 ring-red-200";
+  const confidence = aiResult.ph.confidence;
+  const confidenceTone = confidenceClass(confidence, lightMode);
 
   return (
-    <div
-      className={`rounded-3xl p-4 shadow-xl ring-1 backdrop-blur ${
-        lightMode ? "bg-white text-slate-900 ring-slate-200" : colorToneClass
-      }`}
-    >
+    <div className={`rounded-3xl p-4 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-slate-950 text-white ring-white/10"}`}>
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 text-sm font-semibold text-slate-700">Kết quả phân tích QR</div>
-        <StatusBadge status={aiResult.status} />
+        <div className="min-w-0">
+          <div className={`text-xs font-semibold uppercase tracking-wide ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            Scan summary
+          </div>
+          <div className="mt-1 text-lg font-semibold">QR ID {aiResult.qr.qrId}</div>
+          <div className={`mt-1 text-xs ${lightMode ? "text-slate-500" : "text-white/60"}`}>
+            Decoder: {aiResult.qr.decoder} • Live mode
+          </div>
+        </div>
+        <StatusBadge status={aiResult.ph.status} />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <div
-          className={`rounded-2xl p-3 ring-1 ${
-            lightMode ? "bg-white ring-slate-200" : "bg-slate-50 ring-slate-200"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-600">🟩 Màu nền</div>
-          <div className="mt-1 text-sm font-semibold text-slate-900">
-            {backgroundHex(aiResult.status)}
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>QR ID</div>
+          <div className="mt-1 text-sm font-semibold">{aiResult.qr.qrId}</div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            Confidence {Math.round(aiResult.qr.confidence * 100)}%
           </div>
         </div>
 
-        <div
-          className={`rounded-2xl p-3 ring-1 ${
-            lightMode ? "bg-white ring-slate-200" : "bg-slate-50 ring-slate-200"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-600">🌡 Độ pH</div>
-          <div className="mt-1 text-sm font-semibold text-slate-900">
-            {phRange(aiResult.status)}
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>pH số</div>
+          <div className="mt-1 text-sm font-semibold">{aiResult.ph.ph.toFixed(2)}</div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            {aiResult.ph.phLevel}/200 mức
           </div>
         </div>
 
-        <div
-          className={`rounded-2xl p-3 ring-1 ${
-            lightMode ? "bg-white ring-slate-200" : "bg-slate-50 ring-slate-200"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-600">🎨 Màu chỉ thị pH</div>
-          <div className="mt-1 text-sm font-semibold text-slate-900">
-            {colorLabel(aiResult.color)}
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Trạng thái</div>
+          <div className="mt-1 text-sm font-semibold">{aiResult.ph.label}</div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            {aiResult.ph.message}
           </div>
         </div>
 
-        <div
-          className={`rounded-2xl p-3 ring-1 ${
-            lightMode ? "bg-white ring-slate-200" : "bg-slate-50 ring-slate-200"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-600">✅ Trạng thái</div>
-          <div className="mt-1 text-sm font-semibold text-slate-900">
-            <StatusBadge status={aiResult.status} />
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Độ tin cậy</div>
+          <div className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-sm font-semibold ring-1 ${confidenceTone}`}>
+            {Math.round(confidence * 100)}%
+          </div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            Mau QR {Math.round(aiResult.patch.confidence * 100)}% • Calibration {Math.round(aiResult.patch.calibration.quality * 100)}%
           </div>
         </div>
       </div>
 
-      {aiResult.previewDataUrl && (
+      {aiResult.warnings.length > 0 ? (
+        <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-amber-50 ring-amber-200 text-amber-900" : "bg-amber-500/10 ring-amber-500/20 text-amber-50"}`}>
+          <div className="text-sm font-semibold">Cảnh báo kỹ thuật</div>
+          <div className="mt-1 flex flex-wrap gap-2 text-xs">
+            {aiResult.warnings.map((issue) => (
+              <span key={issue} className={`rounded-full px-2.5 py-1 ring-1 ${lightMode ? "bg-white ring-amber-200" : "bg-black/10 ring-white/10"}`}>
+                {warningLabel(issue)}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Mau QR sau hieu chinh</div>
+          <div className="mt-1 text-sm font-semibold">
+            RGB {Math.round(aiResult.patch.calibratedRgb.r)}, {Math.round(aiResult.patch.calibratedRgb.g)}, {Math.round(aiResult.patch.calibratedRgb.b)}
+          </div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            Hue {Math.round(aiResult.patch.hsv.h)}° • Saturation {Math.round(aiResult.patch.hsv.s * 100)}%
+          </div>
+        </div>
+
+        <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Calibration</div>
+          <div className="mt-1 text-sm font-semibold uppercase">{aiResult.patch.calibration.method}</div>
+          <div className={`mt-1 text-[11px] ${lightMode ? "text-slate-500" : "text-white/55"}`}>
+            Exposure {aiResult.patch.calibration.exposureScale.toFixed(2)} • Gamma {aiResult.patch.calibration.gamma.toFixed(2)}
+          </div>
+        </div>
+      </div>
+
+      {aiResult.previewDataUrl ? (
         <div className="mt-4">
-          <div className="text-xs font-medium text-slate-600 mb-2">Preview</div>
+          <div className={`mb-2 text-xs font-medium ${lightMode ? "text-slate-500" : "text-white/55"}`}>Preview frame</div>
           <img
             src={aiResult.previewDataUrl}
             alt="Captured frame preview"
@@ -121,16 +132,7 @@ export default function ResultCard({ lightMode = false }: { lightMode?: boolean 
             loading="lazy"
           />
         </div>
-      )}
-
-      {aiResult.status === "critical" && (
-        <div className="mt-4 rounded-2xl bg-rose-50 p-3 text-rose-900 ring-1 ring-rose-200">
-          <div className="text-sm font-semibold">⚠️ Cảnh báo</div>
-          <div className="mt-1 text-sm">
-            Mức pH cho thấy thực phẩm đã hỏng nặng. Vui lòng không sử dụng.
-          </div>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
