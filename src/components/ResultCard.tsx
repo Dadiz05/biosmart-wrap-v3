@@ -15,20 +15,23 @@ function colorLabel(color: "purple" | "blue" | "green" | "yellow") {
 }
 
 export default function ResultCard({ lightMode = false }: { lightMode?: boolean }) {
-  const { aiResult, lastQrId } = useStore();
+  const { aiResult } = useStore();
 
   if (!aiResult) return null;
 
-  const isDemo123 = lastQrId === "123";
+  const colorToneClass =
+    aiResult.color === "purple"
+      ? "bg-violet-50 text-violet-950 ring-violet-200"
+      : aiResult.color === "blue"
+        ? "bg-blue-50 text-blue-950 ring-blue-200"
+        : aiResult.color === "green"
+          ? "bg-green-50 text-green-950 ring-green-200"
+          : "bg-lime-50 text-lime-900 ring-lime-200";
 
   return (
     <div
       className={`rounded-3xl p-4 shadow-xl ring-1 backdrop-blur ${
-        isDemo123
-          ? "bg-emerald-100 text-emerald-950 ring-emerald-300"
-          : lightMode
-            ? "bg-white text-slate-900 ring-slate-200"
-            : "bg-white/95 ring-black/5"
+        lightMode ? "bg-white text-slate-900 ring-slate-200" : colorToneClass
       }`}
     >
       <div className="flex items-start justify-between gap-3">

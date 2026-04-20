@@ -334,18 +334,26 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       {/* 🎯 RESULT */}
       {result && (
         <div
-          className={`fixed inset-0 z-[10050] flex flex-col items-center justify-center text-white text-center ${
-            result === "fresh"
-              ? "bg-emerald-600"
-              : result === "degraded"
-                ? "bg-amber-600"
-                : result === "spoiled"
-                  ? "bg-lime-600"
-                : "bg-rose-600"
-          } pointer-events-auto`}
+          className={`fixed inset-0 z-[10050] flex flex-col items-center justify-center text-center pointer-events-auto ${
+            result === "blocked"
+              ? "bg-slate-700 text-white"
+              : aiResult?.color === "purple"
+                ? "bg-violet-700 text-white"
+                : aiResult?.color === "blue"
+                  ? "bg-blue-600 text-white"
+                  : aiResult?.color === "green"
+                    ? "bg-green-600 text-white"
+                    : "bg-lime-500 text-slate-900"
+          }`}
         >
           <div className="px-6">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+            <div
+              className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl ring-1 ${
+                result === "blocked" || aiResult?.color === "purple" || aiResult?.color === "blue" || aiResult?.color === "green"
+                  ? "bg-white/15 ring-white/20"
+                  : "bg-black/10 ring-black/15"
+              }`}
+            >
               {result === "fresh" ? (
                 <IconCheckCircle className="h-8 w-8" />
               ) : (
@@ -409,7 +417,11 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               reset();
               onClose();
             }}
-            className="mt-3 inline-flex w-full max-w-xs items-center justify-center gap-2 rounded-2xl bg-black/15 px-6 py-3 text-sm font-semibold ring-1 ring-white/20 backdrop-blur active:scale-[0.99]"
+            className={`mt-3 inline-flex w-full max-w-xs items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold ring-1 backdrop-blur active:scale-[0.99] ${
+              result === "blocked" || aiResult?.color === "purple" || aiResult?.color === "blue" || aiResult?.color === "green"
+                ? "bg-black/15 ring-white/20 text-white"
+                : "bg-white/40 ring-black/20 text-slate-900"
+            }`}
           >
             <IconX className="h-4 w-4" />
             Về trang chính
