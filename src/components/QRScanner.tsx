@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import BrandMark from "./BrandMark";
-import ResultCard from "./ResultCard";
+import BioSmartScanResult from "./BioSmartScanResult";
 import { IconCamera, IconStop, IconX } from "./Icons";
 import { useStore } from "../store/useStore";
 import { useCamera } from "../hooks/useCamera";
 import { analyzeScanFrameWithAI } from "../services/scanPipeline";
-import { createQrScanner, isValidQrId, normalizeQrId } from "../scan/qr-decoder";
+import { createQrScanner, isBioSmartQrId, isValidQrId, normalizeQrId } from "../scan/qr-decoder";
 import { evaluatePatchFallback } from "../scan/fallback";
 import { triggerHapticFeedback } from "../utils/hapticFeedback";
 import { triggerSoundFeedback } from "../utils/soundFeedback";
@@ -476,39 +476,10 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
     scanTimeoutRef.current = setTimeout(() => {
       if (cleanupTokenRef.current !== token) return;
       void (async () => {
-        const batchResult = await runBatchValidation({
-          token,
-          qrDecoded: false,
-          mode: "live",
-          decodeAttempts: 12,
-        });
-
-        if (!batchResult) {
-          return;
-        }
-
-        setError(
-          `AI đang kiểm tra nhiều khung hình... pH ổn định hơn sau khi lấy ${BATCH_MIN_FRAMES}-${BATCH_MAX_FRAMES} frame.`
+        await failScan(
+          "Chưa đọc được QR hợp lệ của BioSmart. Hãy đưa đúng mã QR vào khung quét và thử lại.",
+          "QR timeout without valid BioSmart code"
         );
-        await finishWithResult(batchResult);
-        void submitFailedScanSample({
-          qrId: null,
-          previewDataUrl: batchResult.previewDataUrl,
-          warnings: batchResult.warnings,
-          mode: "live",
-          scanPhase: "ai-analyzing",
-          aiMeta: {
-            mode: batchResult.ai.mode,
-            qrStructureScore: batchResult.ai.qrStructureScore,
-            segmentationLabel: batchResult.ai.segmentationLabel,
-            segmentationConfidence: batchResult.ai.segmentationConfidence,
-            rectificationScore: batchResult.ai.rectificationScore,
-            provider: batchResult.ai.model.provider,
-            fallbackOnly: batchResult.ai.model.fallbackOnly,
-          },
-        }).catch(() => {
-          // ignore telemetry failures
-        });
       })();
     }, 12000);
 
@@ -522,6 +493,14 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
           const qrId = normalizeQrId(decodedText);
           if (!isValidQrId(qrId)) {
             await failScan("QR đọc được nhưng mã ID không hợp lệ.", `Invalid QR payload: ${decodedText}`);
+            return;
+          }
+
+          if (!isBioSmartQrId(qrId)) {
+            await failScan(
+              "QR hợp lệ nhưng không phải mã BioSmart (cần bắt đầu bằng QR-).",
+              `Non-BioSmart QR payload: ${decodedText}`
+            );
             return;
           }
 
@@ -686,7 +665,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
         {!aiResult && isScanning ? (
           <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`} role="status" aria-live="polite">
             {scanPhase === "ai-analyzing"
-              ? "AI Analyzing... giu may on dinh de he thong tai cau truc va phan loai mau."
+              ? "AI đang phân tích... Giữ máy ổn định để hệ thống tái cấu trúc và phân loại màu."
               : "Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc."}
           </div>
         ) : null}
@@ -749,7 +728,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               )}
 
               <div className={`text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
-                He thong uu tien decode QR, va tu dong chuyen sang AI visual inspection neu QR bi nhan/mo.
+                Chỉ chấp nhận mã BioSmart hợp lệ (định dạng QR-...) để trả kết quả.
               </div>
             </div>
           ) : (
@@ -782,44 +761,14 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
           }}
         >
           <div className="mx-auto w-full max-w-md">
-            {/* Header */}
-            <div className="mb-6 text-center">
-              <div className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-2">Kết quả quét</div>
-              <div className="text-lg font-semibold">Đánh giá độ tươi thực phẩm</div>
-            </div>
-
-            {/* ResultCard component (compact mode) */}
-            <div className="mb-6">
-              <ResultCard compact />
-            </div>
-
-            {/* Action buttons */}
-            <div className="mt-4 grid gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setAI(null);
-                  void startScan();
-                }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-black/20 active:scale-[0.98] hover:bg-white/95 transition-all"
-              >
-                <IconCamera className="h-5 w-5" />
-                Quét tiếp
-              </button>
-              <button
-                type="button"
-                onClick={handleCloseScanner}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white/20 px-6 py-3 text-sm font-semibold text-current ring-1 ring-white/40 backdrop-blur active:scale-[0.98] hover:bg-white/25 transition-all"
-              >
-                <IconX className="h-4 w-4" />
-                Về trang chính
-              </button>
-            </div>
-
-            {/* Footer tip */}
-            <div className="mt-4 text-center text-xs opacity-75">
-              Nhấn "Quét tiếp" để kiểm tra nhiều mặt hàng khác
-            </div>
+            <BioSmartScanResult
+              currentPH={aiResult.ph.ph}
+              onScanNext={() => {
+                setAI(null);
+                void startScan();
+              }}
+              onGoHome={handleCloseScanner}
+            />
           </div>
         </div>
       ) : null}

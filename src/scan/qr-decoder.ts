@@ -14,6 +14,12 @@ export function isValidQrId(value: string) {
   return /^[A-Za-z0-9_-]{2,64}$/.test(normalized);
 }
 
+export function isBioSmartQrId(value: string) {
+  const normalized = normalizeQrId(value);
+  if (!isValidQrId(normalized)) return false;
+  return /^QR-[A-Za-z0-9_-]{2,61}$/.test(normalized);
+}
+
 export function createQrScanner(elementId: string) {
   const scanner = new Html5Qrcode(elementId);
 

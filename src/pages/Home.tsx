@@ -21,6 +21,7 @@ export default function Home() {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<"bioInk" | "wrap" | null>(null);
   const [lightMode, setLightMode] = useState(() => localStorage.getItem("uiTheme") === "light");
 
   useEffect(() => {
@@ -78,14 +79,11 @@ export default function Home() {
                 type="button"
                 onClick={() => setSettingsOpen((value) => !value)}
                 aria-label="Mở cài đặt"
-                className={`shrink-0 rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wide ring-1 active:scale-[0.98] ${
+                className={`shrink-0 rounded-xl p-2 ring-1 active:scale-[0.98] ${
                   lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white text-slate-900 ring-white/20"
                 }`}
               >
-                <span className="inline-flex items-center gap-1.5">
-                  <IconSettings className="h-4 w-4" />
-                  Cài đặt
-                </span>
+                <IconSettings className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -121,22 +119,20 @@ export default function Home() {
               <FeedbackSettings />
 
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <a
-                  href="https://github.com/Dadiz05/biosmart-wrap-v2"
-                  target="_blank"
-                  rel="noreferrer"
+                <button
+                  type="button"
+                  onClick={() => setInfoModal("bioInk")}
                   className={`rounded-xl px-3 py-2 text-xs font-semibold ring-1 ${lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 text-white ring-white/15"}`}
                 >
                   Tìm hiểu cơ chế mực sinh học
-                </a>
-                <a
-                  href="https://github.com/Dadiz05/biosmart-wrap-v2"
-                  target="_blank"
-                  rel="noreferrer"
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInfoModal("wrap")}
                   className={`rounded-xl px-3 py-2 text-xs font-semibold ring-1 ${lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 text-white ring-white/15"}`}
                 >
                   Màng thực phẩm BioSmart Wrap
-                </a>
+                </button>
               </div>
             </div>
           ) : null}
@@ -279,6 +275,51 @@ export default function Home() {
       >
         <QRScanner open={scannerOpen} onClose={() => setScannerOpen(false)} lightMode={lightMode} />
       </Suspense>
+
+      {infoModal ? (
+        <div className="fixed inset-0 z-[10000] grid place-items-center bg-slate-950/70 px-4 py-6 backdrop-blur-sm">
+          <div className={`w-full max-w-md rounded-3xl p-5 ring-1 ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-slate-900 text-white ring-white/10"}`}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide opacity-70">Tìm hiểu nhanh</div>
+                <h3 className="mt-1 text-xl font-black">
+                  {infoModal === "bioInk" ? "Cơ chế mực sinh học" : "Màng thực phẩm BioSmart Wrap"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInfoModal(null)}
+                className={`rounded-xl p-2 ring-1 ${lightMode ? "bg-slate-100 text-slate-600 ring-slate-200" : "bg-white/10 text-white ring-white/10"}`}
+                aria-label="Đóng thông tin"
+              >
+                <IconX className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className={`mt-4 space-y-3 text-sm leading-6 ${lightMode ? "text-slate-700" : "text-white/78"}`}>
+              {infoModal === "bioInk" ? (
+                <>
+                  <p>Mực sinh học đổi màu theo biến đổi hóa học trong thực phẩm. Khi môi trường xung quanh thay đổi, màu trên mã sẽ dịch chuyển để phản ánh mức độ tươi.</p>
+                  <p>Cách này giúp người dùng nhìn nhanh bằng mắt thường, không cần đọc thêm thông số kỹ thuật phức tạp.</p>
+                </>
+              ) : (
+                <>
+                  <p>Màng thực phẩm BioSmart Wrap được thiết kế để vừa bọc bảo quản vừa mang lớp mã màu sinh học bên ngoài.</p>
+                  <p>Nhờ đó, cùng một tấm màng có thể giữ thực phẩm và cung cấp tín hiệu trực quan về tình trạng của sản phẩm.</p>
+                </>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setInfoModal(null)}
+              className={`mt-5 w-full rounded-2xl px-4 py-3 text-sm font-semibold ring-1 ${lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white text-slate-900 ring-white/15"}`}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

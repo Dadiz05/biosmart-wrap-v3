@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useStore } from "../store/useStore";
 import { IconShield, IconClock, IconTrendingDown } from "./Icons";
+import PhSensorDial from "./PhSensorDial";
 
 type AlertStatus = "fresh" | "degraded" | "spoiled" | "critical";
 
@@ -87,9 +88,7 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
     return (
       <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/10 ring-white/20"}`}>
         <div className="flex flex-col items-center justify-center gap-3 py-1 text-center">
-          <div className={`h-20 w-20 rounded-full ${userFriendly.color} ring-4 ${lightMode ? "ring-slate-200" : "ring-white/30"} flex items-center justify-center text-3xl`}>
-            {userFriendly.emoji}
-          </div>
+          <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} compact />
           <div className="text-2xl font-black tracking-wide">{userFriendly.keyword}</div>
           <p className="text-sm text-current/80">{explanation}</p>
         </div>
@@ -100,26 +99,13 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
   // Full card view
   return (
     <div className={`rounded-3xl p-5 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-white/10 text-current ring-white/20"}`}>
-      {/* Vòng tròn màu sắc lớn và từ khóa */}
+      {/* Đồng hồ pH dựa trên màu Anthocyanin */}
       <div className="flex flex-col items-center justify-center mb-6">
-        <div className={`w-32 h-32 rounded-full ${userFriendly.color} flex items-center justify-center mb-4 shadow-lg`}>
-          <div className="text-7xl">{userFriendly.emoji}</div>
-        </div>
+        <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} />
         <h2 className="text-3xl font-black text-center mb-2">{userFriendly.keyword}</h2>
         <p className={`text-sm text-center max-w-sm ${lightMode ? "text-slate-600" : "text-current/70"}`}>
           {explanation}
         </p>
-      </div>
-
-      {/* Color ring biểu thị độ tươi */}
-      <div className={`rounded-3xl p-4 text-center mb-5 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
-        <div className={`mx-auto h-44 w-44 rounded-full p-2 ${lightMode ? "bg-slate-100" : "bg-white/10"}`}>
-          <div className={`h-full w-full rounded-full ${userFriendly.color} ring-8 ${lightMode ? "ring-white" : "ring-white/30"} flex items-center justify-center text-6xl shadow-lg`}>
-            {userFriendly.emoji}
-          </div>
-        </div>
-        <div className="mt-3 text-3xl font-black">{userFriendly.keyword}</div>
-        <div className={`mt-2 text-sm ${lightMode ? "text-slate-600" : "text-current/75"}`}>{explanation}</div>
       </div>
 
       {/* Grid thông tin chính */}
