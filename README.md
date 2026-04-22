@@ -71,6 +71,17 @@ Frontend và backend deploy tách riêng.
 - Khi mất mạng, app sẽ mở trang offline nhẹ thay vì lỗi trắng màn hình.
 - Trên trình duyệt hỗ trợ, người dùng có thể cài app qua nút `Cài app` ở màn hình chính.
 
+## Lịch sử quét
+
+- Lịch sử quét có biểu đồ xu hướng pH dạng SVG gọn nhẹ.
+- Có thể tải lịch sử ra CSV hoặc JSON ngay trong giao diện.
+- Khi gặp lỗi runtime, app hiển thị màn hình an toàn thay vì trắng trang.
+
+## Kiểm thử
+
+- `npm test`: chạy bộ test Vitest cho pH estimator, QR decoder và fallback logic.
+- `npm run build`: kiểm tra build production sau khi thay đổi UI hoặc logic.
+
 ## Demo QR chuan
 
 Home page dung 1 ma goc chuan ban dau (`public/qr/original-fresh.svg`) de test nhanh:

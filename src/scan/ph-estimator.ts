@@ -121,7 +121,7 @@ export function estimatePhFromPatch(patch: PatchAnalysis, _qrId?: string): PhEst
   // Apply HSV-based pH adjustments (multi-channel analysis)
   const saturationAdjust = saturationPhAdjustment(saturation);
   const brightnessAdjust = valueBrightnessPhAdjustment(brightness);
-  ph = clamp01(ph + saturationAdjust + brightnessAdjust * 0.5) * 14;
+  ph = ph + saturationAdjust + brightnessAdjust * 0.5;
 
   // Clamp pH to valid range 5-9.8
   ph = Math.max(5, Math.min(9.8, ph));
