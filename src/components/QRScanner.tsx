@@ -9,6 +9,7 @@ import { createQrScanner, isValidQrId, normalizeQrId } from "../scan/qr-decoder"
 import { evaluatePatchFallback } from "../scan/fallback";
 import { triggerHapticFeedback } from "../utils/hapticFeedback";
 import { triggerSoundFeedback } from "../utils/soundFeedback";
+import { speakScanResult, stopSpeechFeedback } from "../utils/speechFeedback";
 import type { AlertStatus, ScanIssue, ScanPhase } from "../scan/types";
 import { submitFailedScanSample } from "../services/api";
 
@@ -325,6 +326,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       const { feedbackSettings } = useStore.getState();
       triggerHapticFeedback(result.ph.status, feedbackSettings.haptic);
       triggerSoundFeedback(result.ph.status, feedbackSettings.sound);
+      speakScanResult(result, feedbackSettings.voice);
 
       flashScreen();
       pushHistory({
@@ -568,6 +570,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
   const stopScan = useCallback(async () => {
     await closeModal();
+    stopSpeechFeedback();
     setStatus("idle");
     setScanPhase("idle");
   }, [closeModal, setScanPhase, setStatus]);
@@ -590,6 +593,36 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
   useEffect(() => {
     if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        handleCloseScanner();
+        return;
+      }
+
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        if (aiResult) {
+          setAI(null);
+          void startScan();
+          return;
+        }
+
+        if (!isScanningRef.current) {
+          void startScan();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [aiResult, handleCloseScanner, open, setAI, startScan]);
+
+  useEffect(() => {
+    if (!open) return;
     const frame = requestAnimationFrame(() => {
       void startScan();
     });
@@ -604,7 +637,12 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
   if (!open) return null;
 
   return (
-    <div className={`fixed inset-0 z-[9999] overflow-hidden ${lightMode ? "bg-slate-100" : "bg-slate-950"}`}>
+    <div
+      className={`fixed inset-0 z-[9999] overflow-hidden ${lightMode ? "bg-slate-100" : "bg-slate-950"}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Màn hình quét QR sinh học"
+    >
       <div id="reader" className={`absolute inset-0 z-0 h-full w-full ${aiResult ? "pointer-events-none" : ""}`} />
       <div className={`absolute inset-0 z-10 ${lightMode ? "bg-white/30" : "bg-black/40"}`} />
 
@@ -620,6 +658,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             <button
               type="button"
               onClick={handleCloseScanner}
+              aria-label="Đóng màn hình quét"
               className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold ring-1 active:scale-[0.98] ${lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 ring-white/15"}`}
             >
               <IconX className="h-4 w-4" />
@@ -627,7 +666,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2" aria-live="polite">
             <span className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold ring-1 ${phaseTone(scanPhase, lightMode)}`}>
               {phaseLabel(scanPhase)}
             </span>
@@ -645,7 +684,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-4 pt-[128px] pb-[148px] pointer-events-none">
         {!aiResult && isScanning ? (
-          <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`}>
+          <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`} role="status" aria-live="polite">
             {scanPhase === "ai-analyzing"
               ? "AI Analyzing... giu may on dinh de he thong tai cau truc va phan loai mau."
               : "Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc."}
@@ -691,6 +730,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
                 <button
                   type="button"
                   onClick={stopScan}
+                  aria-label="Dừng quét camera"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-500 py-3.5 text-base font-semibold text-white shadow-lg shadow-rose-500/20 active:scale-[0.99]"
                 >
                   <IconStop className="h-5 w-5" />
@@ -700,6 +740,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
                 <button
                   type="button"
                   onClick={startScan}
+                  aria-label="Bắt đầu quét camera"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
                   <IconCamera className="h-5 w-5" />

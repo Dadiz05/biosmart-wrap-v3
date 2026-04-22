@@ -4,6 +4,13 @@ import type { AIResult, AppStatus, ScanPhase, Product, ScanRecord } from "../typ
 export type FeedbackSettings = {
   haptic: boolean;
   sound: boolean;
+  voice: boolean;
+};
+
+export const defaultFeedbackSettings: FeedbackSettings = {
+  haptic: true,
+  sound: true,
+  voice: false,
 };
 
 type State = {
@@ -38,7 +45,7 @@ export const useStore = create<State>((set) => ({
   lastError: null,
   scanCounter: 0,
   history: [],
-  feedbackSettings: { haptic: true, sound: true },
+  feedbackSettings: defaultFeedbackSettings,
 
   setProduct: (p) => set({ product: p }),
   setAI: (a) => set({ aiResult: a }),
@@ -56,9 +63,10 @@ export const useStore = create<State>((set) => ({
     }),
   clearHistory: () => set({ history: [], scanCounter: 0 }),
   setFeedbackSettings: (settings) => {
-    set({ feedbackSettings: settings });
+    const merged = { ...defaultFeedbackSettings, ...settings };
+    set({ feedbackSettings: merged });
     // Persist to localStorage
-    localStorage.setItem("feedbackSettings", JSON.stringify(settings));
+    localStorage.setItem("feedbackSettings", JSON.stringify(merged));
   },
   reset: () =>
     set({

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import QRScanner from "../components/QRScanner";
+import { Suspense, lazy, useEffect, useState } from "react";
 import ResultCard from "../components/ResultCard";
 import ScanHistory from "../components/ScanHistory";
 import BrandMark from "../components/BrandMark";
 import FeedbackSettings from "../components/FeedbackSettings";
 import Toast from "../components/Toast";
 import { IconCamera, IconPrint } from "../components/Icons";
-import { useStore } from "../store/useStore";
+import { defaultFeedbackSettings, useStore } from "../store/useStore";
+
+const QRScanner = lazy(() => import("../components/QRScanner"));
 
 type BeforeInstallPromptEvent = Event & {
   readonly platforms: string[];
@@ -56,7 +57,7 @@ export default function Home() {
     const saved = localStorage.getItem("feedbackSettings");
     if (saved) {
       try {
-        setFeedbackSettings(JSON.parse(saved));
+        setFeedbackSettings({ ...defaultFeedbackSettings, ...JSON.parse(saved) });
       } catch (error) {
         console.debug("Failed to load feedback settings:", error);
       }
@@ -91,6 +92,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => void handleInstallApp()}
+                  aria-label="Cài ứng dụng BioSmart Wrap vào màn hình chính"
                   className={`rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wide ring-1 active:scale-[0.98] ${
                     lightMode ? "bg-emerald-600 text-white ring-emerald-600" : "bg-emerald-500 text-white ring-emerald-400/30"
                   }`}
@@ -101,6 +103,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setLightMode((value) => !value)}
+                aria-label="Chuyển giao diện sáng tối"
                 className={`shrink-0 rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wide ring-1 active:scale-[0.98] ${
                   lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white text-slate-900 ring-white/20"
                 }`}
@@ -128,10 +131,12 @@ export default function Home() {
 
           <div className="mt-5 grid gap-3">
             <button
+              type="button"
               onClick={() => {
                 reset();
                 setScannerOpen(true);
               }}
+              aria-label="Mở camera để bắt đầu quét QR sinh học"
               className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
             >
               <IconCamera className="h-5 w-5" />
@@ -237,7 +242,15 @@ export default function Home() {
         </div>
       </div>
 
-      <QRScanner open={scannerOpen} onClose={() => setScannerOpen(false)} lightMode={lightMode} />
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 z-[9998] grid place-items-center bg-slate-950/65 text-white">
+            <div className="rounded-2xl bg-black/55 px-4 py-3 text-sm ring-1 ring-white/15">Đang tải camera quét...</div>
+          </div>
+        }
+      >
+        <QRScanner open={scannerOpen} onClose={() => setScannerOpen(false)} lightMode={lightMode} />
+      </Suspense>
     </div>
   );
 }

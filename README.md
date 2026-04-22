@@ -46,6 +46,15 @@ npm install
 npm run dev
 ```
 
+Các mode môi trường:
+
+```bash
+npm run dev:staging
+npm run build:dev
+npm run build:staging
+npm run build:prod
+```
+
 ### Backend riêng
 
 Backend nằm trong thư mục `backend/` và có thể chạy độc lập:
@@ -76,6 +85,12 @@ Frontend và backend deploy tách riêng.
 - Lịch sử quét có biểu đồ xu hướng pH dạng SVG gọn nhẹ.
 - Có thể tải lịch sử ra CSV hoặc JSON ngay trong giao diện.
 - Khi gặp lỗi runtime, app hiển thị màn hình an toàn thay vì trắng trang.
+
+## Accessibility
+
+- Hỗ trợ phím tắt trong màn hình quét: `Esc` để đóng, `Enter` để quét lại/bắt đầu.
+- Có tuỳ chọn đọc kết quả bằng giọng nói trong mục `Phản hồi`.
+- Scanner đã thêm ARIA role/label cho dialog, trạng thái và nút chính.
 
 ## Kiểm thử
 
