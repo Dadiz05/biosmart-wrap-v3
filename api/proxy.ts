@@ -39,12 +39,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  const method = req.method === "HEAD" ? "HEAD" : "GET";
+  const incomingMethod = req.method?.toUpperCase() || "GET";
+  const method = incomingMethod === "POST" || incomingMethod === "HEAD" ? incomingMethod : "GET";
+  const canSendBody = method === "POST";
+
+  let bodyJson: string | undefined;
+  if (canSendBody && req.body) {
+    if (typeof req.body === "string") {
+      bodyJson = req.body;
+    } else {
+      bodyJson = JSON.stringify(req.body);
+    }
+  }
 
   try {
     const r = await fetch(upstreamUrl, {
       method,
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        ...(canSendBody ? { "content-type": "application/json" } : {}),
+      },
+      body: canSendBody ? bodyJson : undefined,
     });
     const ct = r.headers.get("content-type") ?? "application/json; charset=utf-8";
     const body = Buffer.from(await r.arrayBuffer());

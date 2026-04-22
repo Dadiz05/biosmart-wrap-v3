@@ -1,5 +1,5 @@
 import type { AIResult } from "../types";
-import { analyzeScanFrame } from "../scan/scan-pipeline";
+import { analyzeScanFrameWithAI } from "./scanPipeline";
 import { getMockScanPreset } from "../mock/scanPresets";
 
 type AnalyzeInput =
@@ -9,13 +9,15 @@ type AnalyzeInput =
 export async function analyzeColor(input: AnalyzeInput): Promise<AIResult> {
   if ("imageData" in input) {
     const qrId = localStorage.getItem("lastQR") ?? "demo";
-    return analyzeScanFrame({
+    return (await analyzeScanFrameWithAI({
       imageData: input.imageData,
       previewDataUrl: input.previewDataUrl,
       qrId,
       mode: "live",
       qrConfidence: 0.98,
-    }).result;
+      qrDecoded: true,
+      decodeAttempts: 1,
+    })).result;
   }
 
   return getMockScanPreset(localStorage.getItem("mockQrId") ?? "123").result;

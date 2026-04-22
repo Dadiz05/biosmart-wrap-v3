@@ -6,9 +6,27 @@ export type MockPreset = {
   result: ScanResult;
 };
 
-function createMockResult(qrId: string, result: ScanResult): ScanResult {
+type MockResultInput = Omit<ScanResult, "ai"> & Partial<Pick<ScanResult, "ai">>;
+
+function createMockResult(qrId: string, result: MockResultInput): ScanResult {
   return {
     ...result,
+    ai: result.ai ?? {
+      mode: "decoder-first",
+      qrStructureScore: 0.9,
+      objectDetectionConfidence: 0.88,
+      segmentationConfidence: 0.86,
+      segmentationLabel: "blue-spoilage",
+      rectificationScore: 0.84,
+      model: {
+        ready: false,
+        fallbackOnly: true,
+        provider: "heuristic",
+        backend: "none",
+        loadMs: 0,
+      },
+      notes: ["Mock preset"],
+    },
     qr: {
       ...result.qr,
       qrId,

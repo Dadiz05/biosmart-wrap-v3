@@ -4,6 +4,7 @@ const neo4j = require("neo4j-driver");
 
 const app = express();
 app.use(cors());
+app.use(express.json({ limit: "6mb" }));
 
 const PORT = process.env.PORT || 5000;
 
@@ -39,6 +40,43 @@ function createNeo4jDriver() {
 }
 
 const driver = createNeo4jDriver();
+
+async function saveFailedSampleToNeo4j(payload) {
+  if (!driver) return { stored: false, reason: "neo4j-disabled" };
+
+  const session = driver.session();
+  const sampleId = `sample-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  try {
+    await session.run(
+      `
+      CREATE (s:FailedScanSample {
+        sampleId: $sampleId,
+        createdAt: datetime(),
+        qrId: $qrId,
+        mode: $mode,
+        scanPhase: $scanPhase,
+        warningsJson: $warningsJson,
+        aiMetaJson: $aiMetaJson,
+        previewDataUrl: $previewDataUrl
+      })
+      `,
+      {
+        sampleId,
+        qrId: payload.qrId || null,
+        mode: payload.mode || "live",
+        scanPhase: payload.scanPhase || "unknown",
+        warningsJson: JSON.stringify(Array.isArray(payload.warnings) ? payload.warnings : []),
+        aiMetaJson: JSON.stringify(payload.aiMeta || {}),
+        previewDataUrl: typeof payload.previewDataUrl === "string" ? payload.previewDataUrl.slice(0, 2_400_000) : null,
+      }
+    );
+
+    return { stored: true, sampleId };
+  } finally {
+    await session.close();
+  }
+}
 
 async function getProductFromNeo4j(qrId) {
   if (!driver) return null;
@@ -95,6 +133,29 @@ app.get("/product/:id", getProduct);
 // Tiền tố /api (một số gateway hoặc khi test tay URL …/api/product/:id)
 const apiRouter = express.Router();
 apiRouter.get("/product/:id", getProduct);
+
+async function ingestFailedScanSample(req, res) {
+  const body = req.body || {};
+  const hasImage = typeof body.previewDataUrl === "string" && body.previewDataUrl.startsWith("data:image/");
+  if (!hasImage) {
+    return res.status(400).json({ error: "previewDataUrl (data:image/*;base64,...) is required" });
+  }
+
+  try {
+    const result = await saveFailedSampleToNeo4j(body);
+    if (!result.stored) {
+      return res.status(202).json({ ok: true, stored: false, reason: result.reason });
+    }
+    return res.status(201).json({ ok: true, stored: true, sampleId: result.sampleId });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to store sample" });
+  }
+}
+
+app.post("/scan-samples/failure", ingestFailedScanSample);
+apiRouter.post("/scan-samples/failure", ingestFailedScanSample);
+
 app.use("/api", apiRouter);
 
 function health(_req, res) {
@@ -106,5 +167,5 @@ app.get("/api/health", health);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log("GET /product/:id, GET /api/product/:id, GET /health, GET /api/health");
+  console.log("GET /product/:id, GET /api/product/:id, POST /scan-samples/failure, POST /api/scan-samples/failure, GET /health, GET /api/health");
 });

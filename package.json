@@ -11,6 +11,8 @@
     "gen:qrs": "node scripts/generate-bulk-qrs.mjs"
   },
   "dependencies": {
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.15.1",
     "html5-qrcode": "^2.3.8",
     "react": "^19.2.4",

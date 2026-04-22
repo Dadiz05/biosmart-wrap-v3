@@ -25,6 +25,12 @@ function warningLabel(issue: string) {
       return "QR không hợp lệ";
     case "analysis-failed":
       return "Phân tích thất bại";
+    case "qr-structure-broken":
+      return "Cấu trúc QR bị vỡ";
+    case "ai-unavailable":
+      return "AI fallback";
+    case "ai-visual-inspection":
+      return "AI visual inspection";
     default:
       return issue;
   }
@@ -65,7 +71,7 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
           <div className={labelClass}>QR ID</div>
           <div className="mt-1 text-sm font-semibold">{aiResult.qr.qrId}</div>
           <div className={metaClass}>
-            Confidence {Math.round(aiResult.qr.confidence * 100)}%
+            Confidence {Math.round(aiResult.qr.confidence * 100)}% • {aiResult.qr.decoder}
           </div>
         </div>
 
@@ -97,6 +103,20 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
           </div>
         ) : null}
       </div>
+
+      {!compact ? (
+        <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-sky-50 ring-sky-200 text-sky-900" : "bg-white/20 ring-white/35 text-current"}`}>
+          <div className="text-sm font-semibold">AI Recognition</div>
+          <div className="mt-2 grid gap-2 text-xs sm:grid-cols-2">
+            <div>Mode: {aiResult.ai.mode}</div>
+            <div>Provider: {aiResult.ai.model.provider}</div>
+            <div>QR structure: {Math.round(aiResult.ai.qrStructureScore * 100)}%</div>
+            <div>Rectification: {Math.round(aiResult.ai.rectificationScore * 100)}%</div>
+            <div>Segmentation: {aiResult.ai.segmentationLabel}</div>
+            <div>Seg confidence: {Math.round(aiResult.ai.segmentationConfidence * 100)}%</div>
+          </div>
+        </div>
+      ) : null}
 
       {aiResult.warnings.length > 0 && !compact ? (
         <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-amber-50 ring-amber-200 text-amber-900" : "bg-white/20 ring-white/35 text-current"}`}>

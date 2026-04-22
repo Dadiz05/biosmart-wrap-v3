@@ -4,10 +4,11 @@ import ResultCard from "./ResultCard";
 import { IconAlertTriangle, IconCamera, IconCheckCircle, IconStop, IconX } from "./Icons";
 import { useStore } from "../store/useStore";
 import { useCamera } from "../hooks/useCamera";
-import { analyzeScanFrame } from "../scan/scan-pipeline";
+import { analyzeScanFrameWithAI } from "../services/scanPipeline";
 import { createQrScanner, isValidQrId, normalizeQrId } from "../scan/qr-decoder";
 import { evaluatePatchFallback } from "../scan/fallback";
 import type { ScanPhase } from "../scan/types";
+import { submitFailedScanSample } from "../services/api";
 
 type Props = {
   open: boolean;
@@ -36,6 +37,8 @@ function phaseLabel(phase: ScanPhase) {
       return "Đọc QR";
     case "patch-analysis":
       return "Phân tích màu QR";
+    case "ai-analyzing":
+      return "AI đang phân tích";
     case "done":
       return "Hoàn tất";
     case "error":
@@ -52,6 +55,9 @@ function phaseTone(phase: ScanPhase, lightMode: boolean) {
   }
   if (phase === "patch-analysis") {
     return lightMode ? "bg-amber-100 text-amber-800 ring-amber-200" : "bg-amber-500/15 text-amber-100 ring-amber-400/30";
+  }
+  if (phase === "ai-analyzing") {
+    return lightMode ? "bg-indigo-100 text-indigo-800 ring-indigo-200" : "bg-indigo-500/20 text-indigo-100 ring-indigo-400/40";
   }
   if (phase === "qr-decoding") {
     return lightMode ? "bg-sky-100 text-sky-800 ring-sky-200" : "bg-sky-500/15 text-sky-100 ring-sky-400/30";
@@ -176,6 +182,24 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
         reason,
         aiResult: partialResult,
       });
+      void submitFailedScanSample({
+        qrId,
+        previewDataUrl: partialResult.previewDataUrl,
+        warnings: partialResult.warnings,
+        mode: partialResult.mode,
+        scanPhase: "error",
+        aiMeta: {
+          mode: partialResult.ai.mode,
+          qrStructureScore: partialResult.ai.qrStructureScore,
+          segmentationLabel: partialResult.ai.segmentationLabel,
+          segmentationConfidence: partialResult.ai.segmentationConfidence,
+          rectificationScore: partialResult.ai.rectificationScore,
+          provider: partialResult.ai.model.provider,
+          fallbackOnly: partialResult.ai.model.fallbackOnly,
+        },
+      }).catch(() => {
+        // ignore telemetry failures
+      });
     },
     [pushHistory, safeStopScanner, setAI, setError, setScanPhase, setStatus, setScanning, stopTimer]
   );
@@ -220,10 +244,54 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
     scanTimeoutRef.current = setTimeout(() => {
       if (cleanupTokenRef.current !== token) return;
-      void failScan(
-        "Không đọc được QR. Hãy đưa QR vào đúng khung, giữ máy ổn định và thử lại.",
-        "QR decode timeout"
-      );
+      void (async () => {
+        const frame = captureFrame({ maxSize: 960, quality: 0.82 });
+        if (!frame) {
+          await failScan(
+            "Không đọc được QR. Hãy đưa QR vào đúng khung, giữ máy ổn định và thử lại.",
+            "QR decode timeout"
+          );
+          return;
+        }
+
+        setScanPhase("ai-analyzing");
+        const outcome = await analyzeScanFrameWithAI({
+          imageData: frame.imageData,
+          previewDataUrl: frame.previewDataUrl,
+          mode: "live",
+          qrDecoded: false,
+          decodeAttempts: 12,
+        });
+
+        if (!outcome.result.ai.model.ready) {
+          await failScan(
+            "AI chưa sẵn sàng và QR không đọc được. Hệ thống quay về quét truyền thống, vui lòng chỉnh sáng và quét lại.",
+            "AI unavailable after QR timeout"
+          );
+          return;
+        }
+
+        setError("AI Analyzing... QR bi mo/nhan. Da chuyen sang che do kiem tra hinh anh.");
+        await finishWithResult(outcome.result);
+        void submitFailedScanSample({
+          qrId: null,
+          previewDataUrl: frame.previewDataUrl,
+          warnings: outcome.result.warnings,
+          mode: "live",
+          scanPhase: "ai-analyzing",
+          aiMeta: {
+            mode: outcome.result.ai.mode,
+            qrStructureScore: outcome.result.ai.qrStructureScore,
+            segmentationLabel: outcome.result.ai.segmentationLabel,
+            segmentationConfidence: outcome.result.ai.segmentationConfidence,
+            rectificationScore: outcome.result.ai.rectificationScore,
+            provider: outcome.result.ai.model.provider,
+            fallbackOnly: outcome.result.ai.model.fallbackOnly,
+          },
+        }).catch(() => {
+          // ignore telemetry failures
+        });
+      })();
     }, 12000);
 
     try {
@@ -249,29 +317,34 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             return;
           }
 
-          const outcome = analyzeScanFrame({
+          setScanPhase("ai-analyzing");
+
+          const outcome = await analyzeScanFrameWithAI({
             imageData: frame.imageData,
             previewDataUrl: frame.previewDataUrl,
             qrId,
             mode: "live",
             qrConfidence: 0.98,
+            qrDecoded: true,
+            decodeAttempts: 1,
           });
 
-          const fallback = evaluatePatchFallback(outcome.patch);
-          if (fallback.shouldReject) {
+          const fallback = evaluatePatchFallback(outcome.result.patch);
+          if (fallback.shouldReject && outcome.result.ai.mode === "decoder-first") {
             await failPatchAfterQr(
               fallback.userMessage,
-              `QR-color rejected: ${fallback.reasonCodes.join(",") || "analysis-failed"} | confidence=${outcome.patch.confidence.toFixed(2)}`,
+              `QR-color rejected: ${fallback.reasonCodes.join(",") || "analysis-failed"} | confidence=${outcome.result.patch.confidence.toFixed(2)}`,
               qrId,
               outcome.result
             );
             return;
           }
 
-          setAI(outcome.result);
-          setScanPhase("done");
-          setStatus("done");
-          setError(fallback.userMessage || null);
+          const aiHint =
+            outcome.result.ai.mode === "visual-inspection"
+              ? "AI Analyzing... QR da hu cau truc, ket qua duoc suy luan bang visual inspection."
+              : fallback.userMessage || null;
+          setError(aiHint);
           await finishWithResult(outcome.result);
         },
         async () => {
@@ -368,7 +441,9 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-4 pt-[128px] pb-[148px] pointer-events-none">
         {!aiResult && isScanning ? (
           <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`}>
-            Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc.
+            {scanPhase === "ai-analyzing"
+              ? "AI Analyzing... giu may on dinh de he thong tai cau truc va phan loai mau."
+              : "Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc."}
           </div>
         ) : null}
 
@@ -408,7 +483,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               )}
 
               <div className={`text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
-                QR phải đọc được trước, sau đó hệ thống phân tích màu ngay trên chính mã QR đó.
+                He thong uu tien decode QR, va tu dong chuyen sang AI visual inspection neu QR bi nhan/mo.
               </div>
             </div>
           ) : (

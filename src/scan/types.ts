@@ -1,6 +1,6 @@
 export type AlertStatus = "fresh" | "degraded" | "spoiled" | "critical";
 
-export type ScanPhase = "idle" | "qr-decoding" | "patch-analysis" | "done" | "error";
+export type ScanPhase = "idle" | "qr-decoding" | "patch-analysis" | "ai-analyzing" | "done" | "error";
 
 export type ScanIssue =
   | "camera-unavailable"
@@ -9,6 +9,9 @@ export type ScanIssue =
   | "patch-low-light"
   | "patch-glare"
   | "patch-unclear"
+  | "qr-structure-broken"
+  | "ai-unavailable"
+  | "ai-visual-inspection"
   | "analysis-failed"
   | "timeout";
 
@@ -46,8 +49,31 @@ export type QrDecodeResult = {
   rawText: string;
   qrId: string;
   confidence: number;
-  decoder: "html5-qrcode" | "mock";
+  decoder: "html5-qrcode" | "mock" | "ai-visual-inspection";
   attempts: number;
+};
+
+export type SegmentationLabel = "purple-under-warm-light" | "blue-spoilage" | "green-advanced-spoilage";
+
+export type AIModelStatus = {
+  ready: boolean;
+  fallbackOnly: boolean;
+  provider: "tfjs-mobilenet" | "heuristic";
+  backend: "webgl" | "cpu" | "none";
+  loadMs: number;
+};
+
+export type AIRecognitionMeta = {
+  mode: "decoder-first" | "visual-inspection";
+  qrStructureScore: number;
+  objectDetectionConfidence: number;
+  segmentationConfidence: number;
+  segmentationLabel: SegmentationLabel;
+  rectificationScore: number;
+  visualStatus?: "spoiled" | "critical";
+  visualConfidence?: number;
+  model: AIModelStatus;
+  notes: string[];
 };
 
 export type PatchAnalysis = {
@@ -78,6 +104,7 @@ export type ScanResult = {
   qr: QrDecodeResult;
   patch: PatchAnalysis;
   ph: PhEstimate;
+  ai: AIRecognitionMeta;
   warnings: ScanIssue[];
   previewDataUrl?: string;
   scannedAt: string;
