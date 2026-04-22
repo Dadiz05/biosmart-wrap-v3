@@ -4,16 +4,10 @@ import ScanHistory from "../components/ScanHistory";
 import BrandMark from "../components/BrandMark";
 import FeedbackSettings from "../components/FeedbackSettings";
 import Toast from "../components/Toast";
-import { IconCamera, IconPrint } from "../components/Icons";
+import { IconCamera, IconPrint, IconSettings, IconX } from "../components/Icons";
 import { defaultFeedbackSettings, useStore } from "../store/useStore";
 
 const QRScanner = lazy(() => import("../components/QRScanner"));
-
-type BeforeInstallPromptEvent = Event & {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
-  prompt: () => Promise<void>;
-};
 
 const originalQr = {
   id: "QR-ORIGINAL-FRESH",
@@ -26,31 +20,12 @@ export default function Home() {
   const { status, lastError, aiResult, reset, history, clearHistory, setFeedbackSettings } = useStore();
   const [scannerOpen, setScannerOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [lightMode, setLightMode] = useState(() => localStorage.getItem("uiTheme") === "light");
 
   useEffect(() => {
     localStorage.setItem("uiTheme", lightMode ? "light" : "dark");
   }, [lightMode]);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (event: Event) => {
-      event.preventDefault();
-      setInstallPrompt(event as BeforeInstallPromptEvent);
-    };
-
-    const handleAppInstalled = () => {
-      setInstallPrompt(null);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", handleAppInstalled);
-    };
-  }, []);
 
   // Load feedback settings from localStorage
   useEffect(() => {
@@ -66,12 +41,23 @@ export default function Home() {
 
   const toastTone = lastError ? "danger" : "info";
 
-  const handleInstallApp = async () => {
-    if (!installPrompt) return;
-    await installPrompt.prompt();
-    await installPrompt.userChoice.catch(() => null);
-    setInstallPrompt(null);
-  };
+  const degradedDemos = [
+    {
+      id: "stage-2-mild-change-front",
+      file: "/qr/dataset/stage-2-mild-change-front.svg",
+      label: "Biến đổi nhẹ",
+    },
+    {
+      id: "stage-3-warning-front",
+      file: "/qr/dataset/stage-3-warning-front.svg",
+      label: "Cảnh báo",
+    },
+    {
+      id: "stage-4-danger-front",
+      file: "/qr/dataset/stage-4-danger-front.svg",
+      label: "Nguy hiểm",
+    },
+  ];
 
   return (
     <div className={`min-h-dvh ${lightMode ? "bg-slate-100 text-slate-900" : "bg-slate-950 text-slate-50"}`}>
@@ -88,27 +74,18 @@ export default function Home() {
           <div className="flex items-start justify-between gap-3">
             <BrandMark />
             <div className="flex shrink-0 flex-wrap justify-end gap-2">
-              {installPrompt ? (
-                <button
-                  type="button"
-                  onClick={() => void handleInstallApp()}
-                  aria-label="Cài ứng dụng BioSmart Wrap vào màn hình chính"
-                  className={`rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wide ring-1 active:scale-[0.98] ${
-                    lightMode ? "bg-emerald-600 text-white ring-emerald-600" : "bg-emerald-500 text-white ring-emerald-400/30"
-                  }`}
-                >
-                  Cài app
-                </button>
-              ) : null}
               <button
                 type="button"
-                onClick={() => setLightMode((value) => !value)}
-                aria-label="Chuyển giao diện sáng tối"
+                onClick={() => setSettingsOpen((value) => !value)}
+                aria-label="Mở cài đặt"
                 className={`shrink-0 rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wide ring-1 active:scale-[0.98] ${
                   lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white text-slate-900 ring-white/20"
                 }`}
               >
-                {lightMode ? "Dark" : "White"}
+                <span className="inline-flex items-center gap-1.5">
+                  <IconSettings className="h-4 w-4" />
+                  Cài đặt
+                </span>
               </button>
             </div>
           </div>
@@ -120,14 +97,49 @@ export default function Home() {
             Camera đọc một mã gốc tươi chuẩn ban đầu và phân tích màu trực tiếp trên vùng QR trong một lượt quét.
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold ring-1 ${lightMode ? "bg-white text-slate-600 ring-slate-200" : "bg-white/10 text-white/75 ring-white/10"}`}>
-              Cache offline
-            </span>
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold ring-1 ${lightMode ? "bg-white text-slate-600 ring-slate-200" : "bg-white/10 text-white/75 ring-white/10"}`}>
-              PWA ready
-            </span>
-          </div>
+          {settingsOpen ? (
+            <div className={`mt-4 rounded-2xl p-3 ring-1 ${lightMode ? "bg-white text-slate-700 ring-slate-200" : "bg-black/30 text-white ring-white/15"}`}>
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-xs font-semibold uppercase tracking-wide opacity-80">Tùy chỉnh nhanh</div>
+                <button
+                  type="button"
+                  onClick={() => setSettingsOpen(false)}
+                  className={`rounded-lg px-2 py-1 text-[11px] font-semibold ${lightMode ? "bg-slate-100 text-slate-600" : "bg-white/10 text-white/70"}`}
+                >
+                  <span className="inline-flex items-center gap-1"><IconX className="h-3.5 w-3.5" /> Đóng</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setLightMode((value) => !value)}
+                className={`mb-3 w-full rounded-xl px-3 py-2 text-xs font-semibold ring-1 active:scale-[0.99] ${lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white text-slate-900 ring-white/20"}`}
+              >
+                {lightMode ? "Chuyển về chế độ tối" : "Chuyển về chế độ sáng"}
+              </button>
+
+              <FeedbackSettings />
+
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <a
+                  href="https://github.com/Dadiz05/biosmart-wrap-v2"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`rounded-xl px-3 py-2 text-xs font-semibold ring-1 ${lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 text-white ring-white/15"}`}
+                >
+                  Tìm hiểu cơ chế mực sinh học
+                </a>
+                <a
+                  href="https://github.com/Dadiz05/biosmart-wrap-v2"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`rounded-xl px-3 py-2 text-xs font-semibold ring-1 ${lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 text-white ring-white/15"}`}
+                >
+                  Màng thực phẩm BioSmart Wrap
+                </a>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-5 grid gap-3">
             <button
@@ -143,7 +155,7 @@ export default function Home() {
               Bắt đầu quét
             </button>
             <div className={`text-center text-xs ${lightMode ? "text-slate-500" : "text-white/60"}`}>
-              Luồng quét sẽ báo rõ QR, pH, trạng thái và độ tin cậy.
+              Luồng quét sẽ báo rõ mức độ tươi, trạng thái và độ tin cậy.
             </div>
           </div>
         </div>
@@ -191,10 +203,6 @@ export default function Home() {
         </div>
 
         <div className="mt-6">
-          <FeedbackSettings />
-        </div>
-
-        <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
             <div className={`text-xs font-semibold ${lightMode ? "text-slate-600" : "text-white/70"}`}>Mã gốc chuẩn ban đầu</div>
             <button
@@ -237,6 +245,26 @@ export default function Home() {
               >
                 Mở tab mới
               </a>
+            </div>
+
+            <div className="mt-4">
+              <div className={`text-xs font-semibold ${lightMode ? "text-slate-600" : "text-white/70"}`}>Mã bị biến dạng để quét thử nhanh</div>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {degradedDemos.map((item) => (
+                  <a
+                    key={item.id}
+                    href={item.file}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`rounded-2xl p-2 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/10"}`}
+                  >
+                    <div className="rounded-xl bg-white p-1 ring-1 ring-black/10">
+                      <img src={item.file} alt={item.label} className="h-20 w-20 mx-auto" loading="lazy" />
+                    </div>
+                    <div className={`mt-1 text-center text-[11px] font-semibold ${lightMode ? "text-slate-700" : "text-white/80"}`}>{item.label}</div>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -145,3 +145,21 @@ export function IconTrendingDown({ className = "h-5 w-5" }: IconProps) {
     </svg>
   );
 }
+
+export function IconSettings({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+      <path
+        d="M19 12a7 7 0 0 0-.1-1.2l1.9-1.5-1.8-3.1-2.3.8a7.4 7.4 0 0 0-2-1.2L14.3 3h-3.6l-.5 2.8a7.4 7.4 0 0 0-2 1.2l-2.3-.8-1.8 3.1 1.9 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-1.9 1.5 1.8 3.1 2.3-.8c.6.5 1.3.9 2 1.2l.5 2.8h3.6l.5-2.8c.7-.3 1.4-.7 2-1.2l2.3.8 1.8-3.1-1.9-1.5c.1-.4.1-.8.1-1.2Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

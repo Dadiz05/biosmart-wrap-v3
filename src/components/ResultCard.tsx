@@ -86,15 +86,12 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
   if (compact) {
     return (
       <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/10 ring-white/20"}`}>
-        <div className="text-xs font-medium text-current/70 uppercase tracking-wide mb-1">Kết quả scan</div>
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-sm font-semibold">{aiResult.qr.qrId}</div>
-            <div className="text-xs text-current/60 mt-1">pH {aiResult.ph.ph.toFixed(2)} • {userFriendly.keyword}</div>
-          </div>
-          <div className={`flex-shrink-0 w-12 h-12 rounded-full ${userFriendly.color} flex items-center justify-center text-xl`}>
+        <div className="flex flex-col items-center justify-center gap-3 py-1 text-center">
+          <div className={`h-20 w-20 rounded-full ${userFriendly.color} ring-4 ${lightMode ? "ring-slate-200" : "ring-white/30"} flex items-center justify-center text-3xl`}>
             {userFriendly.emoji}
           </div>
+          <div className="text-2xl font-black tracking-wide">{userFriendly.keyword}</div>
+          <p className="text-sm text-current/80">{explanation}</p>
         </div>
       </div>
     );
@@ -114,25 +111,23 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
         </p>
       </div>
 
-      {/* pH hiển thị nổi bật */}
+      {/* Color ring biểu thị độ tươi */}
       <div className={`rounded-3xl p-4 text-center mb-5 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
-        <div className={`text-xs font-semibold uppercase tracking-wide ${lightMode ? "text-slate-500" : "text-current/60"}`}>
-          Độ pH
+        <div className={`mx-auto h-44 w-44 rounded-full p-2 ${lightMode ? "bg-slate-100" : "bg-white/10"}`}>
+          <div className={`h-full w-full rounded-full ${userFriendly.color} ring-8 ${lightMode ? "ring-white" : "ring-white/30"} flex items-center justify-center text-6xl shadow-lg`}>
+            {userFriendly.emoji}
+          </div>
         </div>
-        <div className="text-5xl font-black mt-2">{aiResult.ph.ph.toFixed(2)}</div>
-        <div className={`text-xs mt-2 ${lightMode ? "text-slate-600" : "text-current/70"}`}>
-          Mức màu {aiResult.ph.phLevel}/200
-        </div>
+        <div className="mt-3 text-3xl font-black">{userFriendly.keyword}</div>
+        <div className={`mt-2 text-sm ${lightMode ? "text-slate-600" : "text-current/75"}`}>{explanation}</div>
       </div>
 
       {/* Grid thông tin chính */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
-          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-current/60"}`}>QR ID</div>
-          <div className="mt-1 text-sm font-semibold">{aiResult.qr.qrId}</div>
-          <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>
-            {Math.round(aiResult.qr.confidence * 100)}% đúng
-          </div>
+          <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-current/60"}`}>Độ tươi</div>
+          <div className="mt-1 text-2xl font-black">{aiResult.ph.phLevel}/200</div>
+          <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>Từ màu QR sinh học</div>
         </div>
 
         <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>

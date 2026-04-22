@@ -785,7 +785,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             {/* Header */}
             <div className="mb-6 text-center">
               <div className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-2">Kết quả quét</div>
-              <div className="text-lg font-semibold">Mã QR: <span className="font-black">{aiResult.qr.qrId}</span></div>
+              <div className="text-lg font-semibold">Đánh giá độ tươi thực phẩm</div>
             </div>
 
             {/* ResultCard component (compact mode) */}
@@ -818,7 +818,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
             {/* Footer tip */}
             <div className="mt-4 text-center text-xs opacity-75">
-              💡 Nhấn "Quét tiếp" để kiểm tra nhiều mặt hàng khác
+              Nhấn "Quét tiếp" để kiểm tra nhiều mặt hàng khác
             </div>
           </div>
         </div>
