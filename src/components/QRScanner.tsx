@@ -9,7 +9,7 @@ import { createQrScanner, isValidQrId, normalizeQrId } from "../scan/qr-decoder"
 import { evaluatePatchFallback } from "../scan/fallback";
 import { triggerHapticFeedback } from "../utils/hapticFeedback";
 import { triggerSoundFeedback } from "../utils/soundFeedback";
-import type { ScanPhase } from "../scan/types";
+import type { AlertStatus, ScanIssue, ScanPhase } from "../scan/types";
 import { submitFailedScanSample } from "../services/api";
 
 type Props = {
@@ -67,6 +67,107 @@ function phaseTone(phase: ScanPhase, lightMode: boolean) {
   return lightMode ? "bg-slate-100 text-slate-700 ring-slate-200" : "bg-white/10 text-white ring-white/15";
 }
 
+type BatchProgressState = {
+  active: boolean;
+  current: number;
+  total: number;
+  variance: number | null;
+};
+
+type ScanResult = NonNullable<ReturnType<typeof useStore.getState>["aiResult"]>;
+
+const BATCH_MIN_FRAMES = 3;
+const BATCH_MAX_FRAMES = 5;
+
+const defaultBatchProgress: BatchProgressState = {
+  active: false,
+  current: 0,
+  total: BATCH_MAX_FRAMES,
+  variance: null,
+};
+
+function clamp01(value: number) {
+  return Math.max(0, Math.min(1, value));
+}
+
+function mean(values: number[]) {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function variance(values: number[]) {
+  if (values.length < 2) return 0;
+  const avg = mean(values);
+  return mean(values.map((value) => (value - avg) ** 2));
+}
+
+function statusFromPh(ph: number): AlertStatus {
+  if (ph < 6.3) return "fresh";
+  if (ph < 7.25) return "degraded";
+  if (ph < 8.4) return "spoiled";
+  return "critical";
+}
+
+function statusLabel(status: AlertStatus) {
+  switch (status) {
+    case "fresh":
+      return "Tươi";
+    case "degraded":
+      return "Giảm chất lượng";
+    case "spoiled":
+      return "Ôi thiu";
+    case "critical":
+      return "Hỏng nặng";
+  }
+}
+
+function statusMessage(status: AlertStatus) {
+  switch (status) {
+    case "fresh":
+      return "Màu patch nằm trong vùng an toàn.";
+    case "degraded":
+      return "Mẫu bắt đầu lệch vùng an toàn, nên theo dõi thêm.";
+    case "spoiled":
+      return "Mẫu đã chuyển sang vùng cảnh báo rõ rệt.";
+    case "critical":
+      return "Mẫu vượt ngưỡng an toàn, nên loại bỏ.";
+  }
+}
+
+function uniqueWarnings(warnings: ScanIssue[]) {
+  return Array.from(new Set(warnings));
+}
+
+function averageResult(results: ScanResult[]): ScanResult {
+  const phValues = results.map((result) => result.ph.ph);
+  const confidenceValues = results.map((result) => result.ph.confidence);
+  const patchConfidenceValues = results.map((result) => result.patch.confidence);
+  const avgPh = mean(phValues);
+  const avgConfidence = mean(confidenceValues);
+  const avgPatchConfidence = mean(patchConfidenceValues);
+  const phStatus = statusFromPh(avgPh);
+  const base = results[results.length - 1];
+
+  return {
+    ...base,
+    ph: {
+      ...base.ph,
+      ph: Number(avgPh.toFixed(2)),
+      phLevel: Math.round(clamp01(avgPh / 14) * 200),
+      confidence: Number(avgConfidence.toFixed(2)),
+      status: phStatus,
+      label: statusLabel(phStatus),
+      message: statusMessage(phStatus),
+    },
+    patch: {
+      ...base.patch,
+      confidence: Number(avgPatchConfidence.toFixed(2)),
+      warnings: uniqueWarnings(results.flatMap((result) => result.patch.warnings)),
+    },
+    warnings: uniqueWarnings(results.flatMap((result) => result.warnings)),
+  };
+}
+
 export default function QRScanner({ open, onClose, lightMode = false }: Props) {
   const {
     aiResult,
@@ -88,6 +189,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
   const scanTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupTokenRef = useRef(0);
   const [isScanning, setIsScanning] = useState(false);
+  const [batchProgress, setBatchProgress] = useState<BatchProgressState>(defaultBatchProgress);
 
   const { captureFrame } = useCamera("reader");
 
@@ -128,6 +230,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
   const closeModal = useCallback(async () => {
     cleanupTokenRef.current += 1;
     stopTimer();
+    setBatchProgress(defaultBatchProgress);
     await safeStopScanner();
     setScanning(false);
     handledDecodeRef.current = false;
@@ -153,6 +256,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       setStatus("error");
       setError(message);
       setScanning(false);
+      setBatchProgress(defaultBatchProgress);
       stopTimer();
       await safeStopScanner();
       pushHistory({
@@ -174,6 +278,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       setStatus("error");
       setError(message);
       setScanning(false);
+      setBatchProgress(defaultBatchProgress);
       stopTimer();
       await safeStopScanner();
       pushHistory({
@@ -213,6 +318,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       setScanPhase("done");
       setError(null);
       setScanning(false);
+      setBatchProgress(defaultBatchProgress);
       stopTimer();
 
       // Trigger haptic & sound feedback based on result status
@@ -231,6 +337,122 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       await safeStopScanner();
     },
     [flashScreen, pushHistory, safeStopScanner, setAI, setError, setScanPhase, setStatus, setScanning, stopTimer]
+  );
+
+  const runBatchValidation = useCallback(
+    async (input: {
+      token: number;
+      qrId?: string;
+      qrDecoded: boolean;
+      previewDataUrl?: string;
+      mode: "live" | "mock";
+      decodeAttempts: number;
+      qrConfidence?: number;
+      qrStructureMessage?: string;
+    }) => {
+      const collected: ScanResult[] = [];
+      let latestPreview = input.previewDataUrl;
+      const totalFrames = BATCH_MAX_FRAMES;
+
+      setBatchProgress({ active: true, current: 0, total: totalFrames, variance: null });
+      setScanPhase("patch-analysis");
+
+      for (let index = 0; index < totalFrames; index += 1) {
+        if (cleanupTokenRef.current !== input.token) {
+          break;
+        }
+
+        const frame = captureFrame({ maxSize: 960, quality: input.qrDecoded ? 0.84 : 0.82 });
+        if (!frame) {
+          continue;
+        }
+
+        latestPreview = frame.previewDataUrl;
+        setBatchProgress((state) => ({
+          ...state,
+          active: true,
+          current: collected.length + 1,
+          total: totalFrames,
+        }));
+
+        const outcome = await analyzeScanFrameWithAI({
+          imageData: frame.imageData,
+          previewDataUrl: frame.previewDataUrl,
+          mode: input.mode,
+          qrId: input.qrId,
+          qrConfidence: input.qrConfidence,
+          qrDecoded: input.qrDecoded,
+          decodeAttempts: input.decodeAttempts,
+        });
+
+        if (!outcome.result.ai.model.ready) {
+          await failScan(
+            "AI chưa sẵn sàng và không thể xác nhận kết quả quét.",
+            "AI unavailable during batch validation"
+          );
+          return null;
+        }
+
+        collected.push(outcome.result);
+
+        const currentVariance = variance(collected.map((result) => result.ph.ph));
+        const currentConfidence = mean(collected.map((result) => result.ph.confidence));
+        setBatchProgress({
+          active: true,
+          current: collected.length,
+          total: totalFrames,
+          variance: Number(currentVariance.toFixed(3)),
+        });
+
+        if (collected.length >= BATCH_MIN_FRAMES) {
+          if (currentVariance <= 0.3 && currentConfidence >= 0.68) {
+            break;
+          }
+          if (currentVariance > 0.8) {
+            break;
+          }
+        }
+      }
+
+      if (collected.length < BATCH_MIN_FRAMES) {
+        await failScan(
+          "Chưa lấy đủ khung hình ổn định để chốt kết quả. Hãy giữ máy yên hơn và quét lại.",
+          "Batch validation timeout"
+        );
+        return null;
+      }
+
+      const mergedResult = averageResult(collected);
+      const phVariance = variance(collected.map((result) => result.ph.ph));
+      const avgConfidence = mean(collected.map((result) => result.ph.confidence));
+
+      if (phVariance > 0.5) {
+        await failPatchAfterQr(
+          "Các khung hình đang dao động quá nhiều. Hãy giữ máy ổn định và quét lại để có kết quả chắc hơn.",
+          `Batch rejected: variance=${phVariance.toFixed(3)} confidence=${avgConfidence.toFixed(2)}`,
+          input.qrId ?? mergedResult.qr.qrId,
+          mergedResult
+        );
+        return null;
+      }
+
+      if (avgConfidence < 0.55) {
+        await failPatchAfterQr(
+          "Độ tin cậy chưa đủ tốt. Hãy quét lại trong điều kiện sáng hơn và giữ QR thẳng hơn.",
+          `Batch rejected: low-confidence=${avgConfidence.toFixed(2)} variance=${phVariance.toFixed(3)}`,
+          input.qrId ?? mergedResult.qr.qrId,
+          mergedResult
+        );
+        return null;
+      }
+
+      if (latestPreview) {
+        mergedResult.previewDataUrl = latestPreview;
+      }
+
+      return mergedResult;
+    },
+    [captureFrame, failPatchAfterQr, failScan, setBatchProgress, setScanPhase]
   );
 
   const startLiveScan = useCallback(async () => {
@@ -252,48 +474,35 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
     scanTimeoutRef.current = setTimeout(() => {
       if (cleanupTokenRef.current !== token) return;
       void (async () => {
-        const frame = captureFrame({ maxSize: 960, quality: 0.82 });
-        if (!frame) {
-          await failScan(
-            "Không đọc được QR. Hãy đưa QR vào đúng khung, giữ máy ổn định và thử lại.",
-            "QR decode timeout"
-          );
-          return;
-        }
-
-        setScanPhase("ai-analyzing");
-        const outcome = await analyzeScanFrameWithAI({
-          imageData: frame.imageData,
-          previewDataUrl: frame.previewDataUrl,
-          mode: "live",
+        const batchResult = await runBatchValidation({
+          token,
           qrDecoded: false,
+          mode: "live",
           decodeAttempts: 12,
         });
 
-        if (!outcome.result.ai.model.ready) {
-          await failScan(
-            "AI chưa sẵn sàng và QR không đọc được. Hệ thống quay về quét truyền thống, vui lòng chỉnh sáng và quét lại.",
-            "AI unavailable after QR timeout"
-          );
+        if (!batchResult) {
           return;
         }
 
-        setError("AI Analyzing... QR bi mo/nhan. Da chuyen sang che do kiem tra hinh anh.");
-        await finishWithResult(outcome.result);
+        setError(
+          `AI đang kiểm tra nhiều khung hình... pH ổn định hơn sau khi lấy ${BATCH_MIN_FRAMES}-${BATCH_MAX_FRAMES} frame.`
+        );
+        await finishWithResult(batchResult);
         void submitFailedScanSample({
           qrId: null,
-          previewDataUrl: frame.previewDataUrl,
-          warnings: outcome.result.warnings,
+          previewDataUrl: batchResult.previewDataUrl,
+          warnings: batchResult.warnings,
           mode: "live",
           scanPhase: "ai-analyzing",
           aiMeta: {
-            mode: outcome.result.ai.mode,
-            qrStructureScore: outcome.result.ai.qrStructureScore,
-            segmentationLabel: outcome.result.ai.segmentationLabel,
-            segmentationConfidence: outcome.result.ai.segmentationConfidence,
-            rectificationScore: outcome.result.ai.rectificationScore,
-            provider: outcome.result.ai.model.provider,
-            fallbackOnly: outcome.result.ai.model.fallbackOnly,
+            mode: batchResult.ai.mode,
+            qrStructureScore: batchResult.ai.qrStructureScore,
+            segmentationLabel: batchResult.ai.segmentationLabel,
+            segmentationConfidence: batchResult.ai.segmentationConfidence,
+            rectificationScore: batchResult.ai.rectificationScore,
+            provider: batchResult.ai.model.provider,
+            fallbackOnly: batchResult.ai.model.fallbackOnly,
           },
         }).catch(() => {
           // ignore telemetry failures
@@ -316,43 +525,32 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
           setLastQrId(qrId);
           localStorage.setItem("lastQR", qrId);
-          setScanPhase("patch-analysis");
 
-          const frame = captureFrame({ maxSize: 960, quality: 0.84 });
-          if (!frame) {
-            await failScan("Không lấy được khung hình từ camera để phân tích màu QR.", "Capture failed");
-            return;
-          }
-
-          setScanPhase("ai-analyzing");
-
-          const outcome = await analyzeScanFrameWithAI({
-            imageData: frame.imageData,
-            previewDataUrl: frame.previewDataUrl,
+          const batchResult = await runBatchValidation({
+            token,
             qrId,
+            qrDecoded: true,
             mode: "live",
             qrConfidence: 0.98,
-            qrDecoded: true,
             decodeAttempts: 1,
           });
 
-          const fallback = evaluatePatchFallback(outcome.result.patch);
-          if (fallback.shouldReject && outcome.result.ai.mode === "decoder-first") {
+          if (!batchResult) {
+            return;
+          }
+
+          const fallback = evaluatePatchFallback(batchResult.patch);
+          if (fallback.shouldReject && batchResult.ai.mode === "decoder-first") {
             await failPatchAfterQr(
               fallback.userMessage,
-              `QR-color rejected: ${fallback.reasonCodes.join(",") || "analysis-failed"} | confidence=${outcome.result.patch.confidence.toFixed(2)}`,
+              `QR-color rejected: ${fallback.reasonCodes.join(",") || "analysis-failed"} | confidence=${batchResult.patch.confidence.toFixed(2)}`,
               qrId,
-              outcome.result
+              batchResult
             );
             return;
           }
 
-          const aiHint =
-            outcome.result.ai.mode === "visual-inspection"
-              ? "AI Analyzing... QR da hu cau truc, ket qua duoc suy luan bang visual inspection."
-              : fallback.userMessage || null;
-          setError(aiHint);
-          await finishWithResult(outcome.result);
+          await finishWithResult(batchResult);
         },
         async () => {
           // html5-qrcode streams decode errors continuously; keep silent to avoid noisy UI.
@@ -451,6 +649,26 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             {scanPhase === "ai-analyzing"
               ? "AI Analyzing... giu may on dinh de he thong tai cau truc va phan loai mau."
               : "Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc."}
+          </div>
+        ) : null}
+
+        {!aiResult && batchProgress.active ? (
+          <div className={`w-full max-w-md rounded-2xl px-4 py-3 ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-800 ring-slate-200" : "bg-black/45 text-white ring-white/10"}`}>
+            <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+              <span>Đang lấy nhiều khung hình</span>
+              <span>{batchProgress.current}/{batchProgress.total}</span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/10 dark:bg-white/15">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all duration-200"
+                style={{ width: `${(batchProgress.current / batchProgress.total) * 100}%` }}
+              />
+            </div>
+            <div className="mt-2 text-xs opacity-80">
+              {batchProgress.variance !== null
+                ? `Độ ổn định pH: ${batchProgress.variance.toFixed(3)} — càng thấp càng chắc`
+                : "Đang chờ khung hình ổn định để chốt kết quả."}
+            </div>
           </div>
         ) : null}
 
