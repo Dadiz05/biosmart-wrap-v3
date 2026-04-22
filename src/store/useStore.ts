@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import type { AIResult, AppStatus, ScanPhase, Product, ScanRecord } from "../types";
 
+export type FeedbackSettings = {
+  haptic: boolean;
+  sound: boolean;
+};
+
 type State = {
   product: Product | null;
   aiResult: AIResult | null;
@@ -10,6 +15,7 @@ type State = {
   lastError: string | null;
   scanCounter: number;
   history: ScanRecord[];
+  feedbackSettings: FeedbackSettings;
 
   setProduct: (p: Product) => void;
   setAI: (a: AIResult | null) => void;
@@ -19,6 +25,7 @@ type State = {
   setError: (message: string | null) => void;
   pushHistory: (r: Omit<ScanRecord, "scanNo">) => void;
   clearHistory: () => void;
+  setFeedbackSettings: (settings: FeedbackSettings) => void;
   reset: () => void;
 };
 
@@ -31,6 +38,7 @@ export const useStore = create<State>((set) => ({
   lastError: null,
   scanCounter: 0,
   history: [],
+  feedbackSettings: { haptic: true, sound: true },
 
   setProduct: (p) => set({ product: p }),
   setAI: (a) => set({ aiResult: a }),
@@ -47,6 +55,11 @@ export const useStore = create<State>((set) => ({
       };
     }),
   clearHistory: () => set({ history: [], scanCounter: 0 }),
+  setFeedbackSettings: (settings) => {
+    set({ feedbackSettings: settings });
+    // Persist to localStorage
+    localStorage.setItem("feedbackSettings", JSON.stringify(settings));
+  },
   reset: () =>
     set({
       product: null,

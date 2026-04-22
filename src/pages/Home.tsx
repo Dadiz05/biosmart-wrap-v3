@@ -3,6 +3,7 @@ import QRScanner from "../components/QRScanner";
 import ResultCard from "../components/ResultCard";
 import ScanHistory from "../components/ScanHistory";
 import BrandMark from "../components/BrandMark";
+import FeedbackSettings from "../components/FeedbackSettings";
 import Toast from "../components/Toast";
 import { IconCamera, IconPrint } from "../components/Icons";
 import { useStore } from "../store/useStore";
@@ -15,7 +16,7 @@ const originalQr = {
 };
 
 export default function Home() {
-  const { status, lastError, aiResult, reset, history, clearHistory } = useStore();
+  const { status, lastError, aiResult, reset, history, clearHistory, setFeedbackSettings } = useStore();
   const [scannerOpen, setScannerOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [lightMode, setLightMode] = useState(() => localStorage.getItem("uiTheme") === "light");
@@ -23,6 +24,18 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("uiTheme", lightMode ? "light" : "dark");
   }, [lightMode]);
+
+  // Load feedback settings from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("feedbackSettings");
+    if (saved) {
+      try {
+        setFeedbackSettings(JSON.parse(saved));
+      } catch (error) {
+        console.debug("Failed to load feedback settings:", error);
+      }
+    }
+  }, [setFeedbackSettings]);
 
   const toastTone = lastError ? "danger" : "info";
 
@@ -115,6 +128,10 @@ export default function Home() {
         <div className="mt-6">
           <div className={`text-xs font-semibold mb-2 ${lightMode ? "text-slate-600" : "text-white/70"}`}>Lịch sử quét</div>
           <ScanHistory items={history} onClear={clearHistory} lightMode={lightMode} />
+        </div>
+
+        <div className="mt-6">
+          <FeedbackSettings />
         </div>
 
         <div className="mt-6">

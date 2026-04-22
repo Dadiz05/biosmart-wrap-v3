@@ -7,6 +7,8 @@ import { useCamera } from "../hooks/useCamera";
 import { analyzeScanFrameWithAI } from "../services/scanPipeline";
 import { createQrScanner, isValidQrId, normalizeQrId } from "../scan/qr-decoder";
 import { evaluatePatchFallback } from "../scan/fallback";
+import { triggerHapticFeedback } from "../utils/hapticFeedback";
+import { triggerSoundFeedback } from "../utils/soundFeedback";
 import type { ScanPhase } from "../scan/types";
 import { submitFailedScanSample } from "../services/api";
 
@@ -212,7 +214,12 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       setError(null);
       setScanning(false);
       stopTimer();
-      navigator.vibrate?.(120);
+
+      // Trigger haptic & sound feedback based on result status
+      const { feedbackSettings } = useStore.getState();
+      triggerHapticFeedback(result.ph.status, feedbackSettings.haptic);
+      triggerSoundFeedback(result.ph.status, feedbackSettings.sound);
+
       flashScreen();
       pushHistory({
         id: crypto.randomUUID(),

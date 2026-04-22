@@ -34,6 +34,49 @@ function interpolateHueToPh(hue: number) {
   return clampedHue >= anchors[0].hue ? anchors[0].ph : anchors[anchors.length - 1].ph;
 }
 
+/**
+ * Estimate pH confidence correction based on HSV saturation.
+ * Tươi = cao saturation, phai = thấp saturation
+ * Range: -0.15 to +0.15 pH adjustment
+ */
+function saturationPhAdjustment(saturation: number): number {
+  // Fresh: sat > 0.65 → +0.15
+  // Degraded: sat 0.45-0.65 → 0 to +0.05
+  // Spoiled: sat 0.25-0.45 → -0.05 to 0
+  // Critical: sat < 0.25 → -0.15
+  if (saturation > 0.65) {
+    return Math.min(0.15, (saturation - 0.65) * 0.3);
+  }
+  if (saturation > 0.45) {
+    return (saturation - 0.45) * 0.25 - 0.05;
+  }
+  if (saturation > 0.25) {
+    return (saturation - 0.25) * 0.1 - 0.15;
+  }
+  return -0.15;
+}
+
+/**
+ * Estimate pH confidence correction based on HSV value (brightness).
+ * Oxy cao = cao brightness, peroxide decomposition = brightness drop
+ * Range: -0.1 to +0.1 pH adjustment
+ */
+function valueBrightnessPhAdjustment(brightness: number): number {
+  // Optimal: 0.5-0.8 → no change
+  // Low (<0.3): darker = older → -0.1
+  // High (>0.85): overexposed = artifacts → -0.05
+  if (brightness > 0.85) {
+    return -0.05;
+  }
+  if (brightness > 0.5) {
+    return 0;
+  }
+  if (brightness > 0.3) {
+    return (brightness - 0.3) * -0.25;
+  }
+  return -0.1;
+}
+
 function statusFromPh(ph: number): AlertStatus {
   if (ph < 6.3) return "fresh";
   if (ph < 7.25) return "degraded";
@@ -69,16 +112,33 @@ function statusMessage(status: AlertStatus) {
 
 export function estimatePhFromPatch(patch: PatchAnalysis, _qrId?: string): PhEstimate {
   const hue = patch.hsv.h;
-  const ph = interpolateHueToPh(hue);
+  const saturation = patch.hsv.s;
+  const brightness = patch.hsv.v;
+
+  // Base pH from hue
+  let ph = interpolateHueToPh(hue);
+
+  // Apply HSV-based pH adjustments (multi-channel analysis)
+  const saturationAdjust = saturationPhAdjustment(saturation);
+  const brightnessAdjust = valueBrightnessPhAdjustment(brightness);
+  ph = clamp01(ph + saturationAdjust + brightnessAdjust * 0.5) * 14;
+
+  // Clamp pH to valid range 5-9.8
+  ph = Math.max(5, Math.min(9.8, ph));
+
   const phLevel = Math.round(clamp01(ph / 14) * 200);
   const status = statusFromPh(ph);
-  const saturationBoost = clamp01((patch.hsv.s - 0.1) / 0.55);
-  const valueBoost = clamp01((patch.hsv.v - 0.12) / 0.68);
+
+  // Improved confidence calculation with HSV contributions
+  // Weight: patch.confidence 60% (base accuracy), HSV channels 40%
+  const saturationBoost = clamp01((saturation - 0.1) / 0.55);
+  const brightnessBoost = clamp01(Math.abs(brightness - 0.65) < 0.2 ? 1 : 0.7);
+  const hsvConfidence = saturationBoost * 0.2 + brightnessBoost * 0.15 + 0.05;
+
   const confidence = clamp01(
-    patch.confidence * 0.62 +
-      saturationBoost * 0.2 +
-      valueBoost * 0.1 +
-      patch.calibration.quality * 0.08 -
+    patch.confidence * 0.6 +
+      hsvConfidence +
+      patch.calibration.quality * 0.1 -
       patch.warnings.length * 0.08
   );
 
