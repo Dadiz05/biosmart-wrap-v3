@@ -9,7 +9,6 @@ type PHGaugeProps = {
 type GaugeBand = {
   color: string;
   status: string;
-  molecule: string;
   alertTitle: string;
   advice: string;
   bgClass: string;
@@ -41,11 +40,10 @@ function describeArc(cx: number, cy: number, radius: number, startDeg: number, e
 function getBand(currentPH: number): GaugeBand {
   if (currentPH <= 6.0) {
     return {
-      color: "#4B0082",
-      status: "RẤT TƯƠI",
-      molecule: "Anthocyanin: Cation flavylium",
+      color: "#22C55E",
+      status: "TƯƠI",
       alertTitle: "AN TOÀN",
-      advice: "Thực phẩm đang ở trạng thái tươi ngon cao. Tiếp tục bảo quản đúng nhiệt độ để giữ chất lượng.",
+      advice: "Thực phẩm tươi ngon. Tiếp tục bảo quản đúng nhiệt độ để giữ chất lượng.",
       bgClass: "from-emerald-500 to-emerald-700",
       infoCardClass: "bg-emerald-50 text-emerald-900 ring-emerald-200",
     };
@@ -54,33 +52,30 @@ function getBand(currentPH: number): GaugeBand {
     return {
       color: "#EAB308",
       status: "GIẢM CHẤT LƯỢNG",
-      molecule: "Anthocyanin: Base quinoidal",
       alertTitle: "LƯU Ý",
-      advice: "Độ tươi bắt đầu giảm. Nên chế biến sớm để giảm rủi ro và giữ hương vị.",
-      bgClass: "from-amber-500 to-yellow-700",
-      infoCardClass: "bg-amber-50 text-amber-900 ring-amber-200",
+      advice: "Độ tươi bắt đầu giảm. Nên chế biến sớm để đảm bảo chất lượng.",
+      bgClass: "from-yellow-500 to-yellow-700",
+      infoCardClass: "bg-yellow-50 text-yellow-900 ring-yellow-200",
     };
   }
   if (currentPH <= 8.5) {
     return {
-      color: "#228B22",
-      status: "ÔI THIU",
-      molecule: "Anthocyanin: Pseudobase carbinol",
-      alertTitle: "CẢNH BÁO",
-      advice: "Thực phẩm có dấu hiệu ôi thiu. Kiểm tra kỹ mùi và bề mặt trước khi sử dụng.",
-      bgClass: "from-amber-500 to-orange-700",
-      infoCardClass: "bg-amber-50 text-amber-900 ring-amber-200",
+      color: "#F97316",
+      status: "CẢNH BÁO",
+      alertTitle: "CẦN CẨN TRỌNG",
+      advice: "Vùng màu đã chuyển sang cam. Kiểm tra kỹ mùi và bề mặt trước khi dùng.",
+      bgClass: "from-orange-500 to-orange-700",
+      infoCardClass: "bg-orange-50 text-orange-900 ring-orange-200",
     };
   }
 
   return {
-    color: "#DC2626",
-    status: "THỐI RỮA",
-    molecule: "Anthocyanin: Chalcone suy thoái",
+    color: "#EF4444",
+    status: "NGUY HIỂM",
     alertTitle: "NGUY HIỂM",
-    advice: "Thực phẩm có nguy cơ ôi thiu cao. Khuyến cáo loại bỏ để đảm bảo an toàn.",
-    bgClass: "from-rose-600 to-red-800",
-    infoCardClass: "bg-rose-50 text-rose-900 ring-rose-200",
+    advice: "Thực phẩm vào mức nguy hiểm. Khuyến cáo loại bỏ để đảm bảo an toàn.",
+    bgClass: "from-red-600 to-red-800",
+    infoCardClass: "bg-red-50 text-red-900 ring-red-200",
   };
 }
 
@@ -118,10 +113,10 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome }: PHGaugeProp
         <svg viewBox="0 0 240 178" className="h-auto w-full" role="img" aria-label={`Đồng hồ pH, giá trị hiện tại ${safePH.toFixed(2)}`}>
           <path d={describeArc(cx, cy, radius, 180, 0)} fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="18" strokeLinecap="round" />
 
-          <path d={describeArc(cx, cy, radius, 180, 135)} fill="none" stroke="#4B0082" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 180, 135)} fill="none" stroke="#22C55E" strokeWidth="18" strokeLinecap="butt" />
           <path d={describeArc(cx, cy, radius, 135, 90)} fill="none" stroke="#EAB308" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 90, 45)} fill="none" stroke="#228B22" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 45, 0)} fill="none" stroke="#DC2626" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 90, 45)} fill="none" stroke="#F97316" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 45, 0)} fill="none" stroke="#EF4444" strokeWidth="18" strokeLinecap="butt" />
 
           <motion.g
             initial={{ rotate: -90 }}
@@ -141,12 +136,7 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome }: PHGaugeProp
         </div>
       </div>
 
-      <div className={`mt-3 rounded-2xl p-3 text-sm ring-1 ${band.infoCardClass}`}>
-        <div className="text-xs font-semibold uppercase tracking-wide opacity-85">Cấu trúc phân tử Anthocyanin chiếm ưu thế</div>
-        <div className="mt-1 font-semibold">{band.molecule}</div>
-      </div>
-
-      <div className="mt-3 rounded-2xl bg-black/20 p-3 ring-1 ring-white/20 backdrop-blur-sm">
+      <div className="mt-6 rounded-2xl bg-black/20 p-3 ring-1 ring-white/20 backdrop-blur-sm">
         <div className="text-xl font-black leading-tight">{band.alertTitle}</div>
         <p className="mt-1 text-sm text-white/90">{band.advice}</p>
       </div>

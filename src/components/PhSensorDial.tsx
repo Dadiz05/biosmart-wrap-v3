@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 type PhBandInfo = {
   color: string;
   status: string;
-  desc: string;
 };
 
 const DIAL_MIN_PH = 5;
@@ -37,29 +36,25 @@ function arcPath(cx: number, cy: number, radius: number, startAngle: number, end
 export function getPhBand(currentPH: number): PhBandInfo {
   if (currentPH <= 6.0) {
     return {
-      color: "#4B0082",
-      status: "Rất Tươi",
-      desc: "Anthocyanin: Cation flavylium",
+      color: "#22C55E",
+      status: "Tươi",
     };
   }
   if (currentPH <= 7.5) {
     return {
       color: "#EAB308",
       status: "Giảm Chất Lượng",
-      desc: "Anthocyanin: Base quinoidal",
     };
   }
   if (currentPH <= 9.0) {
     return {
-      color: "#228B22",
-      status: "Ôi Thiu",
-      desc: "Anthocyanin: Pseudobase",
+      color: "#F97316",
+      status: "Cảnh Báo",
     };
   }
   return {
-    color: "#DC2626",
-    status: "Thối Rữa",
-    desc: "Anthocyanin: Chalcone",
+    color: "#EF4444",
+    status: "Nguy Hiểm",
   };
 }
 
@@ -90,10 +85,10 @@ export default function PhSensorDial({ currentPH, lightMode = false, compact = f
   const trackPath = arcPath(100, 100, radius, ARC_START_ANGLE, ARC_END_ANGLE);
 
   const bands = [
-    { ...bandArc(5.0, 6.0), color: "#4B0082" },
+    { ...bandArc(5.0, 6.0), color: "#22C55E" },
     { ...bandArc(6.1, 7.5), color: "#EAB308" },
-    { ...bandArc(7.6, 9.0), color: "#228B22" },
-    { ...bandArc(9.01, 10.5), color: "#DC2626" },
+    { ...bandArc(7.6, 9.0), color: "#F97316" },
+    { ...bandArc(9.01, 10.5), color: "#EF4444" },
   ];
 
   return (
@@ -144,10 +139,6 @@ export default function PhSensorDial({ currentPH, lightMode = false, compact = f
         </div>
       </div>
 
-      <div className={`mt-3 rounded-2xl p-3 text-sm ring-1 ${lightMode ? "bg-slate-50 text-slate-700 ring-slate-200" : "bg-white/5 text-white/80 ring-white/15"}`}>
-        <div className="text-xs font-semibold uppercase tracking-wide opacity-70">Cấu trúc phân tử chiếm ưu thế</div>
-        <div className="mt-1 font-medium">{band.desc}</div>
-      </div>
     </div>
   );
 }

@@ -116,22 +116,22 @@ function statusLabel(status: AlertStatus) {
     case "degraded":
       return "Giảm chất lượng";
     case "spoiled":
-      return "Ôi thiu";
+      return "Cảnh báo";
     case "critical":
-      return "Hỏng nặng";
+      return "Nguy hiểm";
   }
 }
 
 function statusMessage(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return "ROI có màu tím trong vùng tươi an toàn.";
+      return "ROI có màu xanh trong vùng tươi an toàn.";
     case "degraded":
-      return "ROI chuyển xanh lam, mẫu bắt đầu giảm chất lượng.";
+      return "ROI chuyển sang vàng, mẫu bắt đầu giảm chất lượng.";
     case "spoiled":
-      return "ROI chuyển xanh lục, mẫu đã vào vùng ôi thiu.";
+      return "ROI chuyển cam, mẫu đã vào vùng cảnh báo.";
     case "critical":
-      return "ROI chuyển vàng, mẫu vượt ngưỡng an toàn.";
+      return "ROI chuyển đỏ, mẫu vượt ngưỡng an toàn.";
   }
 }
 

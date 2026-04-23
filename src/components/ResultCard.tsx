@@ -8,13 +8,13 @@ type AlertStatus = "fresh" | "degraded" | "spoiled" | "critical";
 function statusUserFriendly(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return { keyword: "TƯƠI NGON", emoji: "✨", color: "bg-emerald-500", icon: IconShield };
+      return { keyword: "TRƯƠI", emoji: "✨", color: "bg-emerald-500", icon: IconShield };
     case "degraded":
-      return { keyword: "CẦN NẤU KỸ", emoji: "⏱️", color: "bg-amber-500", icon: IconClock };
+      return { keyword: "GIẢM CHẤT LƯỢNG", emoji: "⏱️", color: "bg-yellow-500", icon: IconClock };
     case "spoiled":
       return { keyword: "CẢNH BÁO", emoji: "⚠️", color: "bg-orange-500", icon: IconTrendingDown };
     case "critical":
-      return { keyword: "NGUY HIỂM", emoji: "🚫", color: "bg-red-600", icon: IconTrendingDown };
+      return { keyword: "NGUY HIểM", emoji: "🚫", color: "bg-red-500", icon: IconTrendingDown };
   }
 }
 
@@ -99,7 +99,7 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
   // Full card view
   return (
     <div className={`rounded-3xl p-5 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-white/10 text-current ring-white/20"}`}>
-      {/* Đồng hồ pH dựa trên màu Anthocyanin */}
+      {/* Kết quả quét */}
       <div className="flex flex-col items-center justify-center mb-6">
         <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} />
         <h2 className="text-3xl font-black text-center mb-2">{userFriendly.keyword}</h2>
