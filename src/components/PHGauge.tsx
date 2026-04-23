@@ -4,6 +4,8 @@ type PHGaugeProps = {
   currentPH: number;
   onScanNext?: () => void;
   onGoHome?: () => void;
+  qrId?: string | null;
+  onViewDetails?: (qrId: string) => void;
 };
 
 type GaugeBand = {
@@ -96,7 +98,7 @@ function needleRotationForPH(currentPH: number) {
   return -90 + clamp(t, 0, 1) * 180;
 }
 
-export default function PHGauge({ currentPH, onScanNext, onGoHome }: PHGaugeProps) {
+export default function PHGauge({ currentPH, onScanNext, onGoHome, qrId, onViewDetails }: PHGaugeProps) {
   const safePH = clamp(currentPH, 0, 14);
   const band = getBand(safePH);
   const needleRotate = needleRotationForPH(safePH);
@@ -157,6 +159,16 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome }: PHGaugeProp
           Về trang chính
         </button>
       </div>
+
+      {qrId && onViewDetails ? (
+        <button
+          type="button"
+          onClick={() => onViewDetails(qrId)}
+          className="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-black/20 px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur active:scale-[0.98]"
+        >
+          Xem thêm thông tin
+        </button>
+      ) : null}
     </div>
   );
 }

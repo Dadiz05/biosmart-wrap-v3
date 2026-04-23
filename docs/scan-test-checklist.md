@@ -8,10 +8,10 @@
 
 ## Dataset AI
 
-- Dataset train neu tai theo mau bio QR nam o `public/qr/dataset`.
-- QR goc su dung chung: `QR-ORIGINAL-FRESH`.
-- Stage gom 4 muc: fresh, mild-change, warning, danger.
-- Manifest anh nam o `public/qr/dataset/manifest.json`.
+- QR demo moi nam o `public/qr`.
+- QR goc su dung chung: `BS-2026-X9`.
+- 4 trang thai: fresh, degraded, spoiled, critical.
+- Metadata truy xuat nam o `public/qr/metadata.json`.
 
 ## Tieu chi pass/fail dinh luong
 

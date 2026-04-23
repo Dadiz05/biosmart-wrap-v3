@@ -1,0 +1,58 @@
+{
+  "qr_text": "BS-2026-X9",
+  "generated_at": "2026-04-23T15:21:50.696Z",
+  "product_metadata": {
+    "id": "BS-2026-X9",
+    "deployment": "Màng bọc BioSmart v2.1",
+    "production_date": "2026-04-23",
+    "indicator_ink": "Anthocyanin Complex (Bắp cải tím + Khoai lang tím)",
+    "certifications": [
+      "VietGAP",
+      "ISO 22000",
+      "HACCP"
+    ],
+    "scanning_logic": "Color-to-pH Mapping"
+  },
+  "qr_states": [
+    {
+      "state": "fresh",
+      "label": "Tươi",
+      "file": "fresh.svg",
+      "color": "#6d28d9",
+      "ph_range": [
+        5,
+        6
+      ]
+    },
+    {
+      "state": "degraded",
+      "label": "Giảm chất lượng",
+      "file": "degraded.svg",
+      "color": "#38bdf8",
+      "ph_range": [
+        6.5,
+        7
+      ]
+    },
+    {
+      "state": "spoiled",
+      "label": "Ôi thiu",
+      "file": "spoiled.svg",
+      "color": "#22c55e",
+      "ph_range": [
+        7.5,
+        8.5
+      ]
+    },
+    {
+      "state": "critical",
+      "label": "Hỏng nặng",
+      "file": "critical.svg",
+      "color": "#facc15",
+      "ph_range": [
+        8.5,
+        9.5
+      ]
+    }
+  ]
+}

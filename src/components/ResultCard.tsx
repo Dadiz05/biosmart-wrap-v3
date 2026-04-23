@@ -69,9 +69,10 @@ function warningLabel(issue: string) {
 type ResultCardProps = {
   lightMode?: boolean;
   compact?: boolean;
+  onViewProduct?: (qrId: string) => void;
 };
 
-export default function ResultCard({ lightMode = false, compact = false }: ResultCardProps) {
+export default function ResultCard({ lightMode = false, compact = false, onViewProduct }: ResultCardProps) {
   const { aiResult } = useStore();
   const [showTechnical, setShowTechnical] = useState(false);
 
@@ -126,6 +127,18 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
           </div>
         </div>
       </div>
+
+      {aiResult.qr.qrId && onViewProduct ? (
+        <button
+          type="button"
+          onClick={() => onViewProduct(aiResult.qr.qrId)}
+          className={`mb-5 w-full rounded-2xl px-4 py-3 text-sm font-semibold ring-1 active:scale-[0.99] ${
+            lightMode ? "bg-slate-900 text-white ring-slate-900" : "bg-white/10 text-current ring-white/20"
+          }`}
+        >
+          Xem thêm thông tin sản phẩm
+        </button>
+      ) : null}
 
       {/* Cảnh báo nếu có */}
       {aiResult.warnings.length > 0 ? (

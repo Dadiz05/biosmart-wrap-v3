@@ -3,7 +3,7 @@ import { isValidQrId, normalizeQrId } from "../qr-decoder";
 
 describe("qr-decoder helpers", () => {
   it("normalizes whitespace around qr id", () => {
-    expect(normalizeQrId("  QR-ORIGINAL-FRESH  ")).toBe("QR-ORIGINAL-FRESH");
+    expect(normalizeQrId("  BS-2026-X9  ")).toBe("BS-2026-X9");
   });
 
   it("accepts valid qr ids", () => {

@@ -14,8 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "gen:qrs": "node scripts/generate-demo-qrs.mjs",
-    "gen:bio-dataset": "node scripts/generate-biological-qr-dataset.mjs"
+    "gen:qrs": "node scripts/generate-qr-assets.mjs",
+    "gen:bio-dataset": "node scripts/generate-qr-assets.mjs"
   },
   "dependencies": {
     "@tensorflow-models/mobilenet": "^2.1.1",

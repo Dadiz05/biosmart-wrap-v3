@@ -17,6 +17,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   lightMode?: boolean;
+  onViewProduct?: (qrId: string) => void;
 };
 
 function statusBackground(status: "fresh" | "degraded" | "spoiled" | "critical") {
@@ -125,13 +126,13 @@ function statusLabel(status: AlertStatus) {
 function statusMessage(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return "ROI có màu xanh trong vùng tươi an toàn.";
+      return "Nằm trong vùng tươi an toàn.";
     case "degraded":
-      return "ROI chuyển sang vàng, mẫu bắt đầu giảm chất lượng.";
+      return "Chất lượng sản phẩm đang giảm.";
     case "spoiled":
-      return "ROI chuyển cam, mẫu đã vào vùng cảnh báo.";
+      return "Sản phẩm đã vào vùng cảnh báo.";
     case "critical":
-      return "ROI chuyển đỏ, mẫu vượt ngưỡng an toàn.";
+      return "Sản phẩm đã vượt ngưỡng an toàn.";
   }
 }
 
@@ -187,7 +188,7 @@ function averageResult(results: ScanResult[]): ScanResult {
   };
 }
 
-export default function QRScanner({ open, onClose, lightMode = false }: Props) {
+export default function QRScanner({ open, onClose, lightMode = false, onViewProduct }: Props) {
   const {
     aiResult,
     lastError,
@@ -794,11 +795,13 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
             ) : null}
             <BioSmartScanResult
               currentPH={aiResult.ph.ph}
+              qrId={aiResult.qr.qrId || null}
               onScanNext={() => {
                 setAI(null);
                 void startScan();
               }}
               onGoHome={handleCloseScanner}
+              onViewDetails={onViewProduct}
             />
           </div>
         </div>

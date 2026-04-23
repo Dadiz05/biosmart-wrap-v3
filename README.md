@@ -99,9 +99,10 @@ Frontend và backend deploy tách riêng.
 
 ## Demo QR chuan
 
-Home page dung 1 ma goc chuan ban dau (`public/qr/original-fresh.svg`) de test nhanh:
+Home page dung 4 ma QR BioSmart moi trong `public/qr` de test nhanh:
 
-- `QR-ORIGINAL-FRESH` → fresh
+- `BS-2026-X9` → fresh / degraded / spoiled / critical
+- Metadata tra cuu sau scan nam o `public/qr/metadata.json`
 
 ## Checklist test
 
