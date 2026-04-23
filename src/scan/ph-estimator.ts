@@ -101,6 +101,14 @@ function classifierFitness(value: HsvCv, classifier: HsvClassifier) {
 
 export function estimatePhFromPatch(patch: PatchAnalysis, _qrId?: string): PhEstimate {
   const hsvCv = toOpenCvHsv(patch);
+  
+  // Debug: Log raw HSV values for troubleshooting color detection
+  if (typeof window !== "undefined" && (window as any).__DEBUG_SCAN__) {
+    console.log(
+      `[pH Debug] Raw HSV (standard): h=${patch.hsv.h.toFixed(1)}° s=${(patch.hsv.s * 100).toFixed(1)}% v=${(patch.hsv.v * 100).toFixed(1)}% → OpenCV: h=${hsvCv.h.toFixed(1)} s=${hsvCv.s.toFixed(1)} v=${hsvCv.v.toFixed(1)}`
+    );
+  }
+  
   const inRangeClassifier = HSV_CLASSIFIERS.find((classifier) => inClassifierRange(hsvCv, classifier));
   const classifier =
     inRangeClassifier ??
@@ -112,6 +120,13 @@ export function estimatePhFromPatch(patch: PatchAnalysis, _qrId?: string): PhEst
   const ph = clampInRange(phRaw, classifier.phRange[0], classifier.phRange[1]);
   const phLevel = Math.round(clamp01(ph / 14) * 200);
   const fitScore = classifierFitness(hsvCv, classifier);
+  
+  // Debug: Log final classifier selection
+  if (typeof window !== "undefined" && (window as any).__DEBUG_SCAN__) {
+    console.log(
+      `[pH Debug] → Selected: ${classifier.label} (${classifier.status}) | pH=${ph.toFixed(2)} | InRange=${!!inRangeClassifier} | Fitness=${fitScore.toFixed(3)}`
+    );
+  }
 
   const confidencePenalty = inRangeClassifier ? 0 : 0.1;
   const confidence = clamp01(
