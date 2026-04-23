@@ -29,8 +29,12 @@ const HSV_CLASSIFIERS: HsvClassifier[] = [
     label: "Tươi",
     message: "ROI có màu tím chủ đạo, nằm trong vùng tươi an toàn.",
     phRange: [5.0, 6.0],
-    hsvCvMin: { h: 125, s: 50, v: 50 },
-    hsvCvMax: { h: 155, s: 255, v: 255 },
+    // ⚙️ ĐIỀU CHỈNH NHẬN DIỆN MÀU TÍM (fresh):
+    // - hsvCvMin.h: Hue tím thấp nhất (mặc định 140, càng cao → màu xanh hơn)
+    // - hsvCvMax.h: Hue tím cao nhất (mặc định 160, càng thấp → màu tím sẫm hơn)
+    // - phRange: [5.0, 6.0] là pH tương ứng từ min đến max hue
+    hsvCvMin: { h: 140, s: 50, v: 50 },
+    hsvCvMax: { h: 160, s: 255, v: 255 },
   },
   {
     status: "degraded",
