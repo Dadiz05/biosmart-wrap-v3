@@ -25,9 +25,9 @@ function statusExplanation(status: AlertStatus) {
     case "degraded":
       return "Độ tươi bắt đầu giảm. Hãy chế biến ngay để đảm bảo hương vị tốt nhất và tránh mất chất dinh dưỡng.";
     case "spoiled":
-      return "Vùng màu ROI đã chuyển sang ngưỡng cảnh báo. Kiểm tra kỹ mùi và bề mặt trước khi dùng.";
+      return "Màu mẫu đã chuyển sang mức cảnh báo. Kiểm tra kỹ mùi và bề mặt trước khi dùng.";
     case "critical":
-      return "Vùng màu ROI đã vào mức nguy hiểm. Thực phẩm có nguy cơ ôi thiu cao, nên loại bỏ để an toàn.";
+      return "Màu mẫu đã vào mức nguy hiểm. Thực phẩm có nguy cơ ôi thiu cao, nên loại bỏ để an toàn.";
   }
 }
 
@@ -48,7 +48,7 @@ function warningLabel(issue: string) {
     case "patch-glare":
       return "Lóa sáng";
     case "patch-unclear":
-      return "Patch chưa rõ";
+      return "Mẫu chưa rõ";
     case "qr-unreadable":
       return "Không nhận diện được QR";
     case "qr-invalid":
@@ -114,7 +114,7 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
         <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
           <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-current/60"}`}>Độ tươi</div>
           <div className="mt-1 text-2xl font-black">{aiResult.ph.phLevel}/200</div>
-          <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>Từ màu QR sinh học</div>
+          <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>Từ màu của mẫu</div>
         </div>
 
         <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
@@ -123,7 +123,7 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
             {Math.round(confidence * 100)}%
           </div>
           <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>
-            Màu ROI {Math.round(aiResult.patch.confidence * 100)}%
+            Độ rõ của mẫu {Math.round(aiResult.patch.confidence * 100)}%
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
           </div>
 
           <div className="mt-3 pt-3 border-t border-white/10">
-            <div className="text-xs font-semibold mb-2">🎨 Màu QR (sau hiệu chỉnh)</div>
+            <div className="text-xs font-semibold mb-2">🎨 Màu mẫu sau hiệu chỉnh</div>
             <div className="flex items-center gap-3">
               <div
                 className="w-12 h-12 rounded-lg shadow-md"

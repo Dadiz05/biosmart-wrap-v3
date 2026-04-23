@@ -1,6 +1,6 @@
 {
   "qr_text": "BS-2026-X9",
-  "generated_at": "2026-04-23T15:21:50.696Z",
+  "generated_at": "2026-04-23T17:42:22.272Z",
   "product_metadata": {
     "id": "BS-2026-X9",
     "deployment": "Màng bọc BioSmart v2.1",
@@ -11,7 +11,7 @@
       "ISO 22000",
       "HACCP"
     ],
-    "scanning_logic": "Color-to-pH Mapping"
+    "scanning_logic": "Quét mã để nhận biết mẫu, sau đó đọc màu của mẫu để tính pH."
   },
   "qr_states": [
     {
@@ -30,7 +30,7 @@
       "file": "degraded.svg",
       "color": "#38bdf8",
       "ph_range": [
-        6.5,
+        6.1,
         7
       ]
     },
@@ -40,8 +40,8 @@
       "file": "spoiled.svg",
       "color": "#22c55e",
       "ph_range": [
-        7.5,
-        8.5
+        7.1,
+        8.4
       ]
     },
     {

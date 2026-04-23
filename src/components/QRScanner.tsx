@@ -38,9 +38,9 @@ function phaseLabel(phase: ScanPhase) {
     case "idle":
       return "Sẵn sàng";
     case "qr-decoding":
-      return "Đọc QR";
+      return "Đang đọc mã";
     case "patch-analysis":
-      return "Phân tích màu QR";
+      return "Đang đọc màu mẫu";
     case "ai-analyzing":
       return "AI đang phân tích";
     case "done":
@@ -692,8 +692,8 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         {!aiResult && isScanning ? (
           <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`} role="status" aria-live="polite">
             {scanPhase === "ai-analyzing"
-              ? "AI đang phân tích... Giữ máy ổn định để hệ thống chốt màu ROI chính xác hơn."
-              : "Ưu tiên đưa vùng màu BioSmart vào khung, QR chỉ dùng để nhận biết có/không."}
+              ? "Hệ thống đang đọc màu mẫu. Giữ máy ổn định để kết quả chính xác hơn."
+              : "Đưa mã vào khung và giữ máy ổn định. Mã chỉ dùng để nhận biết có hay không."}
           </div>
         ) : null}
 
@@ -755,7 +755,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
               )}
 
               <div className={`text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
-                Kết quả dựa trên phân tích màu ROI; QR chỉ là tín hiệu phụ để xác nhận có mã hay không.
+                Kết quả dựa trên màu của mẫu; mã chỉ dùng để xác nhận có hay không.
               </div>
             </div>
           ) : (
@@ -790,7 +790,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
           <div className="mx-auto w-full max-w-md">
             {aiResult.warnings.includes("qr-unreadable") || aiResult.warnings.includes("qr-invalid") ? (
               <div className="mb-3 rounded-2xl border border-white/35 bg-black/20 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
-                Không nhận diện được QR. Kết quả hiện tại được tính theo phân tích màu ROI.
+                Không nhận diện được mã. Kết quả hiện tại được tính theo màu của mẫu.
               </div>
             ) : null}
             <BioSmartScanResult

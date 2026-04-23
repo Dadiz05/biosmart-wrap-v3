@@ -27,38 +27,38 @@ const HSV_CLASSIFIERS: HsvClassifier[] = [
   {
     status: "fresh",
     label: "Tươi",
-    message: "ROI có màu xanh, nằm trong vùng tươi an toàn.",
+    message: "Mẫu ở màu tím, nằm trong vùng tươi an toàn.",
     phRange: [5.0, 6.0],
-    // Xanh (100-150 hue)
-    hsvCvMin: { h: 100, s: 30, v: 40 },
-    hsvCvMax: { h: 150, s: 255, v: 255 },
+    // Tím
+    hsvCvMin: { h: 118, s: 30, v: 40 },
+    hsvCvMax: { h: 165, s: 255, v: 255 },
   },
   {
     status: "degraded",
     label: "Giảm chất lượng",
-    message: "ROI chuyển sang vàng, mẫu bắt đầu giảm chất lượng.",
-    phRange: [6.5, 7.0],
-    // Vàng (30-65 hue)
-    hsvCvMin: { h: 30, s: 30, v: 40 },
-    hsvCvMax: { h: 65, s: 255, v: 255 },
+    message: "Mẫu ở màu xanh lam, chất lượng bắt đầu giảm.",
+    phRange: [6.1, 7.0],
+    // Xanh lam
+    hsvCvMin: { h: 84, s: 30, v: 40 },
+    hsvCvMax: { h: 123, s: 255, v: 255 },
   },
   {
     status: "spoiled",
     label: "Cảnh báo",
-    message: "ROI chuyển cam, mẫu đã vào vùng cảnh báo.",
-    phRange: [7.5, 8.5],
-    // Cam (10-35 hue)
-    hsvCvMin: { h: 10, s: 30, v: 40 },
-    hsvCvMax: { h: 35, s: 255, v: 255 },
+    message: "Mẫu ở màu xanh lá, đã vào vùng cảnh báo.",
+    phRange: [7.1, 8.4],
+    // Xanh lá
+    hsvCvMin: { h: 40, s: 30, v: 40 },
+    hsvCvMax: { h: 90, s: 255, v: 255 },
   },
   {
     status: "critical",
     label: "Nguy hiểm",
-    message: "ROI chuyển đỏ, mẫu vượt ngưỡng an toàn.",
+    message: "Mẫu ở màu vàng, đã vượt ngưỡng an toàn.",
     phRange: [8.5, 9.5],
-    // Đỏ (0-10 hue)
-    hsvCvMin: { h: 0, s: 30, v: 40 },
-    hsvCvMax: { h: 10, s: 255, v: 255 },
+    // Vàng
+    hsvCvMin: { h: 15, s: 30, v: 40 },
+    hsvCvMax: { h: 50, s: 255, v: 255 },
   },
 ];
 

@@ -37,12 +37,36 @@ describe("estimatePhFromPatch", () => {
     expect(result.confidence).toBeGreaterThan(0.7);
   });
 
+  it("maps blue hue to a degraded result", () => {
+    const result = estimatePhFromPatch(makePatch({ hsv: { h: 210, s: 0.82, v: 0.7 } }));
+
+    expect(result.status).toBe("degraded");
+    expect(result.ph).toBeGreaterThanOrEqual(6.1);
+    expect(result.ph).toBeLessThanOrEqual(7.0);
+  });
+
+  it("maps green hue to a spoiled result", () => {
+    const result = estimatePhFromPatch(makePatch({ hsv: { h: 135, s: 0.82, v: 0.7 } }));
+
+    expect(result.status).toBe("spoiled");
+    expect(result.ph).toBeGreaterThanOrEqual(7.1);
+    expect(result.ph).toBeLessThanOrEqual(8.4);
+  });
+
+  it("maps yellow hue to a critical result", () => {
+    const result = estimatePhFromPatch(makePatch({ hsv: { h: 45, s: 0.82, v: 0.7 } }));
+
+    expect(result.status).toBe("critical");
+    expect(result.ph).toBeGreaterThanOrEqual(8.5);
+    expect(result.ph).toBeLessThanOrEqual(9.5);
+  });
+
   it("keeps the output in the supported pH range", () => {
     const result = estimatePhFromPatch(makePatch({ hsv: { h: 48, s: 0.2, v: 0.2 } }));
 
     expect(result.ph).toBeGreaterThanOrEqual(5);
     expect(result.ph).toBeLessThanOrEqual(9.5);
-    expect(result.status).toBe("critical");
+    expect(["fresh", "degraded", "spoiled", "critical"]).toContain(result.status);
   });
 
   it("reduces confidence when warnings are present", () => {

@@ -15,25 +15,25 @@ const qrShowcase = [
     id: "BS-2026-X9",
     file: "/qr/fresh.svg",
     label: "Tươi",
-    expected: "pH 5.0 - 6.0 • mực tím",
+    expected: "pH 5.0 - 6.0 • màu tím",
   },
   {
     id: "BS-2026-X9",
     file: "/qr/degraded.svg",
     label: "Giảm chất lượng",
-    expected: "pH 6.5 - 7.0 • mực xanh lam",
+    expected: "pH 6.1 - 7.0 • màu xanh lam",
   },
   {
     id: "BS-2026-X9",
     file: "/qr/spoiled.svg",
     label: "Ôi thiu",
-    expected: "pH 7.5 - 8.5 • mực xanh lục",
+    expected: "pH 7.1 - 8.4 • màu xanh lá",
   },
   {
     id: "BS-2026-X9",
     file: "/qr/critical.svg",
     label: "Hỏng nặng",
-    expected: "pH 8.5 - 9.5 • mực vàng",
+    expected: "pH 8.5 - 9.5 • màu vàng",
   },
 ];
 
@@ -100,7 +100,7 @@ export default function Home() {
             độ tươi của thực phẩm
           </div>
           <div className={`mt-3 text-sm ${lightMode ? "text-slate-600" : "text-white/70"}`}>
-            Camera sẽ phân tích màu sắc trên mã QR để đưa ra đánh giá về độ tươi, trạng thái và độ tin cậy của sản phẩm. <br />
+            Camera sẽ nhận biết mã, sau đó đọc màu của mẫu để đưa ra đánh giá về độ tươi, trạng thái và độ tin cậy của sản phẩm.
           </div>
 
           {settingsOpen ? (
@@ -159,7 +159,7 @@ export default function Home() {
               Bắt đầu quét
             </button>
             <div className={`text-center text-xs ${lightMode ? "text-slate-500" : "text-white/60"}`}>
-              Hệ thống hoạt động tốt nhất trong điều kiện ánh sáng tự nhiên, tránh phản chiếu mạnh trên bề mặt mã QR.
+              Hệ thống hoạt động tốt nhất trong ánh sáng tự nhiên, tránh phản chiếu mạnh trên bề mặt mẫu.
             </div>
           </div>
         </div>

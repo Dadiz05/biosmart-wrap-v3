@@ -63,7 +63,7 @@ export default function ProductMetadataDialog({ open, qrId, onClose, lightMode =
         </div>
 
         <div className={`mt-4 space-y-3 text-sm leading-6 ${lightMode ? "text-slate-700" : "text-white/80"}`}>
-          <p>Dữ liệu này được tải từ file JSON sau khi đã có kết quả pH, không suy diễn từ mã QR hiển thị.</p>
+          <p>Dữ liệu này được tải từ file JSON sau khi đã có kết quả quét, không suy diễn từ mã QR hiển thị.</p>
 
           {!metadata && !error ? <p>Đang tải metadata...</p> : null}
 
