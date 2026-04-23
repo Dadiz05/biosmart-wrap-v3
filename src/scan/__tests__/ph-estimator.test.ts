@@ -41,8 +41,8 @@ describe("estimatePhFromPatch", () => {
     const result = estimatePhFromPatch(makePatch({ hsv: { h: 48, s: 0.2, v: 0.2 } }));
 
     expect(result.ph).toBeGreaterThanOrEqual(5);
-    expect(result.ph).toBeLessThanOrEqual(9.8);
-    expect(["spoiled", "critical"]).toContain(result.status);
+    expect(result.ph).toBeLessThanOrEqual(9.5);
+    expect(result.status).toBe("critical");
   });
 
   it("reduces confidence when warnings are present", () => {

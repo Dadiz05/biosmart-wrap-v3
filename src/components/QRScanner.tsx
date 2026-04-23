@@ -103,9 +103,9 @@ function variance(values: number[]) {
 }
 
 function statusFromPh(ph: number): AlertStatus {
-  if (ph < 6.3) return "fresh";
-  if (ph < 7.25) return "degraded";
-  if (ph < 8.4) return "spoiled";
+  if (ph <= 6.0) return "fresh";
+  if (ph <= 7.0) return "degraded";
+  if (ph <= 8.5) return "spoiled";
   return "critical";
 }
 
@@ -125,13 +125,13 @@ function statusLabel(status: AlertStatus) {
 function statusMessage(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return "Màu patch nằm trong vùng an toàn.";
+      return "ROI có màu tím trong vùng tươi an toàn.";
     case "degraded":
-      return "Mẫu bắt đầu lệch vùng an toàn, nên theo dõi thêm.";
+      return "ROI chuyển xanh lam, mẫu bắt đầu giảm chất lượng.";
     case "spoiled":
-      return "Mẫu đã chuyển sang vùng cảnh báo rõ rệt.";
+      return "ROI chuyển xanh lục, mẫu đã vào vùng ôi thiu.";
     case "critical":
-      return "Mẫu vượt ngưỡng an toàn, nên loại bỏ.";
+      return "ROI chuyển vàng, mẫu vượt ngưỡng an toàn.";
   }
 }
 
@@ -346,11 +346,11 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
       token: number;
       qrId?: string;
       qrDecoded: boolean;
+      qrRecognitionIssue?: "qr-unreadable" | "qr-invalid";
       previewDataUrl?: string;
       mode: "live" | "mock";
       decodeAttempts: number;
       qrConfidence?: number;
-      qrStructureMessage?: string;
     }) => {
       const collected: ScanResult[] = [];
       let latestPreview = input.previewDataUrl;
@@ -385,15 +385,8 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
           qrConfidence: input.qrConfidence,
           qrDecoded: input.qrDecoded,
           decodeAttempts: input.decodeAttempts,
+          qrRecognitionIssue: input.qrRecognitionIssue,
         });
-
-        if (!outcome.result.ai.model.ready) {
-          await failScan(
-            "AI chưa sẵn sàng và không thể xác nhận kết quả quét.",
-            "AI unavailable during batch validation"
-          );
-          return null;
-        }
 
         collected.push(outcome.result);
 
@@ -457,6 +450,25 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
     [captureFrame, failPatchAfterQr, failScan, setBatchProgress, setScanPhase]
   );
 
+  const runColorFirstFlow = useCallback(
+    async (input: { token: number; issue: "qr-unreadable" | "qr-invalid"; attempts: number }) => {
+      const batchResult = await runBatchValidation({
+        token: input.token,
+        qrDecoded: false,
+        qrRecognitionIssue: input.issue,
+        mode: "live",
+        decodeAttempts: input.attempts,
+      });
+
+      if (!batchResult) {
+        return;
+      }
+
+      await finishWithResult(batchResult);
+    },
+    [finishWithResult, runBatchValidation]
+  );
+
   const startLiveScan = useCallback(async () => {
     if (isScanningRef.current) return;
 
@@ -476,10 +488,9 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
     scanTimeoutRef.current = setTimeout(() => {
       if (cleanupTokenRef.current !== token) return;
       void (async () => {
-        await failScan(
-          "Chưa đọc được QR hợp lệ của BioSmart. Hãy đưa đúng mã QR vào khung quét và thử lại.",
-          "QR timeout without valid BioSmart code"
-        );
+        handledDecodeRef.current = true;
+        stopTimer();
+        await runColorFirstFlow({ token, issue: "qr-unreadable", attempts: 0 });
       })();
     }, 12000);
 
@@ -492,15 +503,12 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
 
           const qrId = normalizeQrId(decodedText);
           if (!isValidQrId(qrId)) {
-            await failScan("QR đọc được nhưng mã ID không hợp lệ.", `Invalid QR payload: ${decodedText}`);
+            await runColorFirstFlow({ token, issue: "qr-invalid", attempts: 1 });
             return;
           }
 
           if (!isBioSmartQrId(qrId)) {
-            await failScan(
-              "QR hợp lệ nhưng không phải mã BioSmart (cần bắt đầu bằng QR-).",
-              `Non-BioSmart QR payload: ${decodedText}`
-            );
+            await runColorFirstFlow({ token, issue: "qr-invalid", attempts: 1 });
             return;
           }
 
@@ -541,7 +549,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
     } catch {
       await failScan("Không mở được camera. Hãy cấp quyền camera và thử lại.", "Camera unavailable");
     }
-  }, [captureFrame, clearReaderDom, closeModal, failPatchAfterQr, failScan, finishWithResult, setAI, setError, setLastQrId, setScanPhase, setScanning, setStatus, stopTimer]);
+  }, [clearReaderDom, closeModal, failPatchAfterQr, failScan, finishWithResult, runBatchValidation, runColorFirstFlow, setAI, setError, setLastQrId, setScanPhase, setScanning, setStatus, stopTimer]);
 
   const startScan = useCallback(async () => {
     await startLiveScan();
@@ -665,8 +673,8 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
         {!aiResult && isScanning ? (
           <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`} role="status" aria-live="polite">
             {scanPhase === "ai-analyzing"
-              ? "AI đang phân tích... Giữ máy ổn định để hệ thống tái cấu trúc và phân loại màu."
-              : "Giữ toàn bộ mã QR nằm gọn trong khung để đọc ID và màu cùng lúc."}
+              ? "AI đang phân tích... Giữ máy ổn định để hệ thống chốt màu ROI chính xác hơn."
+              : "Ưu tiên đưa vùng màu BioSmart vào khung, QR chỉ dùng để nhận biết có/không."}
           </div>
         ) : null}
 
@@ -728,7 +736,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
               )}
 
               <div className={`text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
-                Chỉ chấp nhận mã BioSmart hợp lệ (định dạng QR-...) để trả kết quả.
+                Kết quả dựa trên phân tích màu ROI; QR chỉ là tín hiệu phụ để xác nhận có mã hay không.
               </div>
             </div>
           ) : (
@@ -761,6 +769,11 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
           }}
         >
           <div className="mx-auto w-full max-w-md">
+            {aiResult.warnings.includes("qr-unreadable") || aiResult.warnings.includes("qr-invalid") ? (
+              <div className="mb-3 rounded-2xl border border-white/35 bg-black/20 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
+                Không nhận diện được QR. Kết quả hiện tại được tính theo phân tích màu ROI.
+              </div>
+            ) : null}
             <BioSmartScanResult
               currentPH={aiResult.ph.ph}
               onScanNext={() => {

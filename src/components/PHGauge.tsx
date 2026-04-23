@@ -50,7 +50,7 @@ function getBand(currentPH: number): GaugeBand {
       infoCardClass: "bg-emerald-50 text-emerald-900 ring-emerald-200",
     };
   }
-  if (currentPH <= 7.5) {
+  if (currentPH <= 7.0) {
     return {
       color: "#4169E1",
       status: "GIẢM CHẤT LƯỢNG",
@@ -61,7 +61,7 @@ function getBand(currentPH: number): GaugeBand {
       infoCardClass: "bg-sky-50 text-sky-900 ring-sky-200",
     };
   }
-  if (currentPH <= 9.0) {
+  if (currentPH <= 8.5) {
     return {
       color: "#228B22",
       status: "ÔI THIU",
@@ -85,17 +85,17 @@ function getBand(currentPH: number): GaugeBand {
 }
 
 function needleRotationForPH(currentPH: number) {
-  const ph = clamp(currentPH, 5, 10.5);
+  const ph = clamp(currentPH, 5, 9.5);
 
   let t = 0;
   if (ph <= 6.0) {
     t = ((ph - 5.0) / 1.0) * 0.25;
-  } else if (ph <= 7.5) {
-    t = 0.25 + ((ph - 6.0) / 1.5) * 0.25;
-  } else if (ph <= 9.0) {
-    t = 0.5 + ((ph - 7.5) / 1.5) * 0.25;
+  } else if (ph <= 7.0) {
+    t = 0.25 + ((ph - 6.0) / 1.0) * 0.25;
+  } else if (ph <= 8.5) {
+    t = 0.5 + ((ph - 7.0) / 1.5) * 0.25;
   } else {
-    t = 0.75 + ((ph - 9.0) / 1.5) * 0.25;
+    t = 0.75 + ((ph - 8.5) / 1.0) * 0.25;
   }
 
   return -90 + clamp(t, 0, 1) * 180;

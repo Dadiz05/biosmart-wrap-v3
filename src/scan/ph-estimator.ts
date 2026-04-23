@@ -8,146 +8,126 @@ function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
 
-function interpolateHueToPh(hue: number) {
-  const anchors = [
-    { hue: 285, ph: 5.0 },
-    { hue: 265, ph: 5.6 },
-    { hue: 235, ph: 6.2 },
-    { hue: 205, ph: 6.8 },
-    { hue: 165, ph: 7.4 },
-    { hue: 128, ph: 8.0 },
-    { hue: 92, ph: 8.6 },
-    { hue: 64, ph: 9.2 },
-    { hue: 48, ph: 9.8 },
-  ];
+type HsvCv = {
+  h: number;
+  s: number;
+  v: number;
+};
 
-  const clampedHue = Math.max(48, Math.min(285, hue));
-  for (let i = 0; i < anchors.length - 1; i += 1) {
-    const current = anchors[i];
-    const next = anchors[i + 1];
-    if (clampedHue <= current.hue && clampedHue >= next.hue) {
-      const t = (current.hue - clampedHue) / Math.max(current.hue - next.hue, 1);
-      return lerp(current.ph, next.ph, t);
-    }
-  }
+type HsvClassifier = {
+  status: AlertStatus;
+  label: string;
+  message: string;
+  phRange: [number, number];
+  hsvCvMin: HsvCv;
+  hsvCvMax: HsvCv;
+};
 
-  return clampedHue >= anchors[0].hue ? anchors[0].ph : anchors[anchors.length - 1].ph;
+const HSV_CLASSIFIERS: HsvClassifier[] = [
+  {
+    status: "fresh",
+    label: "Tươi",
+    message: "ROI có màu tím chủ đạo, nằm trong vùng tươi an toàn.",
+    phRange: [5.0, 6.0],
+    hsvCvMin: { h: 125, s: 50, v: 50 },
+    hsvCvMax: { h: 155, s: 255, v: 255 },
+  },
+  {
+    status: "degraded",
+    label: "Giảm chất lượng",
+    message: "ROI chuyển sang xanh lam, mẫu bắt đầu giảm chất lượng.",
+    phRange: [6.5, 7.0],
+    hsvCvMin: { h: 90, s: 50, v: 50 },
+    hsvCvMax: { h: 120, s: 255, v: 255 },
+  },
+  {
+    status: "spoiled",
+    label: "Ôi thiu",
+    message: "ROI chuyển xanh lục, mẫu đã vào vùng ôi thiu.",
+    phRange: [7.5, 8.5],
+    hsvCvMin: { h: 40, s: 50, v: 50 },
+    hsvCvMax: { h: 80, s: 255, v: 255 },
+  },
+  {
+    status: "critical",
+    label: "Hỏng nặng",
+    message: "ROI chuyển vàng, mẫu vượt ngưỡng an toàn.",
+    phRange: [8.5, 9.5],
+    hsvCvMin: { h: 20, s: 50, v: 50 },
+    hsvCvMax: { h: 35, s: 255, v: 255 },
+  },
+];
+
+function toOpenCvHsv(patch: PatchAnalysis): HsvCv {
+  return {
+    h: patch.hsv.h / 2,
+    s: patch.hsv.s * 255,
+    v: patch.hsv.v * 255,
+  };
 }
 
-/**
- * Estimate pH confidence correction based on HSV saturation.
- * Tươi = cao saturation, phai = thấp saturation
- * Range: -0.15 to +0.15 pH adjustment
- */
-function saturationPhAdjustment(saturation: number): number {
-  // Fresh: sat > 0.65 → +0.15
-  // Degraded: sat 0.45-0.65 → 0 to +0.05
-  // Spoiled: sat 0.25-0.45 → -0.05 to 0
-  // Critical: sat < 0.25 → -0.15
-  if (saturation > 0.65) {
-    return Math.min(0.15, (saturation - 0.65) * 0.3);
-  }
-  if (saturation > 0.45) {
-    return (saturation - 0.45) * 0.25 - 0.05;
-  }
-  if (saturation > 0.25) {
-    return (saturation - 0.25) * 0.1 - 0.15;
-  }
-  return -0.15;
+function inClassifierRange(value: HsvCv, classifier: HsvClassifier) {
+  return (
+    value.h >= classifier.hsvCvMin.h &&
+    value.h <= classifier.hsvCvMax.h &&
+    value.s >= classifier.hsvCvMin.s &&
+    value.s <= classifier.hsvCvMax.s &&
+    value.v >= classifier.hsvCvMin.v &&
+    value.v <= classifier.hsvCvMax.v
+  );
 }
 
-/**
- * Estimate pH confidence correction based on HSV value (brightness).
- * Oxy cao = cao brightness, peroxide decomposition = brightness drop
- * Range: -0.1 to +0.1 pH adjustment
- */
-function valueBrightnessPhAdjustment(brightness: number): number {
-  // Optimal: 0.5-0.8 → no change
-  // Low (<0.3): darker = older → -0.1
-  // High (>0.85): overexposed = artifacts → -0.05
-  if (brightness > 0.85) {
-    return -0.05;
-  }
-  if (brightness > 0.5) {
-    return 0;
-  }
-  if (brightness > 0.3) {
-    return (brightness - 0.3) * -0.25;
-  }
-  return -0.1;
+function classifierCenterHue(classifier: HsvClassifier) {
+  return (classifier.hsvCvMin.h + classifier.hsvCvMax.h) / 2;
 }
 
-function statusFromPh(ph: number): AlertStatus {
-  if (ph < 6.3) return "fresh";
-  if (ph < 7.25) return "degraded";
-  if (ph < 8.4) return "spoiled";
-  return "critical";
+function clampInRange(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
 }
 
-function statusLabel(status: AlertStatus) {
-  switch (status) {
-    case "fresh":
-      return "Tươi";
-    case "degraded":
-      return "Giảm chất lượng";
-    case "spoiled":
-      return "Ôi thiu";
-    case "critical":
-      return "Hỏng nặng";
-  }
+function hueToPhInClassifier(hueCv: number, classifier: HsvClassifier) {
+  const [phMin, phMax] = classifier.phRange;
+  const hue = clampInRange(hueCv, classifier.hsvCvMin.h, classifier.hsvCvMax.h);
+  const t = (hue - classifier.hsvCvMin.h) / Math.max(classifier.hsvCvMax.h - classifier.hsvCvMin.h, 1);
+  return lerp(phMin, phMax, t);
 }
 
-function statusMessage(status: AlertStatus) {
-  switch (status) {
-    case "fresh":
-      return "Màu patch nằm trong vùng an toàn.";
-    case "degraded":
-      return "Mẫu bắt đầu lệch vùng an toàn, nên theo dõi thêm.";
-    case "spoiled":
-      return "Mẫu đã chuyển sang vùng cảnh báo rõ rệt.";
-    case "critical":
-      return "Mẫu vượt ngưỡng an toàn, nên loại bỏ.";
-  }
+function classifierFitness(value: HsvCv, classifier: HsvClassifier) {
+  const hueDistance = Math.abs(value.h - classifierCenterHue(classifier)) / 140;
+  const satPenalty = value.s >= classifier.hsvCvMin.s ? 0 : (classifier.hsvCvMin.s - value.s) / 255;
+  const valPenalty = value.v >= classifier.hsvCvMin.v ? 0 : (classifier.hsvCvMin.v - value.v) / 255;
+  return clamp01(1 - hueDistance * 0.75 - satPenalty * 0.15 - valPenalty * 0.1);
 }
 
 export function estimatePhFromPatch(patch: PatchAnalysis, _qrId?: string): PhEstimate {
-  const hue = patch.hsv.h;
-  const saturation = patch.hsv.s;
-  const brightness = patch.hsv.v;
+  const hsvCv = toOpenCvHsv(patch);
+  const inRangeClassifier = HSV_CLASSIFIERS.find((classifier) => inClassifierRange(hsvCv, classifier));
+  const classifier =
+    inRangeClassifier ??
+    HSV_CLASSIFIERS.reduce((best, current) =>
+      classifierFitness(hsvCv, current) > classifierFitness(hsvCv, best) ? current : best
+    );
 
-  // Base pH from hue
-  let ph = interpolateHueToPh(hue);
-
-  // Apply HSV-based pH adjustments (multi-channel analysis)
-  const saturationAdjust = saturationPhAdjustment(saturation);
-  const brightnessAdjust = valueBrightnessPhAdjustment(brightness);
-  ph = ph + saturationAdjust + brightnessAdjust * 0.5;
-
-  // Clamp pH to valid range 5-9.8
-  ph = Math.max(5, Math.min(9.8, ph));
-
+  const phRaw = hueToPhInClassifier(hsvCv.h, classifier);
+  const ph = clampInRange(phRaw, classifier.phRange[0], classifier.phRange[1]);
   const phLevel = Math.round(clamp01(ph / 14) * 200);
-  const status = statusFromPh(ph);
+  const fitScore = classifierFitness(hsvCv, classifier);
 
-  // Improved confidence calculation with HSV contributions
-  // Weight: patch.confidence 60% (base accuracy), HSV channels 40%
-  const saturationBoost = clamp01((saturation - 0.1) / 0.55);
-  const brightnessBoost = clamp01(Math.abs(brightness - 0.65) < 0.2 ? 1 : 0.7);
-  const hsvConfidence = saturationBoost * 0.2 + brightnessBoost * 0.15 + 0.05;
-
+  const confidencePenalty = inRangeClassifier ? 0 : 0.1;
   const confidence = clamp01(
-    patch.confidence * 0.6 +
-      hsvConfidence +
-      patch.calibration.quality * 0.1 -
-      patch.warnings.length * 0.08
+    patch.confidence * 0.62 +
+      fitScore * 0.25 +
+      patch.calibration.quality * 0.18 -
+      patch.warnings.length * 0.08 -
+      confidencePenalty
   );
 
   return {
     ph: Number(ph.toFixed(2)),
     phLevel,
     confidence: Number(confidence.toFixed(2)),
-    status,
-    label: statusLabel(status),
-    message: statusMessage(status),
+    status: classifier.status,
+    label: classifier.label,
+    message: classifier.message,
   };
 }

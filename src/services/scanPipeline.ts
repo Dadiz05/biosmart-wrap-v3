@@ -11,6 +11,7 @@ export type ScanFrameInput = {
   qrConfidence?: number;
   qrDecoded: boolean;
   decodeAttempts?: number;
+  qrRecognitionIssue?: "qr-unreadable" | "qr-invalid";
 };
 
 export type ScanOutcome = {
@@ -18,28 +19,6 @@ export type ScanOutcome = {
   warnings: ScanIssue[];
   result: ScanResult;
 };
-
-function visualInspectionPh(basePh: PhEstimate, visualStatus: "spoiled" | "critical", confidence: number): PhEstimate {
-  if (visualStatus === "critical") {
-    return {
-      ...basePh,
-      ph: Math.max(8.7, basePh.ph),
-      confidence: Number(Math.max(basePh.confidence, confidence).toFixed(2)),
-      status: "critical",
-      label: "Nguy hiểm",
-      message: "QR khong con cau truc du de decode. AI visual inspection xac dinh nguy co hu hong cao.",
-    };
-  }
-
-  return {
-    ...basePh,
-    ph: Math.max(7.7, basePh.ph),
-    confidence: Number(Math.max(basePh.confidence, confidence).toFixed(2)),
-    status: "spoiled",
-    label: "Cảnh báo",
-    message: "QR bi bien dang/manh vo. AI visual inspection danh gia mau va cau truc dang canh bao.",
-  };
-}
 
 function toWarnings(baseWarnings: ScanIssue[], extraWarnings: ScanIssue[]) {
   return Array.from(new Set([...baseWarnings, ...extraWarnings]));
@@ -60,21 +39,22 @@ export async function analyzeScanFrameWithAI(input: ScanFrameInput): Promise<Sca
     extraWarnings.push("ai-unavailable");
   }
 
+  if (input.qrRecognitionIssue) {
+    extraWarnings.push(input.qrRecognitionIssue);
+  }
+
   if (ai.mode === "visual-inspection") {
     extraWarnings.push("qr-structure-broken", "ai-visual-inspection");
-    if (ai.visualStatus && typeof ai.visualConfidence === "number") {
-      ph = visualInspectionPh(ph, ai.visualStatus, ai.visualConfidence);
-    }
   }
 
   const warnings = toWarnings(patch.warnings, extraWarnings);
-  const effectiveQrId = input.qrId ?? "VISUAL-INSPECTION";
+  const effectiveQrId = input.qrDecoded && input.qrId ? input.qrId : "";
 
   const result: ScanResult = {
     qr: {
-      rawText: input.qrId ?? "VISUAL-INSPECTION",
+      rawText: input.qrDecoded && input.qrId ? input.qrId : "",
       qrId: effectiveQrId,
-      confidence: input.qrDecoded ? input.qrConfidence ?? 0.98 : ai.visualConfidence ?? 0.62,
+      confidence: input.qrDecoded ? input.qrConfidence ?? 0.98 : 0,
       decoder: input.qrDecoded && ai.mode === "decoder-first" ? (input.mode === "mock" ? "mock" : "html5-qrcode") : "ai-visual-inspection",
       attempts: input.decodeAttempts ?? 1,
     },

@@ -25,9 +25,9 @@ function statusExplanation(status: AlertStatus) {
     case "degraded":
       return "Độ tươi bắt đầu giảm. Hãy chế biến ngay để đảm bảo hương vị tốt nhất và tránh mất chất dinh dưỡng.";
     case "spoiled":
-      return "Màng bọc đã phát hiện khí bay hơi từ thực phẩm. Kiểm tra kỹ mùi và bề mặt trước khi dùng.";
+      return "Vùng màu ROI đã chuyển sang ngưỡng cảnh báo. Kiểm tra kỹ mùi và bề mặt trước khi dùng.";
     case "critical":
-      return "Mã QR đã bị vô hiệu hóa. Thực phẩm có nguy cơ ôi thiu cao. Khuyến cáo loại bỏ để an toàn.";
+      return "Vùng màu ROI đã vào mức nguy hiểm. Thực phẩm có nguy cơ ôi thiu cao, nên loại bỏ để an toàn.";
   }
 }
 
@@ -50,9 +50,9 @@ function warningLabel(issue: string) {
     case "patch-unclear":
       return "Patch chưa rõ";
     case "qr-unreadable":
-      return "QR không đọc được";
+      return "Không nhận diện được QR";
     case "qr-invalid":
-      return "QR không hợp lệ";
+      return "QR không hợp lệ hoặc không phải BioSmart";
     case "analysis-failed":
       return "Phân tích thất bại";
     case "qr-structure-broken":
@@ -122,7 +122,7 @@ export default function ResultCard({ lightMode = false, compact = false }: Resul
             {Math.round(confidence * 100)}%
           </div>
           <div className={`text-[11px] mt-1 ${lightMode ? "text-slate-600" : "text-current/70"}`}>
-            Màu QR {Math.round(aiResult.patch.confidence * 100)}%
+            Màu ROI {Math.round(aiResult.patch.confidence * 100)}%
           </div>
         </div>
       </div>
