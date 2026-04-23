@@ -44,7 +44,7 @@ export function getPhBand(currentPH: number): PhBandInfo {
   }
   if (currentPH <= 7.5) {
     return {
-      color: "#4169E1",
+      color: "#EAB308",
       status: "Giảm Chất Lượng",
       desc: "Anthocyanin: Base quinoidal",
     };
@@ -57,7 +57,7 @@ export function getPhBand(currentPH: number): PhBandInfo {
     };
   }
   return {
-    color: "#ADFF2F",
+    color: "#DC2626",
     status: "Thối Rữa",
     desc: "Anthocyanin: Chalcone",
   };
@@ -91,9 +91,9 @@ export default function PhSensorDial({ currentPH, lightMode = false, compact = f
 
   const bands = [
     { ...bandArc(5.0, 6.0), color: "#4B0082" },
-    { ...bandArc(6.1, 7.5), color: "#4169E1" },
+    { ...bandArc(6.1, 7.5), color: "#EAB308" },
     { ...bandArc(7.6, 9.0), color: "#228B22" },
-    { ...bandArc(9.01, 10.5), color: "#ADFF2F" },
+    { ...bandArc(9.01, 10.5), color: "#DC2626" },
   ];
 
   return (

@@ -52,13 +52,13 @@ function getBand(currentPH: number): GaugeBand {
   }
   if (currentPH <= 7.0) {
     return {
-      color: "#4169E1",
+      color: "#EAB308",
       status: "GIẢM CHẤT LƯỢNG",
       molecule: "Anthocyanin: Base quinoidal",
       alertTitle: "LƯU Ý",
       advice: "Độ tươi bắt đầu giảm. Nên chế biến sớm để giảm rủi ro và giữ hương vị.",
-      bgClass: "from-sky-500 to-indigo-700",
-      infoCardClass: "bg-sky-50 text-sky-900 ring-sky-200",
+      bgClass: "from-amber-500 to-yellow-700",
+      infoCardClass: "bg-amber-50 text-amber-900 ring-amber-200",
     };
   }
   if (currentPH <= 8.5) {
@@ -74,7 +74,7 @@ function getBand(currentPH: number): GaugeBand {
   }
 
   return {
-    color: "#ADFF2F",
+    color: "#DC2626",
     status: "THỐI RỮA",
     molecule: "Anthocyanin: Chalcone suy thoái",
     alertTitle: "NGUY HIỂM",
@@ -119,9 +119,9 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome }: PHGaugeProp
           <path d={describeArc(cx, cy, radius, 180, 0)} fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="18" strokeLinecap="round" />
 
           <path d={describeArc(cx, cy, radius, 180, 135)} fill="none" stroke="#4B0082" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 135, 90)} fill="none" stroke="#4169E1" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 135, 90)} fill="none" stroke="#EAB308" strokeWidth="18" strokeLinecap="butt" />
           <path d={describeArc(cx, cy, radius, 90, 45)} fill="none" stroke="#228B22" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 45, 0)} fill="none" stroke="#ADFF2F" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 45, 0)} fill="none" stroke="#DC2626" strokeWidth="18" strokeLinecap="butt" />
 
           <motion.g
             initial={{ rotate: -90 }}

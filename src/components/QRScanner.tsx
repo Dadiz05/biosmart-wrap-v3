@@ -139,6 +139,24 @@ function uniqueWarnings(warnings: ScanIssue[]) {
   return Array.from(new Set(warnings));
 }
 
+function toCriticalQrFailure(result: ScanResult, issue: "qr-unreadable" | "qr-invalid"): ScanResult {
+  const issueMessage =
+    issue === "qr-unreadable"
+      ? "Không đọc được mã QR. Trả kết quả an toàn theo mức cảnh báo đỏ để tránh sai lệch."
+      : "Mã QR không hợp lệ. Trả kết quả an toàn theo mức cảnh báo đỏ để tránh sai lệch.";
+
+  return {
+    ...result,
+    ph: {
+      ...result.ph,
+      status: "critical",
+      label: "Hỏng nặng",
+      message: issueMessage,
+    },
+    warnings: uniqueWarnings([...result.warnings, issue]),
+  };
+}
+
 function averageResult(results: ScanResult[]): ScanResult {
   const phValues = results.map((result) => result.ph.ph);
   const confidenceValues = results.map((result) => result.ph.confidence);
@@ -464,7 +482,7 @@ export default function QRScanner({ open, onClose, lightMode = false }: Props) {
         return;
       }
 
-      await finishWithResult(batchResult);
+      await finishWithResult(toCriticalQrFailure(batchResult, input.issue));
     },
     [finishWithResult, runBatchValidation]
   );
