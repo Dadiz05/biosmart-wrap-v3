@@ -93,7 +93,7 @@ function getBand(currentPH: number): GaugeBand {
   if (currentPH <= 8.5) {
     return {
       color: "#f97316",
-      status: "CẢNH BÁO",
+      status: "ÔI THIU",
       alertTitle: "CẦN CẨN TRỌNG",
       advice: dynamicAdviceForPh(currentPH),
       bgClass: "from-orange-500 to-orange-800",
@@ -105,7 +105,7 @@ function getBand(currentPH: number): GaugeBand {
 
   return {
     color: "#ef4444",
-    status: "NGUY HIỂM",
+    status: "HỎNG NẶNG",
     alertTitle: "NGUY HIỂM",
     advice: dynamicAdviceForPh(currentPH),
     bgClass: "from-red-600 to-red-900",
@@ -180,6 +180,15 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome, qrId, onViewD
       </div>
 
       <div className={`mt-6 rounded-2xl p-3 ring-1 backdrop-blur-sm ${band.infoCardClass}`}>
+        {/* Trạng thái nổi bật */}
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="inline-flex items-center rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            style={{ backgroundColor: band.color }}
+          >
+            {band.status}
+          </span>
+        </div>
         <div className={`text-xl font-black leading-tight ${band.infoTitleClass}`}>{band.alertTitle}</div>
         <p className={`mt-1 text-sm ${band.infoBodyClass}`}>{band.advice}</p>
       </div>

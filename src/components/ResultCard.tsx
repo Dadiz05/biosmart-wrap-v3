@@ -8,26 +8,26 @@ type AlertStatus = "fresh" | "degraded" | "spoiled" | "critical";
 function statusUserFriendly(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return { keyword: "TRƯƠI", emoji: "✨", color: "bg-emerald-500", icon: IconShield };
+      return { keyword: "TƯƠI", emoji: "✨", color: "bg-emerald-500", icon: IconShield };
     case "degraded":
       return { keyword: "GIẢM CHẤT LƯỢNG", emoji: "⏱️", color: "bg-yellow-500", icon: IconClock };
     case "spoiled":
-      return { keyword: "CẢNH BÁO", emoji: "⚠️", color: "bg-orange-500", icon: IconTrendingDown };
+      return { keyword: "ÔI THIU", emoji: "⚠️", color: "bg-orange-500", icon: IconTrendingDown };
     case "critical":
-      return { keyword: "NGUY HIểM", emoji: "🚫", color: "bg-red-500", icon: IconTrendingDown };
+      return { keyword: "NGUY HIỂM", emoji: "🚫", color: "bg-red-500", icon: IconTrendingDown };
   }
 }
 
 function statusExplanation(status: AlertStatus) {
   switch (status) {
     case "fresh":
-      return "Chỉ số an toàn đạt 100%. Thực phẩm vẫn giữ nguyên chất dinh dưỡng và độ tươi tốt nhất.";
+      return "Thực phẩm vẫn giữ nguyên chất dinh dưỡng và độ tươi tốt nhất. An toàn để sử dụng.";
     case "degraded":
       return "Độ tươi bắt đầu giảm. Hãy chế biến ngay để đảm bảo hương vị tốt nhất và tránh mất chất dinh dưỡng.";
     case "spoiled":
-      return "Màu mẫu đã chuyển sang mức cảnh báo. Kiểm tra kỹ mùi và bề mặt trước khi dùng.";
+      return "Thực phẩm đã ôi thiu. Kiểm tra kỹ mùi và bề mặt, cân nhắc trước khi sử dụng.";
     case "critical":
-      return "Màu mẫu đã vào mức nguy hiểm. Thực phẩm có nguy cơ ôi thiu cao, nên loại bỏ để an toàn.";
+      return "Thực phẩm đã hỏng nặng, nguy cơ cao. Nên loại bỏ để đảm bảo an toàn.";
   }
 }
 
@@ -90,7 +90,9 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
       <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/10 ring-white/20"}`}>
         <div className="flex flex-col items-center justify-center gap-3 py-1 text-center">
           <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} compact />
-          <div className="text-2xl font-black tracking-wide">{userFriendly.keyword}</div>
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider text-white ${userFriendly.color}`}>
+            {userFriendly.emoji} {userFriendly.keyword}
+          </span>
           <p className="text-sm text-current/80">{explanation}</p>
         </div>
       </div>
@@ -101,10 +103,13 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
   return (
     <div className={`rounded-3xl p-5 shadow-xl ring-1 backdrop-blur ${lightMode ? "bg-white text-slate-900 ring-slate-200" : "bg-white/10 text-current ring-white/20"}`}>
       {/* Kết quả quét */}
-      <div className="flex flex-col items-center justify-center mb-6">
+      <div className="flex flex-col items-center justify-center mb-5">
         <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} />
-        <h2 className="mb-2 whitespace-nowrap px-2 text-center text-xl font-black leading-tight sm:text-3xl">{userFriendly.keyword}</h2>
-        <p className={`text-sm text-center max-w-sm ${lightMode ? "text-slate-600" : "text-current/70"}`}>
+        {/* Badge trạng thái nổi bật */}
+        <span className={`mt-1 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-black uppercase tracking-wider text-white shadow-md ${userFriendly.color}`}>
+          {userFriendly.emoji} {userFriendly.keyword}
+        </span>
+        <p className={`mt-2 text-sm text-center max-w-sm ${lightMode ? "text-slate-600" : "text-current/70"}`}>
           {explanation}
         </p>
       </div>
