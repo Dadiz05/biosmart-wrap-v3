@@ -46,30 +46,61 @@ function dynamicAdviceForPh(status: string, ph: number): string {
 }
 
 /**
- * Tìm voice tiếng Việt giọng nữ tốt nhất.
- * Thứ tự ưu tiên:
- *   1. vi-VN + giọng nữ (gender === "female" hoặc tên chứa từ khoá nữ)
- *   2. vi-VN bất kỳ
- *   3. vi-* bất kỳ
+ * Lấy voice tiếng Việt giọng nữ.
+ * Ưu tiên: vi-VN nữ → vi-VN bất kỳ → vi-* bất kỳ
  */
 function getVietnameseVoice(): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices();
-
-  // Từ khoá tên voice nữ phổ biến trên Chrome/Edge/iOS/Android
-  const femaleKeywords = ["female", "woman", "girl", "thu", "linh", "lan", "huong", "my", "ha", "nu"];
-
+  const femaleKeywords = ["female", "woman", "thu", "linh", "lan", "huong", "my", "ha", "nu"];
   const isFemale = (v: SpeechSynthesisVoice) =>
     femaleKeywords.some((kw) => v.name.toLowerCase().includes(kw));
 
   return (
-    // 1. vi-VN giọng nữ
     voices.find((v) => v.lang === "vi-VN" && isFemale(v)) ??
-    // 2. vi-VN bất kỳ (fallback)
     voices.find((v) => v.lang === "vi-VN") ??
-    // 3. vi-* bất kỳ
     voices.find((v) => v.lang.startsWith("vi")) ??
     null
   );
+}
+
+/**
+ * Đợi voices load xong rồi mới speak.
+ * - Desktop Chrome: getVoices() đã có ngay
+ * - Mobile Chrome/Android: cần chờ sự kiện voiceschanged
+ * - iOS Safari: getVoices() sync nhưng đôi khi rỗng lần đầu
+ */
+function speakWhenReady(utterance: SpeechSynthesisUtterance): void {
+  const trySpeak = () => {
+    const voice = getVietnameseVoice();
+    if (voice) utterance.voice = voice;
+    // Đảm bảo lang luôn là vi-VN dù có voice hay không
+    utterance.lang = "vi-VN";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const voices = window.speechSynthesis.getVoices();
+
+  if (voices.length > 0) {
+    // Voices đã sẵn sàng (desktop hoặc iOS sync)
+    trySpeak();
+  } else {
+    // Mobile async — chờ voiceschanged
+    const onVoicesChanged = () => {
+      window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
+      trySpeak();
+    };
+    window.speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
+
+    // Fallback sau 1.5s nếu voiceschanged không bao giờ fire (một số thiết bị cũ)
+    setTimeout(() => {
+      window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
+      // Speak dù không có voice tiếng Việt — ít nhất còn đọc được
+      utterance.lang = "vi-VN";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }, 1500);
+  }
 }
 
 export function speakScanResult(result: AIResult, enabled: boolean = false): void {
@@ -77,34 +108,14 @@ export function speakScanResult(result: AIResult, enabled: boolean = false): voi
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
   try {
-    window.speechSynthesis.cancel();
-
     const text = buildSpeechText(result);
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "vi-VN";
-    utterance.rate = 0.92;   // hơi chậm cho dễ nghe
+    utterance.rate = 0.92;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    // Gán voice tiếng Việt nếu tìm được
-    const voice = getVietnameseVoice();
-    if (voice) utterance.voice = voice;
-
-    // Một số trình duyệt load voices bất đồng bộ — thử lại sau 200ms nếu chưa có voice
-    if (!voice && window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.addEventListener(
-        "voiceschanged",
-        () => {
-          const retryVoice = getVietnameseVoice();
-          if (retryVoice) utterance.voice = retryVoice;
-          window.speechSynthesis.speak(utterance);
-        },
-        { once: true },
-      );
-      return;
-    }
-
-    window.speechSynthesis.speak(utterance);
+    speakWhenReady(utterance);
   } catch {
     // Bỏ qua lỗi trên thiết bị không hỗ trợ
   }
