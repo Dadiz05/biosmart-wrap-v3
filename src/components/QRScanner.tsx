@@ -22,25 +22,34 @@ type Props = {
 
 function statusBackground(status: "fresh" | "degraded" | "spoiled" | "critical") {
   switch (status) {
-    case "fresh":
-      return { bg: "#1fce10", text: "#ffffff" };
-    case "degraded":
-      return { bg: "#f7f60e", text: "#111827" };
-    case "spoiled":
-      return { bg: "#faa008", text: "#111827" };
-    case "critical":
-      return { bg: "#b81414", text: "#ffffff" };
+    case "fresh":    return { bg: "#22c55e", text: "#ffffff" };
+    case "degraded": return { bg: "#eab308", text: "#0f172a" };
+    case "spoiled":  return { bg: "#f97316", text: "#0f172a" };
+    case "critical": return { bg: "#ef4444", text: "#ffffff" };
   }
+}
+
+function statusResultOverlay(status: "fresh" | "degraded" | "spoiled" | "critical") {
+  if (status === "fresh") {
+    return "linear-gradient(165deg, rgba(34,197,94,0.95) 0%, rgba(21,128,61,0.88) 50%, rgba(5,46,22,0.96) 100%)";
+  }
+  if (status === "degraded") {
+    return "linear-gradient(165deg, rgba(234,179,8,0.95) 0%, rgba(161,98,7,0.88) 50%, rgba(66,32,6,0.96) 100%)";
+  }
+  if (status === "spoiled") {
+    return "linear-gradient(160deg, rgba(249,115,22,0.95) 0%, rgba(194,65,12,0.88) 50%, rgba(67,20,7,0.96) 100%)";
+  }
+  return "linear-gradient(162deg, rgba(239,68,68,0.95) 0%, rgba(153,27,27,0.90) 52%, rgba(69,10,10,0.96) 100%)";
 }
 
 function phaseLabel(phase: ScanPhase) {
   switch (phase) {
     case "idle":
-      return "Sẵn sàng";
+      return "Sẵn sàng quét";
     case "qr-decoding":
-      return "Đang đọc mã";
+      return "Đang nhận diện mã";
     case "patch-analysis":
-      return "Đang đọc màu mẫu";
+      return "Đang phân tích màu";
     case "ai-analyzing":
       return "AI đang phân tích";
     case "done":
@@ -140,19 +149,17 @@ function uniqueWarnings(warnings: ScanIssue[]) {
   return Array.from(new Set(warnings));
 }
 
-function toCriticalQrFailure(result: ScanResult, issue: "qr-unreadable" | "qr-invalid"): ScanResult {
+function withQrIssueWarning(result: ScanResult, issue: "qr-unreadable" | "qr-invalid"): ScanResult {
   const issueMessage =
     issue === "qr-unreadable"
-      ? "Không đọc được mã QR. Trả kết quả an toàn theo mức cảnh báo đỏ để tránh sai lệch."
-      : "Mã QR không hợp lệ. Trả kết quả an toàn theo mức cảnh báo đỏ để tránh sai lệch.";
+      ? "Không đọc được mã, kết quả vẫn được tính theo màu mẫu."
+      : "Mã không hợp lệ, kết quả vẫn được tính theo màu mẫu.";
 
   return {
     ...result,
     ph: {
       ...result.ph,
-      status: "critical",
-      label: "Hỏng nặng",
-      message: issueMessage,
+      message: `${result.ph.message} ${issueMessage}`,
     },
     warnings: uniqueWarnings([...result.warnings, issue]),
   };
@@ -483,7 +490,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         return;
       }
 
-      await finishWithResult(toCriticalQrFailure(batchResult, input.issue));
+      await finishWithResult(withQrIssueWarning(batchResult, input.issue));
     },
     [finishWithResult, runBatchValidation]
   );
@@ -658,7 +665,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
             <div className="min-w-0">
               <BrandMark />
               <div className={`mt-1 text-xs ${lightMode ? "text-slate-600" : "text-white/70"}`}>
-                Quét QR sinh học trong 1 khung
+                Đưa mã vào giữa khung để quét nhanh hơn
               </div>
             </div>
             <button
@@ -672,7 +679,14 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2" aria-live="polite">
+          <div className="mt-1 flex flex-wrap items-center gap-2" aria-live="polite">
+            {/* Live scanning dot — animated when actively scanning */}
+            {isScanning && !aiResult && (
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" style={{ animationDuration: "1.4s" }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+            )}
             <span className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold ring-1 ${phaseTone(scanPhase, lightMode)}`}>
               {phaseLabel(scanPhase)}
             </span>
@@ -692,8 +706,8 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         {!aiResult && isScanning ? (
           <div className={`rounded-full px-4 py-2 text-sm font-medium ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/40 text-white ring-white/10"}`} role="status" aria-live="polite">
             {scanPhase === "ai-analyzing"
-              ? "Hệ thống đang đọc màu mẫu. Giữ máy ổn định để kết quả chính xác hơn."
-              : "Đưa mã vào khung và giữ máy ổn định. Mã chỉ dùng để nhận biết có hay không."}
+              ? "Hệ thống đang phân tích màu sắc để kiểm tra độ tươi"
+              : "Giữ máy ổn định, đưa mã vào khung và chờ trong giây lát."}
           </div>
         ) : null}
 
@@ -719,6 +733,20 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
 
         <div className="relative w-[min(78vw,320px)] aspect-square max-w-md shrink-0 rounded-[2rem] border-[3px] border-emerald-400/80 shadow-[0_0_0_1px_rgba(16,185,129,0.15)]">
           <div className="absolute inset-5 rounded-[1.25rem] border border-emerald-200/80 bg-emerald-400/8" />
+        </div>
+
+        <div className={`w-full max-w-[320px] rounded-2xl px-3 py-2 ring-1 backdrop-blur ${lightMode ? "bg-white/90 text-slate-700 ring-slate-200" : "bg-black/45 text-white ring-white/10"}`}>
+          <div className={`mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] ${lightMode ? "text-slate-400" : "text-white/40"}`}>Thang màu mực sinh học</div>
+          {/* Anthocyanin: tím → xanh lam → xanh lục → vàng */}
+          <div
+            className="h-2.5 w-full rounded-full"
+            style={{ background: "linear-gradient(to right, #7c3aed, #818cf8, #60a5fa, #34d399, #fbbf24, #fde68a)" }}
+          />
+          <div className="mt-1.5 flex items-center justify-between text-[10px]">
+            {["5.0", "6.5", "7.5", "8.5", "9.5"].map((v) => (
+              <span key={v} className={lightMode ? "text-slate-400" : "text-white/40"}>{v}</span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -755,7 +783,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
               )}
 
               <div className={`text-center text-[11px] ${lightMode ? "text-slate-500" : "text-white/70"}`}>
-                Kết quả dựa trên màu của mẫu; mã chỉ dùng để xác nhận có hay không.
+                Hệ thống đang phân tích màu sắc để kiểm tra độ tươi.
               </div>
             </div>
           ) : (
@@ -769,7 +797,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
                   setAI(null);
                   void startScan();
                 }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-black/15 active:scale-[0.99]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/40 bg-white/15 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 backdrop-blur active:scale-[0.99] ring-1 ring-white/20"
               >
                 <IconCamera className="h-5 w-5" />
                 Quét lại
@@ -781,18 +809,27 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
 
       {aiResult ? (
         <div
-          className="absolute inset-0 z-[10050] overflow-y-auto px-4 py-6 sm:py-8 bg-gradient-to-b"
+          className="absolute inset-0 z-[10050] overflow-y-auto bg-gradient-to-b px-4 py-6 transition-[background-image] duration-700 ease-in-out sm:py-8"
           style={{
-            backgroundImage: `linear-gradient(to bottom, ${statusBackground(aiResult.ph.status).bg}dd, ${statusBackground(aiResult.ph.status).bg}ff)`,
+            backgroundImage: statusResultOverlay(aiResult.ph.status),
             color: statusBackground(aiResult.ph.status).text,
           }}
         >
           <div className="mx-auto w-full max-w-md">
-            {aiResult.warnings.includes("qr-unreadable") || aiResult.warnings.includes("qr-invalid") ? (
-              <div className="mb-3 rounded-2xl border border-white/35 bg-black/20 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
-                Không nhận diện được mã. Kết quả hiện tại được tính theo màu của mẫu.
+            {/* Only show the "no ID" warning when qrId is genuinely absent */}
+            {!aiResult.qr.qrId ? (
+              <div className="mb-3 rounded-2xl border border-white/45 bg-black/55 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-black/25 backdrop-blur">
+                Đã nhận diện màu sắc. Không tìm thấy ID sản phẩm.
               </div>
-            ) : null}
+            ) : (
+              <div className="mb-3 inline-flex items-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-black/20 backdrop-blur">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                QR {aiResult.qr.qrId} · Đã nhận diện
+              </div>
+            )}
             <BioSmartScanResult
               currentPH={aiResult.ph.ph}
               qrId={aiResult.qr.qrId || null}

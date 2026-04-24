@@ -32,7 +32,7 @@ export async function analyzeScanFrameWithAI(input: ScanFrameInput): Promise<Sca
     qrDecoded: input.qrDecoded,
   });
 
-  let ph = estimatePhFromPatch(patch, input.qrId);
+  const ph = estimatePhFromPatch(patch);
   const extraWarnings: ScanIssue[] = [];
 
   if (!ai.model.ready) {

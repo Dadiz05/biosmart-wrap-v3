@@ -103,14 +103,14 @@ export default function ResultCard({ lightMode = false, compact = false, onViewP
       {/* Kết quả quét */}
       <div className="flex flex-col items-center justify-center mb-6">
         <PhSensorDial currentPH={aiResult.ph.ph} lightMode={lightMode} />
-        <h2 className="text-3xl font-black text-center mb-2">{userFriendly.keyword}</h2>
+        <h2 className="mb-2 whitespace-nowrap px-2 text-center text-xl font-black leading-tight sm:text-3xl">{userFriendly.keyword}</h2>
         <p className={`text-sm text-center max-w-sm ${lightMode ? "text-slate-600" : "text-current/70"}`}>
           {explanation}
         </p>
       </div>
 
       {/* Grid thông tin chính */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className={`rounded-2xl p-3 ring-1 ${lightMode ? "bg-slate-50 ring-slate-200" : "bg-white/5 ring-white/20"}`}>
           <div className={`text-xs font-medium ${lightMode ? "text-slate-500" : "text-current/60"}`}>Độ tươi</div>
           <div className="mt-1 text-2xl font-black">{aiResult.ph.phLevel}/200</div>

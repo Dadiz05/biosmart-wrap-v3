@@ -11,6 +11,10 @@ interface AudioContext {
   ctx?: globalThis.AudioContext;
 }
 
+type WindowWithWebkitAudio = Window & {
+  webkitAudioContext?: typeof AudioContext;
+};
+
 const audioState: AudioContext = {};
 
 /**
@@ -19,7 +23,7 @@ const audioState: AudioContext = {};
 function getAudioContext(): globalThis.AudioContext | null {
   if (!audioState.ctx) {
     try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx = window.AudioContext || (window as WindowWithWebkitAudio).webkitAudioContext;
       if (AudioCtx) {
         audioState.ctx = new AudioCtx();
       }

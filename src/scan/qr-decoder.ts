@@ -17,7 +17,7 @@ export function isValidQrId(value: string) {
 export function isBioSmartQrId(value: string) {
   const normalized = normalizeQrId(value);
   if (!isValidQrId(normalized)) return false;
-  return /^QR-[A-Za-z0-9_-]{2,61}$/.test(normalized);
+  return /^(QR|BS)-[A-Za-z0-9_-]{2,61}$/.test(normalized);
 }
 
 export function createQrScanner(elementId: string) {

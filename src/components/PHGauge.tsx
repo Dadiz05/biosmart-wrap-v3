@@ -15,6 +15,8 @@ type GaugeBand = {
   advice: string;
   bgClass: string;
   infoCardClass: string;
+  infoTitleClass: string;
+  infoBodyClass: string;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -39,73 +41,95 @@ function describeArc(cx: number, cy: number, radius: number, startDeg: number, e
   return `M ${start.x} ${start.y} A ${radius} ${radius} 0 0 1 ${end.x} ${end.y}`;
 }
 
+function arcAngleForPH(currentPH: number) {
+  const ph = clamp(currentPH, 5, 9.5);
+  const t = (ph - 5.0) / 4.5;
+  return 180 + clamp(t, 0, 1) * 180;
+}
+
+function dynamicAdviceForPh(currentPH: number) {
+  if (currentPH <= 6.0) {
+    return "Thực phẩm đang ở trạng thái tươi. Duy trì bảo quản lạnh để giữ chất lượng.";
+  }
+  if (currentPH <= 7.0) {
+    return currentPH >= 6.8
+      ? "Độ tươi bắt đầu giảm. Nên chế biến sớm."
+      : "Độ tươi đang giảm nhẹ. Nên ưu tiên dùng trong hôm nay.";
+  }
+  if (currentPH <= 8.5) {
+    return currentPH >= 8.2
+      ? "Mẫu đang tiến sát ngưỡng nguy hiểm. Cần kiểm tra kỹ trước khi dùng."
+      : "Mẫu đã vào vùng cảnh báo. Kiểm tra mùi và bề mặt trước khi sử dụng.";
+  }
+
+  return "Thực phẩm đã vào mức nguy hiểm. Khuyến cáo không tiếp tục sử dụng.";
+}
+
 function getBand(currentPH: number): GaugeBand {
   if (currentPH <= 6.0) {
     return {
-      color: "#22C55E",
+      color: "#22c55e",
       status: "TƯƠI",
       alertTitle: "AN TOÀN",
-      advice: "Thực phẩm tươi ngon. Tiếp tục bảo quản đúng nhiệt độ để giữ chất lượng.",
-      bgClass: "from-emerald-500 to-emerald-700",
+      advice: dynamicAdviceForPh(currentPH),
+      bgClass: "from-emerald-500 to-emerald-800",
       infoCardClass: "bg-emerald-50 text-emerald-900 ring-emerald-200",
+      infoTitleClass: "text-emerald-900",
+      infoBodyClass: "text-emerald-800",
     };
   }
   if (currentPH <= 7.0) {
     return {
-      color: "#EAB308",
+      color: "#eab308",
       status: "GIẢM CHẤT LƯỢNG",
       alertTitle: "LƯU Ý",
-      advice: "Độ tươi bắt đầu giảm. Nên chế biến sớm để đảm bảo chất lượng.",
-      bgClass: "from-yellow-500 to-yellow-700",
+      advice: dynamicAdviceForPh(currentPH),
+      bgClass: "from-yellow-500 to-yellow-800",
       infoCardClass: "bg-yellow-50 text-yellow-900 ring-yellow-200",
+      infoTitleClass: "text-yellow-900",
+      infoBodyClass: "text-yellow-800",
     };
   }
   if (currentPH <= 8.5) {
     return {
-      color: "#F97316",
+      color: "#f97316",
       status: "CẢNH BÁO",
       alertTitle: "CẦN CẨN TRỌNG",
-      advice: "Vùng màu đã chuyển sang cam. Kiểm tra kỹ mùi và bề mặt trước khi dùng.",
-      bgClass: "from-orange-500 to-orange-700",
+      advice: dynamicAdviceForPh(currentPH),
+      bgClass: "from-orange-500 to-orange-800",
       infoCardClass: "bg-orange-50 text-orange-900 ring-orange-200",
+      infoTitleClass: "text-orange-900",
+      infoBodyClass: "text-orange-800",
     };
   }
 
   return {
-    color: "#EF4444",
+    color: "#ef4444",
     status: "NGUY HIỂM",
     alertTitle: "NGUY HIỂM",
-    advice: "Thực phẩm vào mức nguy hiểm. Khuyến cáo loại bỏ để đảm bảo an toàn.",
-    bgClass: "from-red-600 to-red-800",
+    advice: dynamicAdviceForPh(currentPH),
+    bgClass: "from-red-600 to-red-900",
     infoCardClass: "bg-red-50 text-red-900 ring-red-200",
+    infoTitleClass: "text-red-900",
+    infoBodyClass: "text-red-800",
   };
-}
-
-function needleRotationForPH(currentPH: number) {
-  const ph = clamp(currentPH, 5, 9.5);
-
-  let t = 0;
-  if (ph <= 6.0) {
-    t = ((ph - 5.0) / 1.0) * 0.25;
-  } else if (ph <= 7.0) {
-    t = 0.25 + ((ph - 6.0) / 1.0) * 0.25;
-  } else if (ph <= 8.5) {
-    t = 0.5 + ((ph - 7.0) / 1.5) * 0.25;
-  } else {
-    t = 0.75 + ((ph - 8.5) / 1.0) * 0.25;
-  }
-
-  return -90 + clamp(t, 0, 1) * 180;
 }
 
 export default function PHGauge({ currentPH, onScanNext, onGoHome, qrId, onViewDetails }: PHGaugeProps) {
   const safePH = clamp(currentPH, 0, 14);
   const band = getBand(safePH);
-  const needleRotate = needleRotationForPH(safePH);
+  const arrowAngle = arcAngleForPH(safePH);
+  const canViewDetails = Boolean(qrId && onViewDetails);
 
   const cx = 120;
   const cy = 132;
   const radius = 92;
+  const arrowTrackPoint = polar(cx, cy, radius + 12, arrowAngle);
+  const arrowRotation = arrowAngle + 180;
+
+  const glowStyle = {
+    textShadow: `0 0 14px ${band.color}99, 0 0 30px ${band.color}55`,
+  };
 
   return (
     <div className={`mx-auto w-full max-w-md rounded-[28px] bg-gradient-to-b p-4 text-white shadow-2xl ring-1 ring-white/20 sm:p-5 ${band.bgClass}`}>
@@ -113,37 +137,54 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome, qrId, onViewD
 
       <div className="relative mx-auto mt-3 w-full max-w-[350px]">
         <svg viewBox="0 0 240 178" className="h-auto w-full" role="img" aria-label={`Đồng hồ pH, giá trị hiện tại ${safePH.toFixed(2)}`}>
+          <defs>
+            {/*
+              pH scale 5.0–9.5 mapped to 0–100%:
+                5.0 = 0%   → tím (#7c3aed)
+                6.0 = 22%  → tím-lam (#818cf8)
+                6.5 = 33%  → xanh lam (#60a5fa)
+                7.5 = 55%  → teal (#34d399)
+                8.5 = 77%  → vàng (#fbbf24)
+                9.5 = 100% → vàng nhạt (#fde68a)
+            */}
+            <linearGradient id="phSweep" x1="28" y1="132" x2="212" y2="132" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stopColor="#7c3aed" />
+              <stop offset="22%"  stopColor="#818cf8" />
+              <stop offset="33%"  stopColor="#60a5fa" />
+              <stop offset="55%"  stopColor="#34d399" />
+              <stop offset="77%"  stopColor="#fbbf24" />
+              <stop offset="100%" stopColor="#fde68a" />
+            </linearGradient>
+          </defs>
+
           <path d={describeArc(cx, cy, radius, 180, 0)} fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="18" strokeLinecap="round" />
 
-          <path d={describeArc(cx, cy, radius, 180, 135)} fill="none" stroke="#22C55E" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 135, 90)} fill="none" stroke="#EAB308" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 90, 45)} fill="none" stroke="#F97316" strokeWidth="18" strokeLinecap="butt" />
-          <path d={describeArc(cx, cy, radius, 45, 0)} fill="none" stroke="#EF4444" strokeWidth="18" strokeLinecap="butt" />
+          <path d={describeArc(cx, cy, radius, 180, 0)} fill="none" stroke="url(#phSweep)" strokeWidth="18" strokeLinecap="round" />
 
           <motion.g
-            initial={{ rotate: -90 }}
-            animate={{ rotate: needleRotate }}
-            transition={{ type: "spring", stiffness: 115, damping: 16, mass: 0.75 }}
-            style={{ originX: `${cx}px`, originY: `${cy}px` }}
+            initial={{ x: arrowTrackPoint.x, y: arrowTrackPoint.y, rotate: arrowRotation }}
+            animate={{ x: arrowTrackPoint.x, y: arrowTrackPoint.y, rotate: arrowRotation }}
+            transition={{ type: "spring", stiffness: 120, damping: 18, mass: 0.7 }}
+            style={{ filter: `drop-shadow(0 0 8px ${band.color}cc)` }}
           >
-            <line x1={cx} y1={cy} x2={cx} y2={54} stroke={band.color} strokeWidth={4} strokeLinecap="round" />
+            <path d="M 0 0 L -14 -8 L -14 8 Z" fill={band.color} stroke="rgba(255,255,255,0.9)" strokeWidth="1" />
           </motion.g>
 
           <circle cx={cx} cy={cy} r={7} fill="#0f172a" stroke="#ffffff" strokeWidth={2} />
         </svg>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-3 text-center">
-          <div className="text-4xl font-black leading-none sm:text-5xl">{safePH.toFixed(2)}</div>
-          <div className="mt-1 text-sm font-bold tracking-wide sm:text-base">{band.status}</div>
+          <div className="text-5xl font-black leading-none sm:text-6xl" style={glowStyle}>{safePH.toFixed(2)}</div>
+          <div className="mt-1 whitespace-nowrap px-2 text-[11px] font-bold tracking-wide sm:text-sm" style={glowStyle}>{band.status}</div>
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-black/20 p-3 ring-1 ring-white/20 backdrop-blur-sm">
-        <div className="text-xl font-black leading-tight">{band.alertTitle}</div>
-        <p className="mt-1 text-sm text-white/90">{band.advice}</p>
+      <div className={`mt-6 rounded-2xl p-3 ring-1 backdrop-blur-sm ${band.infoCardClass}`}>
+        <div className={`text-xl font-black leading-tight ${band.infoTitleClass}`}>{band.alertTitle}</div>
+        <p className={`mt-1 text-sm ${band.infoBodyClass}`}>{band.advice}</p>
       </div>
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+      <div className="mt-4 grid gap-2">
         <button
           type="button"
           onClick={onScanNext}
@@ -153,22 +194,25 @@ export default function PHGauge({ currentPH, onScanNext, onGoHome, qrId, onViewD
         </button>
         <button
           type="button"
-          onClick={onGoHome}
-          className="inline-flex items-center justify-center rounded-2xl bg-white/20 px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/40 backdrop-blur active:scale-[0.98]"
+          onClick={() => {
+            if (qrId && onViewDetails) {
+              onViewDetails(qrId);
+            }
+          }}
+          disabled={!canViewDetails}
+          className="inline-flex items-center justify-center rounded-2xl border border-white/55 bg-transparent px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/45 backdrop-blur active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Về trang chính
+          Xem nguồn gốc sản phẩm
         </button>
       </div>
 
-      {qrId && onViewDetails ? (
-        <button
-          type="button"
-          onClick={() => onViewDetails(qrId)}
-          className="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-black/20 px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur active:scale-[0.98]"
-        >
-          Xem thêm thông tin
-        </button>
-      ) : null}
+      <button
+        type="button"
+        onClick={onGoHome}
+        className="mt-3 block w-full text-center text-sm font-semibold text-white/90 underline underline-offset-4 hover:text-white"
+      >
+        Về trang chính
+      </button>
     </div>
   );
 }

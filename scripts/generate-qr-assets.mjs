@@ -45,37 +45,68 @@ const QR_STATES = [
   },
 ];
 
-function escapeXml(value) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
+function makeSeedFromState(state) {
+  return Array.from(state).reduce((acc, char) => acc + char.charCodeAt(0), 0) + 97;
 }
 
-function buildQrCardSvg(qrSvg, state) {
-  const qrInner = qrSvg
-    .replace(/^<svg[^>]*>/, "")
-    .replace(/<\/svg>\s*$/, "");
-  const accent = state.color;
-  const label = escapeXml(state.label);
-  const range = escapeXml(`pH ${state.ph_range[0]} - ${state.ph_range[1]}`);
+function createSeededRandom(seed) {
+  let value = seed % 2147483647;
+  if (value <= 0) value += 2147483646;
+  return () => {
+    value = (value * 16807) % 2147483647;
+    return (value - 1) / 2147483646;
+  };
+}
+
+function generateDamageRects(state, seed) {
+  const rand = createSeededRandom(seed);
+  const config = {
+    degraded: { count: 12, maxSize: 2, opacity: 0.28 },
+    spoiled: { count: 20, maxSize: 2, opacity: 0.4 },
+    critical: { count: 30, maxSize: 3, opacity: 0.52 },
+  }[state] ?? { count: 0, maxSize: 1, opacity: 0 };
+
+  const rects = [];
+  for (let i = 0; i < config.count; i += 1) {
+    const x = 1 + Math.floor(rand() * 23);
+    const y = 1 + Math.floor(rand() * 23);
+    const w = 1 + Math.floor(rand() * config.maxSize);
+    const h = 1 + Math.floor(rand() * config.maxSize);
+    const opacity = (config.opacity * (0.72 + rand() * 0.56)).toFixed(2);
+    rects.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffff" opacity="${opacity}"/>`);
+  }
+
+  return rects.join("");
+}
+
+function buildDistortedQrSvg(baseSvg, state, color) {
+  const darkPathMatch = baseSvg.match(/<path\s+stroke="[^"]+"\s+d="([^"]+)"\/>/);
+  const darkPath = darkPathMatch?.[1];
+  if (!darkPath) {
+    return baseSvg;
+  }
+
+  const seed = makeSeedFromState(state);
+  const damageRects = generateDamageRects(state, seed);
+  const filterConfig = {
+    degraded: { turbulence: 0.018, scale: 0.25, opacity: 0.95 },
+    spoiled: { turbulence: 0.028, scale: 0.48, opacity: 0.92 },
+    critical: { turbulence: 0.038, scale: 0.72, opacity: 0.88 },
+  }[state] ?? { turbulence: 0, scale: 0, opacity: 1 };
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 760" width="640" height="760" role="img" aria-label="Mã QR BioSmart ${label}">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 25 25" shape-rendering="crispEdges">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f8fafc"/>
-    </linearGradient>
+    <filter id="distort" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="${filterConfig.turbulence}" numOctaves="2" seed="${seed}" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="${filterConfig.scale}" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
   </defs>
-  <rect x="0" y="0" width="640" height="760" rx="40" fill="url(#bg)"/>
-  <rect x="28" y="28" width="584" height="704" rx="36" fill="#ffffff" stroke="${accent}" stroke-width="16"/>
-  <rect x="64" y="56" width="512" height="72" rx="22" fill="${accent}" opacity="0.12"/>
-  <text x="320" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">${label}</text>
-  <text x="320" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="600" fill="#334155">${range}</text>
-  <g transform="translate(64 150)">${qrInner}</g>
+  <path fill="#ffffff" d="M0 0h25v25H0z"/>
+  <g filter="url(#distort)" opacity="${filterConfig.opacity}">
+    <path stroke="${color}" d="${darkPath}"/>
+  </g>
+  <g>${damageRects}</g>
 </svg>`;
 }
 
@@ -94,9 +125,15 @@ for (const state of QR_STATES) {
     },
   });
 
-  const cardSvg = buildQrCardSvg(svg, state);
+  if (state.state === "fresh") {
+    const freshSvg = svg.replace('stroke="#111111"', `stroke="${state.color}"`);
+    await fs.writeFile(path.join(OUT_DIR, state.file), freshSvg, "utf8");
+    continue;
+  }
 
-  await fs.writeFile(path.join(OUT_DIR, state.file), cardSvg, "utf8");
+  const distortedSvg = buildDistortedQrSvg(svg, state.state, state.color);
+
+  await fs.writeFile(path.join(OUT_DIR, state.file), distortedSvg, "utf8");
 }
 
 await fs.writeFile(

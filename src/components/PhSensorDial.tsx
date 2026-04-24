@@ -33,27 +33,27 @@ function arcPath(cx: number, cy: number, radius: number, startAngle: number, end
   return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
 }
 
-export function getPhBand(currentPH: number): PhBandInfo {
+function getPhBand(currentPH: number): PhBandInfo {
   if (currentPH <= 6.0) {
     return {
-      color: "#22C55E",
+      color: "#818cf8",   // tím-violet
       status: "Tươi",
     };
   }
   if (currentPH <= 7.5) {
     return {
-      color: "#EAB308",
+      color: "#60a5fa",   // xanh lam
       status: "Giảm Chất Lượng",
     };
   }
   if (currentPH <= 9.0) {
     return {
-      color: "#F97316",
+      color: "#34d399",   // teal-xanh lục
       status: "Cảnh Báo",
     };
   }
   return {
-    color: "#EF4444",
+    color: "#fbbf24",     // vàng-amber
     status: "Nguy Hiểm",
   };
 }
@@ -85,10 +85,10 @@ export default function PhSensorDial({ currentPH, lightMode = false, compact = f
   const trackPath = arcPath(100, 100, radius, ARC_START_ANGLE, ARC_END_ANGLE);
 
   const bands = [
-    { ...bandArc(5.0, 6.0), color: "#22C55E" },
-    { ...bandArc(6.1, 7.5), color: "#EAB308" },
-    { ...bandArc(7.6, 9.0), color: "#F97316" },
-    { ...bandArc(9.01, 10.5), color: "#EF4444" },
+    { ...bandArc(5.0, 6.0),  color: "#818cf8" },   // tím-violet (tươi)
+    { ...bandArc(6.1, 7.5),  color: "#60a5fa" },   // xanh lam (giảm chất lượng)
+    { ...bandArc(7.6, 9.0),  color: "#34d399" },   // teal-xanh lục (cảnh báo)
+    { ...bandArc(9.01, 10.5), color: "#fbbf24" },  // vàng-amber (nguy hiểm)
   ];
 
   return (
@@ -132,7 +132,7 @@ export default function PhSensorDial({ currentPH, lightMode = false, compact = f
 
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-7 text-center">
             <div className={`font-black leading-none ${compact ? "text-3xl" : "text-4xl"}`}>{safePh.toFixed(2)}</div>
-            <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: band.color }}>
+            <div className={`mt-1 whitespace-nowrap px-2 font-bold tracking-tight ${compact ? "text-[10px]" : "text-xs sm:text-sm"}`} style={{ color: band.color }}>
               {band.status.toUpperCase()}
             </div>
           </div>

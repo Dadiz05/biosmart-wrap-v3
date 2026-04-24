@@ -6,6 +6,19 @@
 import type { AlertStatus } from "../scan/types";
 
 export type HapticPattern = "success" | "warning" | "alert" | "critical" | "error";
+type LegacyVibrationNavigator = Navigator & {
+  webkitVibrate?: (pattern: VibratePattern) => boolean;
+  mozVibrate?: (pattern: VibratePattern) => boolean;
+};
+
+function getVibrationFunctions() {
+  const nav = navigator as LegacyVibrationNavigator;
+  return {
+    vibrate: nav.vibrate?.bind(nav),
+    webkitVibrate: nav.webkitVibrate?.bind(nav),
+    mozVibrate: nav.mozVibrate?.bind(nav),
+  };
+}
 
 /**
  * Map alert status to haptic pattern
@@ -58,7 +71,8 @@ function getVibrationPattern(pattern: HapticPattern): number | number[] {
  * Check if device supports vibration API
  */
 function isVibrationSupported(): boolean {
-  return "vibrate" in navigator || "webkitVibrate" in navigator || "mozVibrate" in navigator;
+  const vibration = getVibrationFunctions();
+  return Boolean(vibration.vibrate || vibration.webkitVibrate || vibration.mozVibrate);
 }
 
 /**
@@ -69,15 +83,12 @@ export function triggerHapticFeedback(status: AlertStatus, enabled: boolean = tr
 
   const pattern = statusToHapticPattern(status);
   const vibrationPattern = getVibrationPattern(pattern);
+  const vibration = getVibrationFunctions();
 
   try {
-    if (navigator.vibrate) {
-      navigator.vibrate(vibrationPattern);
-    } else if ((navigator as any).webkitVibrate) {
-      (navigator as any).webkitVibrate(vibrationPattern);
-    } else if ((navigator as any).mozVibrate) {
-      (navigator as any).mozVibrate(vibrationPattern);
-    }
+    vibration.vibrate?.(vibrationPattern);
+    vibration.webkitVibrate?.(vibrationPattern);
+    vibration.mozVibrate?.(vibrationPattern);
   } catch (error) {
     // Silently fail if vibration not available
     console.debug("Haptic feedback unavailable:", error);
@@ -90,14 +101,12 @@ export function triggerHapticFeedback(status: AlertStatus, enabled: boolean = tr
 export function stopHapticFeedback(): void {
   if (!isVibrationSupported()) return;
 
+  const vibration = getVibrationFunctions();
+
   try {
-    if (navigator.vibrate) {
-      navigator.vibrate(0);
-    } else if ((navigator as any).webkitVibrate) {
-      (navigator as any).webkitVibrate(0);
-    } else if ((navigator as any).mozVibrate) {
-      (navigator as any).mozVibrate(0);
-    }
+    vibration.vibrate?.(0);
+    vibration.webkitVibrate?.(0);
+    vibration.mozVibrate?.(0);
   } catch (error) {
     console.debug("Stop haptic failed:", error);
   }
