@@ -33,7 +33,7 @@ function dominantInkColorFromImageData(imageData: ImageData) {
     if (a < 16) continue;
 
     const hsv = rgbToHsv(r, g, b);
-    const isLikelyInk = hsv.s > 0.18 && hsv.v < 0.92;
+    const isLikelyInk = hsv.s > 0.15 && hsv.v < 0.95;
     if (!isLikelyInk) continue;
 
     rSum += r;
@@ -118,15 +118,15 @@ export function detectPatch(imageData: ImageData): PatchAnalysis {
 
   const warnings: ScanIssue[] = [];
   if (lowLightScore > 0.55 || calibratedHsv.v < 0.18) warnings.push("patch-low-light");
-  if (glareScore > 0.22) warnings.push("patch-glare");
-  if (clarity < 0.22) warnings.push("patch-unclear");
+  if (glareScore > 0.24) warnings.push("patch-glare");
+  if (clarity < 0.18) warnings.push("patch-unclear");
 
   const confidence = clamp01(
-    0.42 +
-      clarity * 0.36 +
-      Math.max(0, 0.28 - glareScore * 0.9) +
+    0.45 +
+      clarity * 0.38 +
+      Math.max(0, 0.3 - glareScore * 0.85) +
       Math.max(0, 0.22 - lowLightScore * 0.35) +
-      snapshot.quality * 0.12
+      snapshot.quality * 0.14
   );
 
   return {

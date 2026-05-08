@@ -87,8 +87,8 @@ type BatchProgressState = {
 
 type ScanResult = NonNullable<ReturnType<typeof useStore.getState>["aiResult"]>;
 
-const BATCH_MIN_FRAMES = 3;
-const BATCH_MAX_FRAMES = 5;
+const BATCH_MIN_FRAMES = 2;
+const BATCH_MAX_FRAMES = 4;
 
 const defaultBatchProgress: BatchProgressState = {
   active: false,
@@ -390,7 +390,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
           break;
         }
 
-        const frame = captureFrame({ maxSize: 960, quality: input.qrDecoded ? 0.84 : 0.82 });
+        const frame = captureFrame({ maxSize: 720, quality: input.qrDecoded ? 0.88 : 0.86 });
         if (!frame) {
           continue;
         }
@@ -426,10 +426,10 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         });
 
         if (collected.length >= BATCH_MIN_FRAMES) {
-          if (currentVariance <= 0.3 && currentConfidence >= 0.68) {
+          if (currentVariance <= 0.25 && currentConfidence >= 0.72) {
             break;
           }
-          if (currentVariance > 0.8) {
+          if (currentVariance > 0.75) {
             break;
           }
         }
@@ -457,7 +457,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         return null;
       }
 
-      if (avgConfidence < 0.55) {
+      if (avgConfidence < 0.52) {
         await failPatchAfterQr(
           "Độ tin cậy chưa đủ tốt. Hãy quét lại trong điều kiện sáng hơn và giữ QR thẳng hơn.",
           `Batch rejected: low-confidence=${avgConfidence.toFixed(2)} variance=${phVariance.toFixed(3)}`,
@@ -518,7 +518,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         stopTimer();
         await runColorFirstFlow({ token, issue: "qr-unreadable", attempts: 0 });
       })();
-    }, 12000);
+    }, 10000);
 
     try {
       await scanner.start(
@@ -570,7 +570,7 @@ export default function QRScanner({ open, onClose, lightMode = false, onViewProd
         async () => {
           // html5-qrcode streams decode errors continuously; keep silent to avoid noisy UI.
         },
-        { fps: 10, qrbox: { width: 280, height: 280 } }
+        { fps: 18, qrbox: { width: 320, height: 320 } }
       );
     } catch {
       await failScan("Không mở được camera. Hãy cấp quyền camera và thử lại.", "Camera unavailable");

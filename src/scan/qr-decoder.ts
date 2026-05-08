@@ -32,7 +32,7 @@ export function createQrScanner(elementId: string) {
       await scanner.start(
         { facingMode: "environment" },
         {
-          fps: opts?.fps ?? 12,
+          fps: opts?.fps ?? 15,
           qrbox: opts?.qrbox ?? { width: 320, height: 320 },
           disableFlip: false,
         },
