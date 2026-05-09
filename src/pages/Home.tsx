@@ -14,6 +14,7 @@ import {
   IconExternalLink,
 } from "../components/Icons";
 import { defaultFeedbackSettings, useStore } from "../store/useStore";
+import { preloadAIModel } from "../scan/ai-vision";
 
 const QRScanner = lazy(() => import("../components/QRScanner"));
 
@@ -260,6 +261,11 @@ export default function Home() {
   }, [setFeedbackSettings]);
 
   const toastTone = lastError ? "danger" : "info";
+
+    useEffect(() => {
+      // Preload TensorFlow model on app startup for faster first scan
+      void preloadAIModel();
+    }, []);
   const handleOpenMetadata = (qrId: string) => setMetadataQrId(qrId);
 
   /* ── utility classes ── */

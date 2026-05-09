@@ -259,3 +259,11 @@ export async function analyzeAIVision(input: AnalyzeAIVisionInput): Promise<AIRe
     notes,
   };
 }
+
+export async function preloadAIModel(): Promise<void> {
+  try {
+    await ensureAIModel();
+  } catch {
+    // Preload failure is non-critical
+  }
+}
